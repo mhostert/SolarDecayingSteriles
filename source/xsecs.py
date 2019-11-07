@@ -20,3 +20,13 @@ def get_nuebar_CCQE(xsfile):
 		xs = scipy.interpolate.interp1d(Enu, nuebar*Enu*1e-38, fill_value=0.0, bounds_error=False)
 		# print "Running MiniBooNE fluxes"
 	return xs # cm^2
+
+
+def get_IBD(xsfile):
+
+	if (xsfile == "xsecs/GLOBES/XCC.dat"):
+		El, _, _,_,nuebar,_,_ = np.loadtxt(xsfile, unpack=True)
+		Enu = 10**(El)
+		xs = scipy.interpolate.interp1d(Enu, nuebar*Enu*1e-38, fill_value=0.0, bounds_error=False)
+		# print "Running MiniBooNE fluxes"
+	return xs # cm^2
