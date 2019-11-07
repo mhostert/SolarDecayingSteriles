@@ -1,0 +1,36 @@
+import numpy as np
+
+class miniboone_data():
+	def __init__(self):
+
+		#######################
+		# neutrino energy data
+		self.Enu_binc, self.data_MB_enu_nue = np.loadtxt("digitized/miniboone/Enu_excess_nue.dat", unpack=True)
+		self.Enu_binc, self.data_MB_enu_nue_errorlow = np.loadtxt("digitized/miniboone/Enu_excess_nue_lowererror.dat", unpack=True)
+		self.Enu_binc, self.data_MB_enu_nue_errorup = np.loadtxt("digitized/miniboone/Enu_excess_nue_uppererror.dat", unpack=True)
+		
+		self.binw_enu = np.array([0.1,0.075,0.1,0.075,0.125,0.125,0.15,0.15,0.2,0.2])
+		self.bin_e = np.array([0.2,0.3,0.375,0.475,0.550,0.675,0.8,0.95,1.1,1.3,1.5])
+		
+		self.data_MB_enu_nue *= self.binw_enu*1e3
+		self.data_MB_enu_nue_errorlow *= self.binw_enu*1e3
+		self.data_MB_enu_nue_errorup *= self.binw_enu*1e3
+
+
+		#######################
+		# Angular data
+		self.cost_binc, self.data_MB_cost_nue = np.loadtxt("digitized/miniboone/costheta_nu_data.dat", unpack=True)
+		self.cost_binc, self.data_MB_cost_nue_errorlow = np.loadtxt("digitized/miniboone/costheta_nu_data_lowererror.dat", unpack=True)
+		self.cost_binc, self.data_MB_cost_nue_errorup = np.loadtxt("digitized/miniboone/costheta_nu_data_uppererror.dat", unpack=True)
+		self.cost_binc, self.data_MB_cost_nue_bkg = np.loadtxt("digitized/miniboone/costheta_nu_data_bkg.dat", unpack=True)
+		
+		self.binw_cost = np.ones(np.size(self.cost_binc))*0.2
+		self.bincost_e = np.array([-1.0,-0.8,-0.6,-0.4,-0.2,0.0,0.2,0.4,0.6,0.8,1.0])
+
+		#########################
+		# Efficiencies
+		#########################
+		# WATCH OUT I ADDED A POINT HERE!!!!!!!!!!!!
+		########################
+		self.eff = np.array([0.0,0.089,0.135,0.139,0.131,0.123,0.116,0.106,0.102,0.095,0.089,0.082,0.073,0.067,0.052,0.026,0.026])
+		self.enu_eff = np.array([0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.3,1.5,1.7,1.9,2.1,3.0])
