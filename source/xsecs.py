@@ -4,8 +4,8 @@ import scipy.stats
 from scipy.integrate import quad
 import pdg 
 import const 
-def get_nue_CCQE(xsfile):
 
+def get_nue_CCQE(xsfile):
 	if (xsfile == "xsecs/GLOBES/XCC.dat"):
 		El, nue, _,_, _,_,_ = np.loadtxt(xsfile, unpack=True)
 		Enu = 10**(El)
@@ -13,22 +13,18 @@ def get_nue_CCQE(xsfile):
 	return xs # cm^2
 
 def get_nuebar_CCQE(xsfile):
-
 	if (xsfile == "xsecs/GLOBES/XCC.dat"):
 		El, _, _,_,nuebar,_,_ = np.loadtxt(xsfile, unpack=True)
 		Enu = 10**(El)
 		xs = scipy.interpolate.interp1d(Enu, nuebar*Enu*1e-38, fill_value=0.0, bounds_error=False)
 	return xs # cm^2
 
-
 def get_IBD(xsfile):
-
 	Enu, xnuebar = np.loadtxt(xsfile, unpack=True)
 	xs = scipy.interpolate.interp1d(Enu, xnuebar*1e-38, fill_value=0.0, bounds_error=False)
 	return xs # cm^2
 
 def get_nuES(nu_flag,T0=0.0):
-
 	if nu_flag==pdg.PDG_numu:
 		Cv = -0.5 + 2*const.s2w
 		Ca = -0.5

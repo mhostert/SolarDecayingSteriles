@@ -1,5 +1,5 @@
 import numpy as np
-
+import scipy
 class miniboone_data():
 	def __init__(self):
 
@@ -15,7 +15,6 @@ class miniboone_data():
 		self.data_MB_enu_nue *= self.binw_enu*1e3
 		self.data_MB_enu_nue_errorlow *= self.binw_enu*1e3
 		self.data_MB_enu_nue_errorup *= self.binw_enu*1e3
-
 
 		#######################
 		# Angular data
@@ -51,3 +50,35 @@ class borexino_data():
 		self.bin_w = (self.bin_e[1:] - self.bin_e[:-1])
 		self.bin_c = self.bin_e[:-1] + self.bin_w/2.0
 
+class kamland_data():
+	def __init__(self):
+
+		#######################
+		# neutrino energy data
+		self.Enu_binc, self.data = np.loadtxt("digitized/Kamland/data.dat", unpack=True)
+		
+
+
+		self.bin_e = np.array([7.5,8.5,9.5,10.5,11.5,12.5,13.5,14.5,16.5,17.5,18.5,19.5,20.5,21.5,22.5,23.5,24.5,25.5,26.5,27.5,28.5,29.5])
+		#####################
+		# Neutrino energy
+		self.bin_e = self.bin_e + 0.8
+
+		self.bin_w = (self.bin_e[1:] - self.bin_e[:-1])
+		self.bin_c = self.bin_e[:-1] + self.bin_w/2.0
+
+		e, self.MCatm = np.loadtxt("digitized/Kamland/atmospheric.dat", unpack=True)
+		f = scipy.interpolate.interp1d(e, self.MCatm, fill_value=0.0, bounds_error=False)
+		self.MCatm = f(self.bin_c)
+		
+		e, self.MCreactor = np.loadtxt("digitized/Kamland/MCall_exceptReactors.dat", unpack=True)
+		f = scipy.interpolate.interp1d(e, self.MCreactor, fill_value=0.0, bounds_error=False)
+		self.MCreactor = f(self.bin_c)		
+		
+		e, self.MCreactor_spall = np.loadtxt("digitized/Kamland/MC_all_exceptReactorsANDspallation.dat", unpack=True)
+		f = scipy.interpolate.interp1d(e, self.MCreactor_spall, fill_value=0.0, bounds_error=False)
+		self.MCreactor_spall = f(self.bin_c)		
+		
+		e, self.MClimit = np.loadtxt("digitized/Kamland/solar_BG_limit.dat", unpack=True)
+		f = scipy.interpolate.interp1d(e, self.MClimit, fill_value=0.0, bounds_error=False)
+		self.MClimit = f(self.bin_c)

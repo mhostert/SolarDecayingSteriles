@@ -18,6 +18,7 @@ MINERVA_LE = "minerva_le"
 MINERVA_ME = "minerva_me"
 MINIBOONE  = "miniboone"
 uBOONE     = "uboone"
+KAMLAND     = "kamland"
 BOREXINO     = "borexino"
 
 # fix experiment to use

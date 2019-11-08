@@ -2,7 +2,8 @@ import numpy as np
 from scipy import interpolate
 import scipy.stats
 from scipy.integrate import quad
-
+import matplotlib 
+matplotlib.use('agg') 
 import matplotlib.pyplot as plt
 from matplotlib import rc, rcParams
 from matplotlib.pyplot import *
@@ -17,7 +18,13 @@ from source import *
 # SETUP
 ################################################################
 
-EXP_FLAG = const.MINIBOONE
+EXP_FLAG = const.KAMLAND
+
+
+
+################################################################
+# COMPUTING THE EVENT RATE INTEGRALS
+################################################################
 
 if EXP_FLAG == const.MINIBOONE:
 	Nucleons_per_target = 14.0
@@ -28,67 +35,65 @@ if EXP_FLAG == const.MINIBOONE:
 	Enu_BEG_OF_SPECTRUM = 0.0
 	Enu_END_OF_SPECTRUM = 2.0
 	L =  0.541
+	norm = POTS*TARGETS /1e55
+	exp = exps.miniboone_data()
+
+if EXP_FLAG == const.BOREXINO:
+	Enu_BEG_OF_SPECTRUM = 0.0
+	Enu_END_OF_SPECTRUM = 16.8
+	N_PROTONS = 1.32e31 
+	avg_efficiency = 0.850
+	exposure = 2485 * 60*60*24 # seconds
+	norm = N_PROTONS*avg_efficiency*exposure/1e55
+	exp = exps.borexino_data()
+
+if EXP_FLAG == const.KAMLAND:
+	Enu_BEG_OF_SPECTRUM = 0.0
+	Enu_END_OF_SPECTRUM = 16.8
+	EXPOSURE=2343.0*24*60*60
+	year=365*24*60*60
+	fid_cut=(6.0/6.50)**3
+	efficiency=0.92
+	mass=1e9 # grams
+	NA=6.022e23
+	norm=EXPOSURE*fid_cut*efficiency*mass*NA/1e55
+	exp = exps.kamland_data()
 
 ############
 # NUMU FLUX
 fluxfile = "fluxes/b8spectrum.txt"
 flux = fluxes.get_exp_flux(fluxfile)
-norm = POTS*TARGETS /1e55
 
 ############
 # NUE/BAR XS
-xsec = xsecs.get_nue_CCQE(xsfile)
-xsecbar = xsecs.get_nuebar_CCQE(xsfile)
-
+xsfile="xsecs/IBD_160106169/TCS_CC_anue_p_1026_SV.txt"
+xsec = lambda x : np.zeros(np.size(x)) 
+xsecbar = xsecs.get_IBD(xsfile)
 ############
 # DECAY MODEL PARAMETERS
 params = model.vector_model_params()
 params.gx		= 1.0
 params.Ue4		= 0.1
-params.Umu4		= np.sqrt(4*1e-3)
+params.Umu4		= np.sqrt(1e-2)
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
-params.m4		= 50e-6 # GeV
-params.mzprime  = 1e-6 # GeV
-
-############
-# OSC MODEL PARAMETERS
-params_osc = model.osc_model_params()
-params_osc.Ue4		= np.sqrt(0.1/2.0)
-params_osc.Umu4		= np.sqrt(0.1/2.0)
-params_osc.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
-params_osc.dm4SQR	= 0.4 # eV^2
+params.m4		= 300e-9 # GeV
+params.mzprime  = 0.9*params.m4 # GeV
 
 
 ############
-# MINIBOONE DATA AND BINS
-miniboone = exps.miniboone_data()
-bins = miniboone.bin_e
-dx =bins[1:] - bins[0:-1]
-bin_c= bins[0:-1] + dx/2.0
+# EXPERIMENTAL DATA AND BINS
+bins = exp.bin_e
+dx = exp.bin_w
+bin_c= exp.bin_c
+
 # efficiencies
-enu_eff= miniboone.enu_eff
-eff= miniboone.eff
+enu_eff= bins
+eff= np.ones((np.size(dx)))
 
 
 ################################################################
 # COMPUTING THE EVENT RATE INTEGRALS
 ################################################################
-
-#############
-# ONLY HNL DECAY
-N,dNdEf = integrands.RATES_dN_HNL_TO_ZPRIME(flux=flux,\
-											xsec=xsec,\
-											dim=2,\
-											enumin=Enu_BEG_OF_SPECTRUM,\
-											enumax=Enu_END_OF_SPECTRUM,\
-											params=params,\
-											bins=bins,\
-											PRINT=True,
-											enu_eff=enu_eff,
-											eff=eff)
-N*=norm
-dNdEf*=norm
-
 #############
 # HNL + ZPRIME DECAYS
 NCASCADE, dNCASCADE = integrands.RATES_dN_HNL_CASCADE_NU_NUBAR(\
@@ -106,31 +111,6 @@ NCASCADE, dNCASCADE = integrands.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 NCASCADE*=norm
 dNCASCADE*=norm
 
-print N, NCASCADE
-
-#########
-# ADD THE ZPRIME DECAYS TO THE HNL -> NU ZPRIME
-NCASCADE += N
-dNCASCADE += dNdEf
-#########
-
-
-##############
-# TEST CASE FOR SBL OSCILLATIONS
-N_osc,dNdEf_osc = integrands.RATES_SBL_OSCILLATION(flux=flux,\
-											xsec=xsec,\
-											dim=1,\
-											enumin=Enu_BEG_OF_SPECTRUM,\
-											enumax=Enu_END_OF_SPECTRUM,\
-											params=params_osc,\
-											bins=bins,\
-											PRINT=False,\
-											L=L,
-											enu_eff=enu_eff,
-											eff=eff)
-N_osc*=norm
-dNdEf_osc*=norm
-
 
 ################################################################
 # PLOTTING THE EVENT RATES 
@@ -140,6 +120,7 @@ rc('text', usetex=True)
 rcparams={'axes.labelsize':fsize,'xtick.labelsize':fsize,'ytick.labelsize':fsize,\
 				'figure.figsize':(1.2*3.7,1.4*2.3617)	}
 rc('font',**{'family':'serif', 'serif': ['computer modern roman']})
+matplotlib.rcParams['hatch.linewidth'] = 0.1  # previous pdf hatch linewidth
 rcParams.update(rcparams)
 axes_form  = [0.15,0.15,0.82,0.76]
 fig = plt.figure()
@@ -152,61 +133,59 @@ UNITS = 1
 
 ##############
 # NORMALIZE THE DISTRIBUTIONS
-y= dNdEf/dx/UNITS
-# y/=np.sum(y)
-# y/=np.max(y)
+yCASCADE= dNCASCADE
 
-
-yCASCADE= dNCASCADE/dx/UNITS
-# yCASCADE/=np.sum(yCASCADE)
-# yCASCADE/=np.max(yCASCADE)
-
-yosc= dNdEf_osc/dx/UNITS
-# yosc/=np.sum(yosc)
-# yosc/=np.max(yosc)
-
-
-# Check that my dNdE distribution against a scaled event distribution
-Ef=np.linspace(0,2,1000)
-e=flux(Ef)*xsec(Ef)*norm*0.8e-3*1e55/UNITS
-h,_ = np.histogram(Ef,weights=e,bins=bins,density=True)
-# ax.bar(bin_c,h/np.sum(h)*np.sum(e*2.0/1000),width=dx,facecolor='grey',label=r'$\Phi_{\nu_\mu} \times \sigma^{\nu_e}$')
-print np.sum(e*2.0/1000)
 #######################
 # STYLE ARGUMENTS FOR PLOTTING WITH "STEP"
-kwargs={'linewidth':1.5,'where':'post'}
-ax.step(bin_c-dx/2.0, y, label=r'$\nu_4 \to \nu_e Z^\prime$ (%.1f events)'%(N),**kwargs)
-ax.step(bin_c-dx/2.0, yCASCADE, label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(NCASCADE),**kwargs)
-ax.step(bin_c-dx/2.0, yosc, label=r'SBL osc (%.1f events)'%(N_osc), dashes=(3,3), **kwargs)
+kwargs={'linewidth':1.0,'where':'post','color':'darkorange'}
 
+######################
+# Montecarlo 
+MCatm = exp.MCatm
+MCreactor = exp.MCreactor
+MCreactor_spall = exp.MCreactor_spall
+MClimit = exp.MClimit
+
+
+
+# ax.step(bin_c-dx/2.0, MCtot+yCASCADE, label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)),**kwargs)
+ax.bar(bin_c, yCASCADE, bottom=MCatm, width=dx, lw=0.5, edgecolor='black', facecolor='None',hatch='//////////', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)))
+
+ax.bar(bin_c,MCatm, lw=0.2,facecolor='orange',edgecolor='orange', width=dx,alpha=0.7, label=r'reactors')
+ax.bar(bin_c,MCreactor, lw=0.2,facecolor='indigo',edgecolor='indigo', width=dx,alpha=0.7, label=r'spallation')
+ax.bar(bin_c,MCreactor_spall, lw=0.2,facecolor='dodgerblue',edgecolor='dodgerblue', width=dx,alpha=0.7, label=r'atm+$n$+acc')
+ax.plot(bin_c,MClimit, lw=0.2,color='dodgerblue', label=r'90\% limit')
+
+# ax.step(bin_c-dx/2.0, yCASCADE, ls='--', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)),**kwargs)
 
 
 ###################
-# MINIBOONE DATA
+# DATA
+DATA =  exp.data
+ERRORLOW =  np.sqrt(DATA)
+ERRORUP = np.sqrt(DATA)
 
-X =  miniboone.Enu_binc
-BINW =  miniboone.binw_enu
-DATA =  miniboone.data_MB_enu_nue/miniboone.binw_enu/UNITS
-ERRORLOW =  -(miniboone.data_MB_enu_nue_errorlow-miniboone.data_MB_enu_nue)/miniboone.binw_enu/UNITS
-ERRORUP = (miniboone.data_MB_enu_nue_errorup-miniboone.data_MB_enu_nue)/miniboone.binw_enu/UNITS
-
-ax.errorbar(X, DATA, yerr= np.array([ERRORLOW,ERRORUP]), xerr = BINW/2.0, \
-												marker="o", markeredgewidth=0.5, capsize=2.0,markerfacecolor="white",\
-												markeredgecolor="black",ms=3, color='black', lw = 0.0, elinewidth=1.0, zorder=100)
-
-
+ax.errorbar(bin_c, DATA, yerr= np.array([ERRORLOW,ERRORUP]), xerr = dx/2.0, \
+												marker="o", markeredgewidth=0.5, capsize=1.0,markerfacecolor="black",\
+												markeredgecolor="black", ms=2, color='black', lw = 0.0, elinewidth=0.8, zorder=100,label=r'data')
 
 
 ##############
 # STYLE
 ax.legend(loc='upper right',frameon=False,ncol=1)
-ax.set_title(r'$m_h = %.0f$ keV,\, $m_{Z^\prime} = %.0f$ keV, \, $|U_{\mu h}| = %.3f$'%(params.m4*1e6,params.mzprime*1e6,params.Umu4), fontsize=fsize)
+ax.set_title(r'$m_h = %.0f$ eV,\, $m_{Z^\prime}/m_h = %.2f$, \, $|U_{e h}|^2 = %.3f$'%(params.m4*1e9,params.mzprime/params.m4,params.Umu4**2), fontsize=fsize)
 
-ax.set_xlim(np.min(bin_c-dx/2.0),np.max(bin_c-dx/2.0))
+# ax.set_yscale('log')
+ax.set_xlim(np.min(bin_c-dx/2.0),16.5)
 # ax.set_ylim(ax.get_ylim()[0], ax.get_ylim()[1]*1.2)
-ax.set_ylim(-200, 1900)
+ax.set_ylim(0,)
 
-ax.set_xlabel(r'$E_\nu/$GeV')
-ax.set_ylabel(r'Excess Events/GeV')
-fig.savefig('plots/Enu_miniboone_MH_%.0f_MZ_%.0f.pdf'%(params.m4*1e6,params.mzprime*1e6))
+ax.text(10,15,r'KamLAND',fontsize=14)
+
+ax.set_xlabel(r'$E_\nu/$MeV')
+ax.set_ylabel(r'Events/MeV')
+fig.savefig('plots/Enu_kamland_MH_%.0f_MZ_%.0f.pdf'%(params.m4*1e9,params.mzprime*1e9))
+# fig.savefig('plots/test.pdf')
 # plt.show()
+print NCASCADE
+print np.sum(dNCASCADE)
