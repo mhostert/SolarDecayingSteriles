@@ -41,10 +41,10 @@ def dPdEnu2dEnu1(params,kin,Enu,E1,E2,h):
 	ans = Umu4*Umu4
 	ans*= R1(params,kin,E1,h)*R2(params,kin,E1,E2,h)
 	
-	ans*= (1.0 - np.exp(-const.MB_baseline/lproper_decay_N/kin.gamma/(-kin.beta) ) )
+	# ans*= (1.0 - np.exp(-const.MB_baseline/lproper_decay_N/kin.gamma/(-kin.beta) ) )
 	ans*= Heaviside(-E1 + kin.E1L_MAX())*Heaviside(E1 - kin.E1L_MIN())#
 	
-	ans*= (1.0 - np.exp(-const.MB_baseline/lproper_decay_Zprime/kin.gammaz/(-kin.betaz) ) )
+	# ans*= (1.0 - np.exp(-const.MB_baseline/lproper_decay_Zprime/kin.gammaz/(-kin.betaz) ) )
 	ans*= Heaviside(-E2 + kin.E2L_MAX())*Heaviside(E2 - kin.E2L_MIN())
 	
 	return ans

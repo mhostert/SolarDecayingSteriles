@@ -2,6 +2,11 @@ import numpy as np
 import scipy
 from scipy import interpolate
 
+
+##
+B8FLUX = 5.94*1e6 # /cm^2/s
+
+
 ## FLAGS
 electron = 1
 muon = 2
@@ -13,6 +18,7 @@ MINERVA_LE = "minerva_le"
 MINERVA_ME = "minerva_me"
 MINIBOONE  = "miniboone"
 uBOONE     = "uboone"
+BOREXINO     = "borexino"
 
 # fix experiment to use
 THREEPLUSONE = 89

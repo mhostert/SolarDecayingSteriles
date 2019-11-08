@@ -37,7 +37,6 @@ norm = POTS*TARGETS /1e55
 
 ############
 # NUE/BAR XS
-xsfile = "xsecs/GLOBES/XCC.dat"
 xsec = xsecs.get_nue_CCQE(xsfile)
 xsecbar = xsecs.get_nuebar_CCQE(xsfile)
 

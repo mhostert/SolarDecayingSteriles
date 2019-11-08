@@ -26,7 +26,7 @@ def RATES_dN_HNL_CASCADE_NU_NUBAR(flux,xsec,xsecbar,dim=3,enumin=0,enumax=2.0,pa
 	# adapt grid
 	training = integ(f, nitn=20, neval=1000)
 	# compute integral
-	result = integ(f, nitn=20, neval=1e4)
+	result = integ(f, nitn=20, neval=1e5)
 	if PRINT:	
 		print result.summary()
 		print '   I =', result['I']
@@ -44,7 +44,7 @@ def RATES_dN_HNL_TO_ZPRIME(flux,xsec,dim=2,enumin=0,enumax=2.0,params=None,bins=
 	# adapt grid
 	training = integ(f, nitn=20, neval=1000)
 	# compute integral
-	result = integ(f, nitn=20, neval=1e4)
+	result = integ(f, nitn=20, neval=1e5)
 	if PRINT:	
 		print result.summary()
 		print '   I =', result['I']
@@ -86,7 +86,7 @@ def dN2(kin,flux,xsec,xsecbar,params,Enu,E1,E2):
 	# SPECIAL CASE 
 	h=1
 	E3=Enu - E1 - E2
-	N = flux(Enu)*(xsec(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h) + xsecbar(E3)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h))*1e55
+	N = flux(Enu)*(xsec(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)*0 + xsecbar(E3)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h))*1e55
 	return N
 
 
@@ -173,13 +173,14 @@ class HNL_TO_NU_ZPRIME(vegas.BatchIntegrand):
 		for i in range(np.size(x[:,0])):
 			j = np.where( (self.bins[:-1] < e1[i]) & (self.bins[1:] > e1[i] ))[0]
 			dI[i,j] = I[i]
-		
+		# print np.shape(dI)
+		# print np.shape(self.eff)
 		################################
 		## EFFICIENCIES -- IMPROVE ME
-		for i in range(np.size(x[:,0])):
-			j = np.where( (self.enu_eff[:-1] < e1[i]) & (self.enu_eff[1:] > e1[i] ))[0]
-			dI[i,:] *= self.eff[j]
-			I[i] *= self.eff[j]
+		# for i in range(np.size(x[:,0])):
+		# 	j = np.where( (self.enu_eff[:-1] < e1[i]) & (self.enu_eff[1:] > e1[i] ))[0]
+		# 	dI[i,:] *= self.eff[j]
+		# 	I[i] *= self.eff[j]
 		################################
 
 		ans['I'] = I
@@ -233,10 +234,10 @@ class HNL_CASCADE_NU_NUBAR(vegas.BatchIntegrand):
 		
 		################################
 		## EFFICIENCIES -- IMPROVE ME
-		for i in range(np.size(x[:,0])):
-			j = np.where( (self.enu_eff[:-1] < e2[i]) & (self.enu_eff[1:] > e2[i] ))[0]
-			dI[i,:] *= self.eff[j]
-			I[i] *= self.eff[j]
+		# for i in range(np.size(x[:,0])):
+		# 	j = np.where( (self.enu_eff[:-1] < e2[i]) & (self.enu_eff[1:] > e2[i] ))[0]
+		# 	dI[i,:] *= self.eff[j]
+		# 	I[i] *= self.eff[j]
 		################################
 
 		ans['I'] = I
