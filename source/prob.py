@@ -21,7 +21,7 @@ def dPdEnu1(params,kin,Enu,E1,h):
 	
 	ans = Umu4*Umu4
 	ans*= R1(params,kin,E1,h)
-	ans*= (1.0 - np.exp(-const.MB_baseline/lproper_decay_N/kin.gamma/(-kin.beta) ) )
+	# ans*= (1.0 - np.exp(-const.MB_baseline/lproper_decay_N/kin.gamma/(-kin.beta) ) )
 	ans*= Heaviside(-E1 + kin.E1L_MAX())*Heaviside(E1 - kin.E1L_MIN())#
 	return ans
 
@@ -54,7 +54,8 @@ def R1(params,kin,E1,h):
 	if h==1:
 		tot=decay_rates.GammaTOT_nuh_nualpha_Zprime(params)
 		dif=decay_rates.dGamma_nuh_nualpha_Zprime_dCostheta(params,kin.CosTheta(E1))*decay_rates.dCostheta_dE1(kin)
-		return dif/tot
+		# return dif/tot
+		return dif/dif
 	# FIX ME -- needs the helicity flipping channel -- not relevant for Z' so far
 	if h==-1:
 		return 0.0
@@ -63,7 +64,8 @@ def R2(params,kin,E1,E2,h):
 	if h==1:
 		tot=decay_rates.GammaTOT_Zprime_nu_nu(params)
 		dif=decay_rates.dGamma_Zprime_nu_nu_dCostheta(params,kin.CosThetaZ(E2))*decay_rates.dCosthetaZ_dE2(kin)
-		return dif/tot
+		# return dif/tot
+		return dif/dif
 	# FIX ME -- needs the helicity flipping channel -- not relevant for Z' so far
 	if h==-1:
 		return 0.0

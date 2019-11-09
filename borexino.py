@@ -59,7 +59,7 @@ params.Ue4		= 0.1
 params.Umu4		= np.sqrt(1e-2)
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
-params.mzprime  = 0.1*params.m4 # GeV
+params.mzprime  = 0.9*params.m4 # GeV
 
 
 ############

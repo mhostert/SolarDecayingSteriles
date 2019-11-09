@@ -52,8 +52,9 @@ class kinematics:
 	
 	# def EzprimeL_MIN(self):
 	# 	return self.EzprimeL(-1.0)
-
-
+	
+	######
+	# WATCH IT! BETA IS NEGATIVE!
 	def E1L(self,CosTheta):
 		return self.gamma*(self.E1CM - self.beta*self.P1CM*CosTheta) 
 
