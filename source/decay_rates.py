@@ -46,11 +46,11 @@ def dGamma_nuh_nualpha_Zprime_dCostheta(params,CosTheta):
 		     CosTheta*(mh*mh*mh)*np.sqrt(((-(mh*mh) + mzprime*mzprime)*(-(mh*mh) + mzprime*mzprime))/(mh*mh)) - \
 		     2*CosTheta*mh*(mzprime*mzprime)*np.sqrt(((-(mh*mh) + mzprime*mzprime)*(-(mh*mh) + mzprime*mzprime))/(mh*mh)))/(2.*(mzprime*mzprime))
 
-	amp2 = (mh*mh + h*h*(mh*mh) - mzprime*mzprime - h*h*(mzprime*mzprime) + 
-		      2*CosTheta*h*mh*Sqrt(((mh*mh - mzprime*mzprime)*(mh*mh - mzprime*mzprime))/(mh*mh)))/2. - 
-		   (mh*mh*(-(mh*mh) - h*h*(mh*mh) + mzprime*mzprime + h*h*(mzprime*mzprime) + 
-		        2*CosTheta*h*mh*Sqrt(((mh*mh - mzprime*mzprime)*(mh*mh - mzprime*mzprime))/(mh*mh))))/
-		    (4.*(mzprime*mzprime))
+	# amp2 = (mh*mh + h*h*(mh*mh) - mzprime*mzprime - h*h*(mzprime*mzprime) + 
+	# 	      2*CosTheta*h*mh*Sqrt(((mh*mh - mzprime*mzprime)*(mh*mh - mzprime*mzprime))/(mh*mh)))/2. - 
+	# 	   (mh*mh*(-(mh*mh) - h*h*(mh*mh) + mzprime*mzprime + h*h*(mzprime*mzprime) + 
+	# 	        2*CosTheta*h*mh*Sqrt(((mh*mh - mzprime*mzprime)*(mh*mh - mzprime*mzprime))/(mh*mh))))/
+	# 	    (4.*(mzprime*mzprime))
 
 	dPS2 = (1.0-mzprime*mzprime/mh/mh)/32.0/np.pi/np.pi
 	flux_factor = 1.0/2.0/mh

@@ -11,7 +11,7 @@ def Heaviside(x):
 
 
 #####################################3
-# Probabilities of flavour transition 
+# Probabilities of flavour transition for nu_H -> nu Z'
 def dPdEnu1(params,kin,Enu,E1,h):
 	
 	Umu4 = params.Umu4
@@ -27,7 +27,7 @@ def dPdEnu1(params,kin,Enu,E1,h):
 
 
 #####################################3
-# Probabilities of flavour transition
+# Probabilities of flavour transition nu_H -> nu Z' -> nu nu nubar
 def dPdEnu2dEnu1(params,kin,Enu,E1,E2,h):
 
 	Umu4 = params.Umu4
@@ -54,8 +54,8 @@ def R1(params,kin,E1,h):
 	if h==1:
 		tot=decay_rates.GammaTOT_nuh_nualpha_Zprime(params)
 		dif=decay_rates.dGamma_nuh_nualpha_Zprime_dCostheta(params,kin.CosTheta(E1))*decay_rates.dCostheta_dE1(kin)
-		# return dif/tot
-		return dif/dif
+		return dif/tot
+		# return dif/dif
 	# FIX ME -- needs the helicity flipping channel -- not relevant for Z' so far
 	if h==-1:
 		return 0.0
@@ -64,8 +64,8 @@ def R2(params,kin,E1,E2,h):
 	if h==1:
 		tot=decay_rates.GammaTOT_Zprime_nu_nu(params)
 		dif=decay_rates.dGamma_Zprime_nu_nu_dCostheta(params,kin.CosThetaZ(E2))*decay_rates.dCosthetaZ_dE2(kin)
-		# return dif/tot
-		return dif/dif
+		return dif/tot
+		# return dif/dif
 	# FIX ME -- needs the helicity flipping channel -- not relevant for Z' so far
 	if h==-1:
 		return 0.0
@@ -80,3 +80,4 @@ def dPdE1_OSCILLATION(params,Enu,L):
 	Ue4 = params.Ue4
 	dm4SQR = params.dm4SQR
 	return 4.0*Umu4*Umu4*Ue4*Ue4*(np.sin(1.27*(dm4SQR)*L/Enu))**2
+

@@ -20,24 +20,12 @@ from source import *
 
 EXP_FLAG = const.BOREXINO
 
-if EXP_FLAG == const.MINIBOONE:
-	Nucleons_per_target = 14.0
-	P_per_target = 8.0
-	TARGETS = (818e6) * const.NAvo
-	POTS = 12.84e20
-	A_NUMBER = 12.0
-	Enu_BEG_OF_SPECTRUM = 0.0
-	Enu_END_OF_SPECTRUM = 2.0
-	L =  0.541
-	norm = POTS*TARGETS /1e55
-	exp = exps.miniboone_data()
-
 if EXP_FLAG == const.BOREXINO:
 	Enu_BEG_OF_SPECTRUM = 0.0
-	Enu_END_OF_SPECTRUM = 16.8
+	Enu_END_OF_SPECTRUM = 20
 	N_PROTONS = 1.32e31 
 	avg_efficiency = 0.850
-	exposure = 2485 * 60*60*24 # seconds
+	exposure = 2485*60*60*24 # seconds
 	norm = N_PROTONS*avg_efficiency*exposure/1e55
 	exp = exps.borexino_data()
 
@@ -51,6 +39,7 @@ flux = fluxes.get_exp_flux(fluxfile)
 xsfile="xsecs/IBD_160106169/TCS_CC_anue_p_1026_SV.txt"
 xsec = lambda x : np.zeros(np.size(x)) 
 xsecbar = xsecs.get_IBD(xsfile)
+# xsecbar = lambda x : 1e-42*x
 ############
 # DECAY MODEL PARAMETERS
 params = model.vector_model_params()
@@ -59,7 +48,7 @@ params.Ue4		= 0.1
 params.Umu4		= np.sqrt(1e-2)
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
-params.mzprime  = 0.9*params.m4 # GeV
+params.mzprime  = 0.1*params.m4 # GeV
 
 
 ############
@@ -163,11 +152,11 @@ ax.legend(loc='upper right',frameon=False,ncol=1)
 ax.set_title(r'$m_h = %.0f$ eV,\, $m_{Z^\prime}/m_h = %.2f$, \, $|U_{e h}|^2 = %.3f$'%(params.m4*1e9,params.mzprime/params.m4,params.Umu4**2), fontsize=fsize)
 
 # ax.set_yscale('log')
-ax.set_xlim(np.min(bin_c-dx/2.0),np.max(bin_c+dx/2.0))
+# ax.set_xlim(np.min(bin_c-dx/2.0),np.max(bin_c+dx/2.0))
 # ax.set_ylim(ax.get_ylim()[0], ax.get_ylim()[1]*1.2)
 # ax.set_ylim(-200, 1900)
 
-ax.text(10,15,r'Borexino',fontsize=14)
+ax.text(13,10,r'Borexino',fontsize=14)
 
 ax.set_xlabel(r'$E_\nu/$MeV')
 ax.set_ylabel(r'Events/MeV')

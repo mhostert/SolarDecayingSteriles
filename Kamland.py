@@ -147,14 +147,14 @@ MCreactor_spall = exp.MCreactor_spall
 MClimit = exp.MClimit
 
 
-
+Elin = np.linspace(7.5+0.8, 16.8)
 # ax.step(bin_c-dx/2.0, MCtot+yCASCADE, label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)),**kwargs)
 ax.bar(bin_c, yCASCADE, bottom=MCatm, width=dx, lw=0.5, edgecolor='black', facecolor='None',hatch='//////////', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)))
 
-ax.bar(bin_c,MCatm, lw=0.2,facecolor='orange',edgecolor='orange', width=dx,alpha=0.7, label=r'reactors')
-ax.bar(bin_c,MCreactor, lw=0.2,facecolor='indigo',edgecolor='indigo', width=dx,alpha=0.7, label=r'spallation')
-ax.bar(bin_c,MCreactor_spall, lw=0.2,facecolor='dodgerblue',edgecolor='dodgerblue', width=dx,alpha=0.7, label=r'atm+$n$+acc')
-ax.plot(bin_c,MClimit, lw=0.2,color='dodgerblue', label=r'90\% limit')
+ax.bar(Elin,MCatm, lw=0.2,facecolor='orange',edgecolor='orange', width=dx,alpha=0.7, label=r'reactors')
+ax.bar(Elin,MCreactor, lw=0.2,facecolor='indigo',edgecolor='indigo', width=dx,alpha=0.7, label=r'spallation')
+ax.bar(Elin,MCreactor_spall, lw=0.2,facecolor='dodgerblue',edgecolor='dodgerblue', width=dx,alpha=0.7, label=r'atm+$n$+acc')
+ax.plot(Elin,MClimit, lw=0.2,color='dodgerblue', label=r'90\% limit')
 
 # ax.step(bin_c-dx/2.0, yCASCADE, ls='--', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)),**kwargs)
 
@@ -176,7 +176,7 @@ ax.legend(loc='upper right',frameon=False,ncol=1)
 ax.set_title(r'$m_h = %.0f$ eV,\, $m_{Z^\prime}/m_h = %.2f$, \, $|U_{e h}|^2 = %.3f$'%(params.m4*1e9,params.mzprime/params.m4,params.Umu4**2), fontsize=fsize)
 
 # ax.set_yscale('log')
-ax.set_xlim(np.min(bin_c-dx/2.0),16.5)
+ax.set_xlim(7.5+0.8,16.8)
 # ax.set_ylim(ax.get_ylim()[0], ax.get_ylim()[1]*1.2)
 ax.set_ylim(0,)
 

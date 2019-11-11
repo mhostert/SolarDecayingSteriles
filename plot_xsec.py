@@ -18,23 +18,11 @@ from source import *
 # SETUP
 ################################################################
 
-EXP_FLAG = const.MINIBOONE
-
-if EXP_FLAG == const.MINIBOONE:
-	Nucleons_per_target = 14.0
-	P_per_target = 8.0
-	TARGETS = (818e6) * const.NAvo
-	POTS = 12.84e20
-	A_NUMBER = 12.0
-	Enu_BEG_OF_SPECTRUM = 0.0
-	Enu_END_OF_SPECTRUM = 2.0
-	L =  0.541
-
 ############
 # NUMU FLUX
 fluxfile = "fluxes/b8spectrum.txt"
 flux, flux3h, flux3l = fluxes.get_exp_flux(fluxfile, get_3sigma=True)
-norm = 1
+norm = 1e-55
 
 ############
 # NUE/BAR XS
@@ -74,9 +62,6 @@ ax2.patch.set_visible(False)
 
 E = np.linspace(0.001,16.0,1000)
 
-
-
-
 #########################################################################
 
 exp = exps.borexino_data()
@@ -94,7 +79,7 @@ xsecbar = lambda x : np.ones(np.size(x))
 params = model.vector_model_params()
 params.gx		= 1.0
 params.Ue4		= 0.1
-params.Umu4		= np.sqrt(1e-2)
+params.Umu4		= np.sqrt(0.01)
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
 params.mzprime  = 0.1*params.m4 # GeV
@@ -128,6 +113,8 @@ ax.fill_between(E, flux3l(E)/np.max(flux(E))*1.11,flux3l(E)/np.max(flux(E))*0.89
 ax.fill_between(bin_c-dx/2.0, dNCASCADE/np.max(dNCASCADE)*1.11,dNCASCADE/np.max(dNCASCADE)*0.89*0, facecolor='darkgrey',edgecolor='black',lw=0.5, linestyle='-',alpha=0.8)
 # ax.fill_between(bin_c-dx/2.0, dNCASCADE/np.max(dNCASCADE)*0.813,dNCASCADE/np.max(dNCASCADE)*0.776, facecolor='None',edgecolor='black',hatch='//////////',lw=0.5, linestyle='-')
 
+print '%.2g'%np.sum(dNCASCADE[bin_c>1.8]*norm)
+print '%.2g'%const.B8FLUX
 
 ##########################################################################
 

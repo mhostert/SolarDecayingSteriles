@@ -26,7 +26,7 @@ def RATES_dN_HNL_CASCADE_NU_NUBAR(flux,xsec,xsecbar,dim=3,enumin=0,enumax=2.0,pa
 	# adapt grid
 	training = integ(f, nitn=20, neval=1000)
 	# compute integral
-	result = integ(f, nitn=20, neval=1e5)
+	result = integ(f, nitn=20, neval=1e4)
 	if PRINT:	
 		print result.summary()
 		print '   I =', result['I']
@@ -86,7 +86,7 @@ def dN2(kin,flux,xsec,xsecbar,params,Enu,E1,E2):
 	# SPECIAL CASE 
 	h=1
 	E3=Enu - E1 - E2
-	N = flux(Enu)*(xsec(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)*0 + xsecbar(E3)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h))*1e55
+	N = flux(Enu)*(xsec(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)*0 + xsecbar(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h))*1e55
 	return N
 
 
