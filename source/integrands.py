@@ -27,7 +27,7 @@ def RATES_dN_HNL_CASCADE_NU_NUBAR(flux,xsec,xsecbar,dim=3,enumin=0,enumax=2.0,pa
 	# adapt grid
 	training = integ(f, nitn=20, neval=1000)
 	# compute integral
-	result = integ(f, nitn=20, neval=1e4)
+	result = integ(f, nitn=20, neval=1e5)
 	if PRINT:	
 		print result.summary()
 		print '   I =', result['I']

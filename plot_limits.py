@@ -77,13 +77,13 @@ eff= np.ones((np.size(dx)))
 
 ###########
 # DECAY MODEL PARAMETERS
-params = model.vector_model_params()
+params = model.decay_model_params(const.SCALAR)
 params.gx		= 1.0
 params.Ue4		= 0.1
 params.Umu4		= np.sqrt(0.01)
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
-params.mzprime  = 0.9*params.m4 # GeV
+params.mBOSON  = 0.9*params.m4 # GeV
 
 NCASCADE, dNCASCADE = integrands.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 											flux=flux,\
@@ -98,13 +98,13 @@ NCASCADE, dNCASCADE = integrands.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 											enu_eff=enu_eff,\
 											eff=eff)
 
-params = model.vector_model_params()
+params = model.decay_model_params(const.SCALAR)
 params.gx		= 1.0
 params.Ue4		= 0.1
 params.Umu4		= np.sqrt(0.01)
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
-params.mzprime  = 0.1*params.m4 # GeV
+params.mBOSON  = 0.1*params.m4 # GeV
 
 NCASCADE2, dNCASCADE2 = integrands.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 											flux=flux,\
@@ -123,6 +123,12 @@ print '%.2g'%np.sum(dNCASCADE[bin_c>1.8]*norm)
 print '%.2g'%const.B8FLUX
 
 ##########################################################################
+if params.model == const.VECTOR:
+	boson_string = r'$m_{Z^\prime}$'
+	boson_file = 'vector'
+elif params.model == const.SCALAR:
+	boson_string = r'$m_\phi$'
+	boson_file = 'scalar'
 
 ax.step(np.append(Kbin_c-0.5,Kbin_c[-1]+0.5), np.append(Kfluxlimit,1e8), where = 'post', color='indigo', lw=0.5)
 ax.fill_between(np.append(Kbin_c-0.5,Kbin_c[-1]+0.5), np.append(Kfluxlimit,1e8), np.ones(np.size(Kbin_c)+1)*1e10, step = 'post', lw=0.0, alpha=0.5, color='indigo')
@@ -130,8 +136,8 @@ ax.fill_between(np.append(Kbin_c-0.5,Kbin_c[-1]+0.5), np.append(Kfluxlimit,1e8),
 ax.step(np.append(Bbin_c-0.5,Bbin_c[-1]+0.5), np.append(Bfluxlimit,1e8), where = 'post', color='blue', lw=0.5)
 ax.fill_between(np.append(Bbin_c-0.5,Bbin_c[-1]+0.5), np.append(Bfluxlimit,1e8), np.ones(np.size(Bbin_c)+1)*1e10, step = 'post', lw=0.0, alpha=0.5, color='dodgerblue')
 
-ax.step(Bbin_c-0.5, dNCASCADE*1e-55, where='post',  lw=1.5, color='darkorange', label=r'$m_{Z^\prime}/m_4 = 0.9$')
-ax.step(Bbin_c-0.5, dNCASCADE2*1e-55, where='post',  lw=1, color='darkgreen', label=r'$m_{Z^\prime}/m_4 = 0.1$')
+ax.step(Bbin_c-0.5, dNCASCADE*1e-55, where='post',  lw=1.5, color='darkorange', label=boson_string+r'/$m_4 = 0.9$')
+ax.step(Bbin_c-0.5, dNCASCADE2*1e-55, where='post',  lw=1, color='darkgreen', label=boson_string+r'/$m_4 = 0.1$')
 
 # r'$\nu_4 \to\overline{\nu_e}$ ($%.1g$ cm$^{-2}$ s$^{-1}$)'%(np.sum(dNCASCADE*1e-55))
 
@@ -142,7 +148,7 @@ ax.text(14,5,r'KamLAND',fontsize=10,color='indigo')
 
 ##############
 # STYLE
-ax.legend(loc='upper right',frameon=False,ncol=2, fontsize=fsize)
+ax.legend(loc='lower left',frameon=False,ncol=1, fontsize=fsize)
 # ax.set_title(r'$m_h = %.0f$ keV,\, $m_{Z^\prime} = %.0f$ keV, \, $|U_{\mu h}| = %.3f$'%(params.m4*1e6,params.mzprime*1e6,params.Umu4), fontsize=fsize)
 ax.set_title(r'$m_h = %.0f$ eV, \, $|U_{e 4}|^2 = %.3f$'%(params.m4*1e9, params.Umu4**2), fontsize=fsize)
 
@@ -151,5 +157,5 @@ ax.set_ylim(1e0, 5e5)
 
 ax.set_ylabel(r'$\Phi$ (cm$^{-2}$ s$^{-1}$)')
 ax.set_xlabel(r'$E_\nu/$MeV')
-fig.savefig('plots/Fluxlimit.pdf')
+fig.savefig('plots/Fluxlimit_'+boson_file+'.pdf')
 plt.show()
