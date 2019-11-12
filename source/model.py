@@ -1,10 +1,11 @@
 import numpy as np
 import const 
 
-class vector_model_params():
+class decay_model_params():
 
-	def __init__(self):
+	def __init__(self, MODEL):
 
+		self.model = MODEL
 		self.gx		= 0.0
 		self.Ue4		= 0.0
 		self.Umu4		= 0.0
@@ -16,7 +17,8 @@ class vector_model_params():
 		self.UD5		= 0.0
 		self.m4		= 1.0
 		self.m5		= 1e10
-		self.mzprime= 1.0
+
+		self.mBOSON= 1.0
 
 	# def set_high_level_variables(self):
 
@@ -28,7 +30,7 @@ class kinematics:
 		# INPUT Parameters
 		self.Enu = Enu
 		self.mh = params.m4
-		self.mzprime=params.mzprime
+		self.mBOSON=params.mBOSON
 		
 	##########################################
 	# HNL DECAYS
@@ -38,11 +40,11 @@ class kinematics:
 		self.PnuH=const.momentum(self.Enu,self.mh)
 		self.beta=-self.PnuH/self.Enu
 
-		self.E1CM=(self.mh*self.mh-self.mzprime*self.mzprime)/2.0/self.mh
+		self.E1CM=(self.mh*self.mh-self.mBOSON*self.mBOSON)/2.0/self.mh
 		self.P1CM=self.E1CM
 		
-		self.EzprimeCM=(self.mh*self.mh+self.mzprime*self.mzprime)/2.0/self.mh
-		self.PzprimeCM=const.momentum(self.EzprimeCM,self.mzprime)
+		self.EBOSONCM=(self.mh*self.mh+self.mBOSON*self.mBOSON)/2.0/self.mh
+		self.PBOSONCM=const.momentum(self.EBOSONCM,self.mBOSON)
 
 	# def EzprimeL(self,CosTheta):
 	# 	return self.gamma*(self.EzprimeCM - self.beta*self.PzprimeCM*CosTheta) 
@@ -52,7 +54,7 @@ class kinematics:
 	
 	# def EzprimeL_MIN(self):
 	# 	return self.EzprimeL(-1.0)
-	
+
 	######
 	# WATCH IT! BETA IS NEGATIVE!
 	def E1L(self,CosTheta):
@@ -70,14 +72,14 @@ class kinematics:
 
 	##########################################
 	# ZPRIME DECAYS 
-	def set_Zprime_decay_variables(self,Ez):
+	def set_BOSON_decay_variables(self,Ez):
 		self.Ez=Ez
-		# ZPRIME CM frame kinematics
-		self.gammaz=self.Ez/self.mzprime
-		self.Pzprime=const.momentum(self.Ez,self.mzprime)
-		self.betaz=-self.Pzprime/self.Ez
+		# BOSON CM frame kinematics
+		self.gammaz=self.Ez/self.mBOSON
+		self.PBOSON=const.momentum(self.Ez,self.mBOSON)
+		self.betaz=-self.PBOSON/self.Ez
 		
-		self.E2CM=self.mzprime/2.0
+		self.E2CM=self.mBOSON/2.0
 		self.P2CM=self.E2CM
 
 	def E2L(self,CosThetaZ):

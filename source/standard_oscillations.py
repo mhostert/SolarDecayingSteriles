@@ -57,6 +57,8 @@ def P_Parke(Enu, channel):
 
 
 if __name__ == "__main__":
+	import matplotlib 
+	matplotlib.use('agg') 
 	import matplotlib.pyplot as plt
 	from matplotlib import rc, rcParams
 	from matplotlib.pyplot import *
@@ -74,8 +76,8 @@ if __name__ == "__main__":
 
 	E = np.logspace(-4,-2,100)
 
-	ax.plot(E, Padiabatic(E,const.nue_to_nue), lw=1.0, label=r'Adiabatic')
-	ax.plot(E, P_Parke(E,-const.nue_to_nue), lw=1.5, ls='--', label=r'Parke')
+	ax.plot(E*1e3, Padiabatic(E,const.nue_to_nue), lw=1.0, label=r'$\nu_e \to \nu_e$')
+	ax.plot(E*1e3, Padiabatic(E,-const.nue_to_nue), lw=1.0, label=r'$\overline{\nu_e} \to \overline{\nu_e}$')
 
 	# ax.plot(E, P_Parke(E)/Padiabatic(E), lw=1.5, ls='--', label=r'Parke')
 
@@ -84,7 +86,7 @@ if __name__ == "__main__":
 	# STYLE
 	ax.set_xscale('log')
 	ax.legend(loc='upper left',frameon=False,ncol=1)
-	ax.set_xlabel(r'$E_\nu/$GeV')
+	ax.set_xlabel(r'$E_\nu/$MeV')
 	ax.set_ylabel(r'P')
 	fig.savefig('../plots/Psolar.pdf')
 

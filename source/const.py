@@ -23,6 +23,10 @@ tau = 3
 nue_to_nue = 1
 nue_to_numu = 2
 
+
+VECTOR = 1
+SCALAR = 2
+
 # Experiments 
 KAMLAND     = "kamland"
 BOREXINO     = "borexino"
@@ -94,3 +98,5 @@ def momentum(E,m):
 	p = E*np.sqrt(1.0 - (m/E)**2)
 	return np.where(p==p,p,E)
 
+def Heaviside(x):
+    return 1 * (x > 0)

@@ -42,13 +42,13 @@ xsecbar = xsecs.get_IBD(xsfile)
 # xsecbar = lambda x : 1e-42*x
 ############
 # DECAY MODEL PARAMETERS
-params = model.vector_model_params()
+params = model.decay_model_params(const.SCALAR)
 params.gx		= 1.0
 params.Ue4		= 0.1
-params.Umu4		= np.sqrt(1e-2)
+params.Umu4		= np.sqrt(4e-3)
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
-params.mzprime  = 0.1*params.m4 # GeV
+params.mBOSON  = 0.1*params.m4 # GeV
 
 
 ############
@@ -130,8 +130,15 @@ ax.errorbar(bin_c, DATA, yerr= np.array([ERRORLOW,ERRORUP]), xerr = dx/2.0, \
 
 ##############
 # STYLE
+if params.model == const.VECTOR:
+	boson_string = r'$m_{Z^\prime}$'
+	boson_file = 'vector'
+elif params.model == const.SCALAR:
+	boson_string = r'$m_\phi$'
+	boson_file = 'scalar'
+
 ax.legend(loc='upper right',frameon=False,ncol=1)
-ax.set_title(r'$m_h = %.0f$ eV,\, $m_{Z^\prime}/m_h = %.2f$, \, $|U_{e h}|^2 = %.3f$'%(params.m4*1e9,params.mzprime/params.m4,params.Umu4**2), fontsize=fsize)
+ax.set_title(r'$m_h = %.0f$ eV,\, '%(params.m4*1e9)+boson_string+r'$/m_h = %.2f$, \, $|U_{e h}|^2 = %.3f$'%(params.mBOSON/params.m4,params.Umu4**2), fontsize=fsize)
 
 # ax.set_yscale('log')
 # ax.set_xlim(np.min(bin_c-dx/2.0),np.max(bin_c+dx/2.0))
@@ -142,6 +149,6 @@ ax.text(13,10,r'Borexino',fontsize=14)
 
 ax.set_xlabel(r'$E_\nu/$MeV')
 ax.set_ylabel(r'Events/MeV')
-fig.savefig('plots/Enu_borexino_MH_%.0f_MZ_%.0f.pdf'%(params.m4*1e9,params.mzprime*1e9))
+fig.savefig('plots/'+boson_file+'_borexino_MN_%.0f_MB_%.0f.pdf'%(params.m4*1e9,params.mBOSON*1e9))
 # fig.savefig('plots/test.pdf')
 # plt.show()

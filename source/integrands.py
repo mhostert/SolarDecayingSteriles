@@ -81,13 +81,17 @@ def dN(kin,flux,xsec,params,Enu,E1):
 	# SPECIAL CASE 
 	h=1
 	N = flux(Enu)*xsec(E1)*prob.dPdEnu1(params,kin,Enu,E1,h)*1e55
+	h=-1
+	N += flux(Enu)*xsec(E1)*prob.dPdEnu1(params,kin,Enu,E1,h)*1e55
 	return N
 
 def dN2(kin,flux,xsec,xsecbar,params,Enu,E1,E2):
 	# SPECIAL CASE 
-	h=1
+	h=-1
 	E3=Enu - E1 - E2
 	N = flux(Enu)*(xsec(E1)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)*0*std_osc.P_Parke(E2, const.nue_to_nue) + std_osc.P_Parke(E2, -const.nue_to_nue)*xsecbar(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h))*1e55
+	h=1
+	N += flux(Enu)*(xsec(E1)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)*0*std_osc.P_Parke(E2, const.nue_to_nue) + std_osc.P_Parke(E2, -const.nue_to_nue)*xsecbar(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h))*1e55
 	return N
 
 
@@ -217,7 +221,7 @@ class HNL_CASCADE_NU_NUBAR(vegas.BatchIntegrand):
 		
 		# Zprime decay
 		ez = enu - e1
-		kin.set_Zprime_decay_variables(ez)
+		kin.set_BOSON_decay_variables(ez)
 		e2min = kin.E2L_MIN()
 		e2max = kin.E2L_MAX()
 		e2 = (e2max-e2min)*x[:,2] + x[:,2]*e2min
