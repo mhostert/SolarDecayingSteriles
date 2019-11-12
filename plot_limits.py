@@ -130,8 +130,8 @@ ax.fill_between(np.append(Kbin_c-0.5,Kbin_c[-1]+0.5), np.append(Kfluxlimit,1e8),
 ax.step(np.append(Bbin_c-0.5,Bbin_c[-1]+0.5), np.append(Bfluxlimit,1e8), where = 'post', color='blue', lw=0.5)
 ax.fill_between(np.append(Bbin_c-0.5,Bbin_c[-1]+0.5), np.append(Bfluxlimit,1e8), np.ones(np.size(Bbin_c)+1)*1e10, step = 'post', lw=0.0, alpha=0.5, color='dodgerblue')
 
-ax.step(Bbin_c-0.5, dNCASCADE*1e-55*0.3, where='post',  lw=1.5, color='darkorange', label=r'$m_{Z^\prime}/m_4 = 0.9$')
-ax.step(Bbin_c-0.5, dNCASCADE2*1e-55*0.3, where='post',  lw=1, color='darkgreen', label=r'$m_{Z^\prime}/m_4 = 0.1$')
+ax.step(Bbin_c-0.5, dNCASCADE*1e-55, where='post',  lw=1.5, color='darkorange', label=r'$m_{Z^\prime}/m_4 = 0.9$')
+ax.step(Bbin_c-0.5, dNCASCADE2*1e-55, where='post',  lw=1, color='darkgreen', label=r'$m_{Z^\prime}/m_4 = 0.1$')
 
 # r'$\nu_4 \to\overline{\nu_e}$ ($%.1g$ cm$^{-2}$ s$^{-1}$)'%(np.sum(dNCASCADE*1e-55))
 

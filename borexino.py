@@ -98,23 +98,6 @@ fig = plt.figure()
 ax = fig.add_axes(axes_form)
 
 
-##########
-# PLOT UNITS
-UNITS = 1 
-
-##############
-# NORMALIZE THE DISTRIBUTIONS
-yCASCADE= dNCASCADE
-
-# Check that my dNdE distribution against a scaled event distribution
-# Ef=np.linspace(0,2,1000)
-# e=flux(Ef)*xsec(Ef)*norm*0.8e-3*1e55/UNITS
-# h,_ = np.histogram(Ef,weights=e,bins=bins,density=True)
-# ax.bar(bin_c,h/np.sum(h)*np.sum(e*2.0/1000),width=dx,facecolor='grey',label=r'$\Phi_{\nu_\mu} \times \sigma^{\nu_e}$')
-# print np.sum(e*2.0/1000)
-#######################
-# STYLE ARGUMENTS FOR PLOTTING WITH "STEP"
-kwargs={'linewidth':1.0,'where':'post','color':'darkorange'}
 
 ######################
 # Montecarlo 
@@ -125,14 +108,13 @@ MCgeo = exp.MCgeo
 MCtot = MCatm+MCreactor+MCgeo
 
 
-# ax.step(bin_c-dx/2.0, MCtot+yCASCADE, label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)),**kwargs)
-ax.bar(bin_c, yCASCADE, bottom=MCtot, width=dx, lw=0.5, edgecolor='black', facecolor='None',hatch='//////////', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)))
+# ax.step(bin_c-dx/2.0, MCtot+dNCASCADE, label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)),**kwargs)
+ax.bar(bin_c, dNCASCADE, bottom=MCtot, width=dx, lw=0.5, edgecolor='black', facecolor='None',hatch='//////////', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)))
 
 ax.bar(bin_c,MCtot, lw=0.2,facecolor='orange',edgecolor='orange', width=dx,alpha=0.7, label=r'geoneutrinos')
 ax.bar(bin_c,MCatm+MCreactor, lw=0.2,facecolor='dodgerblue',edgecolor='dodgerblue', width=dx,alpha=0.7, label=r'reactors')
 ax.bar(bin_c,MCatm, lw=0.2,facecolor='indigo',edgecolor='indigo', width=dx,alpha=0.7, label=r'atmospheric')
 
-# ax.step(bin_c-dx/2.0, yCASCADE, ls='--', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)),**kwargs)
 
 
 ###################

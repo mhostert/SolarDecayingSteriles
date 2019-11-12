@@ -19,6 +19,7 @@ import prob
 import fluxes
 import xsecs
 import exps
+import standard_oscillations as std_osc
 
 def RATES_dN_HNL_CASCADE_NU_NUBAR(flux,xsec,xsecbar,dim=3,enumin=0,enumax=2.0,params=None,bins=None,PRINT=False,eff=None,enu_eff=None):
 	f = HNL_CASCADE_NU_NUBAR(flux,xsec,xsecbar,dim=dim,enumin=enumin,enumax=enumax,params=params,bins=bins,eff=eff,enu_eff=enu_eff)
@@ -86,7 +87,7 @@ def dN2(kin,flux,xsec,xsecbar,params,Enu,E1,E2):
 	# SPECIAL CASE 
 	h=1
 	E3=Enu - E1 - E2
-	N = flux(Enu)*(xsec(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)*0 + xsecbar(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h))*1e55
+	N = flux(Enu)*(xsec(E1)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)*0*std_osc.P_Parke(E2, const.nue_to_nue) + std_osc.P_Parke(E2, -const.nue_to_nue)*xsecbar(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h))*1e55
 	return N
 
 

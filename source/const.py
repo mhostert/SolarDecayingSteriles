@@ -8,6 +8,10 @@ NAvo = 6.022*1e23
 # from GeV^-2 to cm^2
 GeV2_to_cm2 = 3.9204e-28
 cmINV_to_GeV = 1.98e-14
+GeVINV_to_cm = 1.0/1.98e-14
+
+m_to_eVINV = 1.0/1.98e-7
+
 # speed of light (PDG) m/s
 c_LIGHT = 299792458
 
@@ -15,6 +19,9 @@ c_LIGHT = 299792458
 electron = 1
 muon = 2
 tau = 3
+
+nue_to_nue = 1
+nue_to_numu = 2
 
 # Experiments 
 KAMLAND     = "kamland"
@@ -28,9 +35,9 @@ B8FLUX = 5.94*1e6 # /cm^2/s
 B8FLUX_HM = 5.94*1e6 # /cm^2/s
 B8FLUX_LM = 5.94*1e6 # /cm^2/s
 
-solar_core_Ne = 245*NAvo # per cm^3
-solarR = 6.955e8 # m
-parkeSolarR = solarR/10.54
+solar_core_Ne = 245*NAvo *cmINV_to_GeV**3 * 1e27# ev^3
+solarR = 6.955e8*m_to_eVINV # eVinv
+parkeSolarR = solarR/10.54 # eVinv
 
 # Neutrino Mixing from JHEP 01 (2019) 106 [arXiv:1811.05487]  
 # Normal Ordering
