@@ -74,15 +74,17 @@ flux = fluxes.get_exp_flux(fluxfile)
 xsfile="xsecs/IBD_160106169/TCS_CC_anue_p_1026_SV.txt"
 xsec = lambda x : np.zeros(np.size(x)) 
 xsecbar = lambda x : np.ones(np.size(x)) 
+
 ###########
 # DECAY MODEL PARAMETERS
-params = model.vector_model_params()
+params = model.decay_model_params(const.SCALAR)
 params.gx		= 1.0
 params.Ue4		= 0.1
 params.Umu4		= np.sqrt(0.01)
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
-params.mzprime  = 0.1*params.m4 # GeV
+params.mBOSON  = 0.1*params.m4 # GeV
+
 ############
 # EXPERIMENTAL DATA AND BINS
 bins = np.linspace(0.00,16.8,50)
@@ -106,12 +108,11 @@ NCASCADE, dNCASCADE = integrands.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 											enu_eff=enu_eff,\
 											eff=eff)
 
-# ax.plot(E, flux(E)/np.max(flux(E)), color='brown',lw=0.5, linestyle='--')
-ax.fill_between(E, flux3l(E)/np.max(flux(E))*1.11,flux3l(E)/np.max(flux(E))*0.89*0, facecolor='orange', edgecolor='darkorange', alpha=0.7)
-# ax.fill_between(E, flux3l(E)/np.max(flux(E))*0.813,flux3l(E)/np.max(flux(E))*0.776, color='orange', alpha=0.7)
+ax.fill_between(E, flux3l(E),flux3l(E)/np.max(flux(E))*0.89*0, facecolor='orange', edgecolor='orange', alpha=0.5)
+ax.plot(E, flux3l(E), color='darkorange',lw=0.7, linestyle='-')
 
-ax.fill_between(bin_c-dx/2.0, dNCASCADE/np.max(dNCASCADE)*1.11,dNCASCADE/np.max(dNCASCADE)*0.89*0, facecolor='darkgrey',edgecolor='black',lw=0.5, linestyle='-',alpha=0.8)
-# ax.fill_between(bin_c-dx/2.0, dNCASCADE/np.max(dNCASCADE)*0.813,dNCASCADE/np.max(dNCASCADE)*0.776, facecolor='None',edgecolor='black',hatch='//////////',lw=0.5, linestyle='-')
+ax.fill_between(bin_c-dx/2.0, dNCASCADE,dNCASCADE/np.max(dNCASCADE)*0.89*0, facecolor='darkgrey',edgecolor='black',lw=0.5, linestyle='-',alpha=0.8)
+ax.plot(bin_c-dx/2.0, dNCASCADE, color='black',lw=0.4, linestyle='-')
 
 print '%.2g'%np.sum(dNCASCADE[bin_c>1.8]*norm)
 print '%.2g'%const.B8FLUX
@@ -119,8 +120,8 @@ print '%.2g'%const.B8FLUX
 ##########################################################################
 
 ax2.plot(E, xsecSV(E), color='dodgerblue',lw=0.8)
-ax2.plot(E, xsec_nue_ES(E), color='darkgreen',lw=0.8,linestyle='--')
-ax2.plot(E, xsec_nuebar_ES(E), color='purple',lw=0.8,linestyle=':')
+ax2.plot(E, xsec_nue_ES(E), color='darkgreen',lw=0.8, dashes=(2,1))
+ax2.plot(E, xsec_nuebar_ES(E), color='indigo',lw=1, dashes=(5,1))
 # ax2.plot(E, xsecVB(E), color='orange',lw=0.8,ls='--')
 # ax2.plot(E, xsecCVC(E), color='red',lw=0.8,ls='--')
 ax2.set_yscale('log')
@@ -131,25 +132,34 @@ ax.set_yscale('log')
 
 ax2.text(12,1.5e-41,r'$\sigma_{\rm IBD}$',color='dodgerblue', rotation=12)
 ax2.text(12.5,1.7e-43,r'$\sigma_{\nu_e - e}$',color='darkgreen', rotation=5)
-ax2.text(12.5,2.8e-44,r'$\sigma_{\overline{\nu}_e - e}$',color='purple', rotation=5)
+ax2.text(12.5,2.8e-44,r'$\sigma_{\overline{\nu}_e - e}$',color='indigo', rotation=5)
 
-ax.text(8.5,1.1,r'$\Phi^{\nu_e}(^8$B$)$',color='darkorange', rotation=0)
-ax.text(0.5,1.1,r'$\Phi(\nu_h\to \overline{\nu_e})$',color='black', rotation=0)
+ax.text(2,7e4,r'$\Phi^{\nu_e}(^8$B$)$',color='saddlebrown', rotation=0)
+ax.text(6,2e1,r'$\Phi(\nu_4\to \overline{\nu_e})$',color='black', rotation=0)
 
 
 ##############
 # STYLE
+##############
+# STYLE
+if params.model == const.VECTOR:
+	boson_string = r'$m_{Z^\prime}$'
+	boson_file = 'vector'
+elif params.model == const.SCALAR:
+	boson_string = r'$m_\phi$'
+	boson_file = 'scalar'
+
 ax.legend(loc='upper right',frameon=False,ncol=1)
-# ax.set_title(r'$m_h = %.0f$ keV,\, $m_{Z^\prime} = %.0f$ keV, \, $|U_{\mu h}| = %.3f$'%(params.m4*1e6,params.mzprime*1e6,params.Umu4), fontsize=fsize)
-ax.set_title(r'$m_h = %.0f$ eV,\, $m_{Z^\prime}/m_h = %.2f$, \, $|U_{e h}|^2 = %.3f$'%(params.m4*1e9,params.mzprime/params.m4,params.Umu4**2), fontsize=fsize)
+ax.set_title(r'$m_4 = %.0f$ eV,\, '%(params.m4*1e9)+boson_string+r'$/m_4 = %.2f$, \, $|U_{e 4}|^2 = %.3f$'%(params.mBOSON/params.m4,params.Umu4**2), fontsize=fsize)
 
 ax.set_xlim(np.min(E),np.max(E))
-ax.set_ylim(5e-3, 2)
+ax.set_ylim(1e1, 1*const.B8FLUX)
 ax2.set_ylim(1e-45, 1e-40)
 
 # (?# ax.set_ylabel(r'$\Phi$ $\nu/$cm$^2$/s'))
-ax.set_ylabel(r'$\Phi$ (a.u.)')
+ax.set_ylabel(r'$\Phi$ cm$^2$\,s')
 ax2.set_ylabel(r'$\sigma/$cm$^2$')
 ax.set_xlabel(r'$E_\nu/$MeV')
-fig.savefig('plots/Spectrum_%.0f_MZ_%.0f.pdf'%(params.m4*1e9,params.mzprime*1e9))
+fig.savefig('plots/Spectrum_'+boson_file+'_%.0f_MZ_%.0f.pdf'%(params.m4*1e9,params.mBOSON*1e9))
+
 plt.show()

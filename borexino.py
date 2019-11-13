@@ -26,7 +26,7 @@ if EXP_FLAG == const.BOREXINO:
 	N_PROTONS = 1.32e31 
 	avg_efficiency = 0.850
 	exposure = 2485*60*60*24 # seconds
-	norm = N_PROTONS*avg_efficiency*exposure/1e55
+	norm = N_PROTONS*avg_efficiency*exposure
 	exp = exps.borexino_data()
 
 ############
@@ -66,7 +66,7 @@ eff= np.ones((np.size(dx)))
 # COMPUTING THE EVENT RATE INTEGRALS
 ################################################################
 #############
-# HNL + ZPRIME DECAYS
+# HNL + BOSON DECAYS
 NCASCADE, dNCASCADE = integrands.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 											flux=flux,\
 											xsec=xsec,\
@@ -140,15 +140,8 @@ elif params.model == const.SCALAR:
 ax.legend(loc='upper right',frameon=False,ncol=1)
 ax.set_title(r'$m_h = %.0f$ eV,\, '%(params.m4*1e9)+boson_string+r'$/m_h = %.2f$, \, $|U_{e h}|^2 = %.3f$'%(params.mBOSON/params.m4,params.Umu4**2), fontsize=fsize)
 
-# ax.set_yscale('log')
-# ax.set_xlim(np.min(bin_c-dx/2.0),np.max(bin_c+dx/2.0))
-# ax.set_ylim(ax.get_ylim()[0], ax.get_ylim()[1]*1.2)
-# ax.set_ylim(-200, 1900)
-
 ax.text(13,10,r'Borexino',fontsize=14)
 
 ax.set_xlabel(r'$E_\nu/$MeV')
 ax.set_ylabel(r'Events/MeV')
 fig.savefig('plots/'+boson_file+'_borexino_MN_%.0f_MB_%.0f.pdf'%(params.m4*1e9,params.mBOSON*1e9))
-# fig.savefig('plots/test.pdf')
-# plt.show()

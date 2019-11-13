@@ -26,25 +26,13 @@ EXP_FLAG = const.KAMLAND
 # COMPUTING THE EVENT RATE INTEGRALS
 ################################################################
 
-if EXP_FLAG == const.MINIBOONE:
-	Nucleons_per_target = 14.0
-	P_per_target = 8.0
-	TARGETS = (818e6) * const.NAvo
-	POTS = 12.84e20
-	A_NUMBER = 12.0
-	Enu_BEG_OF_SPECTRUM = 0.0
-	Enu_END_OF_SPECTRUM = 2.0
-	L =  0.541
-	norm = POTS*TARGETS /1e55
-	exp = exps.miniboone_data()
-
 if EXP_FLAG == const.BOREXINO:
 	Enu_BEG_OF_SPECTRUM = 0.0
 	Enu_END_OF_SPECTRUM = 16.8
 	N_PROTONS = 1.32e31 
 	avg_efficiency = 0.850
 	exposure = 2485 * 60*60*24 # seconds
-	norm = N_PROTONS*avg_efficiency*exposure/1e55
+	norm = N_PROTONS*avg_efficiency*exposure
 	exp = exps.borexino_data()
 
 if EXP_FLAG == const.KAMLAND:
@@ -56,7 +44,7 @@ if EXP_FLAG == const.KAMLAND:
 	efficiency=0.92
 	mass=1e9 # grams
 	NA=6.022e23
-	norm=EXPOSURE*fid_cut*efficiency*mass*NA/1e55
+	norm=EXPOSURE*fid_cut*efficiency*mass*NA
 	exp = exps.kamland_data()
 
 ############
