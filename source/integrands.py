@@ -85,13 +85,28 @@ def dN(kin,flux,xsec,params,Enu,E1):
 	N += flux(Enu)*xsec(E1)*prob.dPdEnu1(params,kin,Enu,E1,h)
 	return N
 
+############
+# Full Cascade -- only take nuebar
 def dN2(kin,flux,xsec,xsecbar,params,Enu,E1,E2):
-	# SPECIAL CASE 
+	# fraction of final states with nuebar
+	fe = params.Ue4**2/(params.Ue4**2 + params.Umu4**2 +params.Utau4**2)
+	# fraction of final states with numubar and nutaubar
+	fmutau = (params.Umu4**2+params.Utau4**2)/(params.Ue4**2 + params.Umu4**2 +params.Utau4**2)
+
 	h=-1
-	E3=Enu - E1 - E2
-	N = flux(Enu)*(xsec(E1)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)*0*std_osc.P_Parke(E2, const.nue_to_nue) + std_osc.P_Parke(E2, -const.nue_to_nue)*xsecbar(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h))
+	# neutrinos from Boson decay
+	# N = flux(Enu)*(xsec(E1)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)*std_osc.P_Parke(E2, const.nue_to_nue))
+	
+	# antineutrinos from Boson decay
+	N= flux(Enu)*(fe*std_osc.P_Parke(E2, -const.nue_to_nue) + fmutau*std_osc.P_Parke(E2, -const.numu_to_nue))*xsecbar(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)
+	
 	h=1
-	N += flux(Enu)*(xsec(E1)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)*0*std_osc.P_Parke(E2, const.nue_to_nue) + std_osc.P_Parke(E2, -const.nue_to_nue)*xsecbar(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h))
+	# neutrinos from Boson decay
+	# N = flux(Enu)*(xsec(E1)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)*std_osc.P_Parke(E2, const.nue_to_nue))
+	
+	# antineutrinos from Boson decay
+	N+= flux(Enu)*(fe*std_osc.P_Parke(E2, -const.nue_to_nue) + fmutau*std_osc.P_Parke(E2, -const.numu_to_nue))*xsecbar(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)
+	
 	return N
 
 

@@ -44,8 +44,9 @@ xsecbar = xsecs.get_IBD(xsfile)
 # DECAY MODEL PARAMETERS
 params = model.decay_model_params(const.SCALAR)
 params.gx		= 1.0
-params.Ue4		= 0.1
-params.Umu4		= np.sqrt(4e-3)
+params.Ue4		= np.sqrt(4e-3)
+params.Umu4		= np.sqrt(1e-3)
+params.Utau4	= np.sqrt(1e-3)*0
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
 params.mBOSON  = 0.1*params.m4 # GeV

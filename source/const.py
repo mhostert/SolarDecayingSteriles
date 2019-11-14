@@ -21,7 +21,7 @@ muon = 2
 tau = 3
 
 nue_to_nue = 1
-nue_to_numu = 2
+numu_to_nue = 2
 
 
 VECTOR = 1

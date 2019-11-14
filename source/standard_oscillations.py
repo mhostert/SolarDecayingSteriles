@@ -17,7 +17,7 @@ def Padiabatic(Enu, channel):
 	Pee = 0.5 + 0.5*np.cos(2*const.theta12) * np.cos(2*theta12MATTER)
 	if np.abs(channel) == const.nue_to_nue:
 		return np.cos(const.theta13)**4*Pee + np.sin(const.theta13)**4
-	if np.abs(channel) == const.nue_to_numu:
+	if np.abs(channel) == const.numu_to_nue:
 		return 1 - np.cos(const.theta13)**4*Pee + np.sin(const.theta13)**4
 
 
@@ -50,7 +50,7 @@ def P_Parke(Enu, channel):
 	Pee = 0.5 + (0.5 - Pc)*np.cos(2*const.theta12) * np.cos(2*theta12MATTER)
 	if np.abs(channel) == const.nue_to_nue:
 		return np.cos(const.theta13)**4*Pee + np.sin(const.theta13)**4
-	if np.abs(channel) == const.nue_to_numu:
+	if np.abs(channel) == const.numu_to_nue:
 		return 1 - np.cos(const.theta13)**4*Pee + np.sin(const.theta13)**4
 
 
