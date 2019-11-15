@@ -1,5 +1,9 @@
 import numpy as np
 import scipy
+import numpy.random
+
+import const 
+
 class miniboone_data():
 	def __init__(self):
 
@@ -38,6 +42,9 @@ class miniboone_data():
 class borexino_data():
 	def __init__(self):
 
+
+		self.exp_name=const.BOREXINO
+		self.err_back=0.10
 		#######################
 		# neutrino energy data
 		self.Enu_binc, self.data = np.loadtxt("digitized/borexino/data.dat", unpack=True)
@@ -68,13 +75,22 @@ class kamland_limit():
 class kamland_data():
 	def __init__(self):
 
+		self.exp_name=const.KAMLAND
+		self.err_back=0.25
+
+		EXPOSURE=2343.0*24*60*60
+		year=365*24*60*60
+		fid_cut=(6.0/6.50)**3
+		efficiency=0.92
+		mass=1e9 # grams
+		NA=6.022e23
+		self.norm=EXPOSURE*fid_cut*efficiency*mass*NA
+
 		#######################
 		# Ep energy data
 		self.Enu_binc, self.data = np.loadtxt("digitized/Kamland/data.dat", unpack=True)
 		
-
-
-		self.bin_e = np.array([7.5,8.5,9.5,10.5,11.5,12.5,13.5,14.5,16.5,17.5,18.5,19.5,20.5,21.5,22.5,23.5,24.5,25.5,26.5,27.5,28.5,29.5])
+		self.bin_e = np.array([7.5,8.5,9.5,10.5,11.5,12.5,13.5,14.5,15.5,16.5,17.5,18.5,19.5,20.5,21.5,22.5,23.5,24.5,25.5,26.5,27.5,28.5,29.5])
 		#####################
 		# Neutrino energy
 		self.bin_e = self.bin_e + 0.8
@@ -82,18 +98,25 @@ class kamland_data():
 		self.bin_w = (self.bin_e[1:] - self.bin_e[:-1])
 		self.bin_c = self.bin_e[:-1] + self.bin_w/2.0
 
-		e, self.MCatm = np.loadtxt("digitized/Kamland/atmospheric.dat", unpack=True)
-		f = scipy.interpolate.interp1d(e, self.MCatm, fill_value=0.0, bounds_error=False)
-		self.MCatm = f(self.bin_c)
+		e, self.MCall = np.loadtxt("digitized/Kamland/MCall.dat", unpack=True)
+		f = scipy.interpolate.interp1d(e+0.8, self.MCall, fill_value=0.0, bounds_error=False)
+		self.MCall = f
 		
 		e, self.MCreactor = np.loadtxt("digitized/Kamland/MCall_exceptReactors.dat", unpack=True)
-		f = scipy.interpolate.interp1d(e, self.MCreactor, fill_value=0.0, bounds_error=False)
-		self.MCreactor = f(self.bin_c)		
+		f = scipy.interpolate.interp1d(e+0.8, self.MCreactor, fill_value=0.0, bounds_error=False)
+		self.MCreactor = f
 		
 		e, self.MCreactor_spall = np.loadtxt("digitized/Kamland/MC_all_exceptReactorsANDspallation.dat", unpack=True)
-		f = scipy.interpolate.interp1d(e, self.MCreactor_spall, fill_value=0.0, bounds_error=False)
-		self.MCreactor_spall = f(self.bin_c)		
+		f = scipy.interpolate.interp1d(e+0.8, self.MCreactor_spall, fill_value=0.0, bounds_error=False)
+		self.MCreactor_spall = f	
 		
 		e, self.MClimit = np.loadtxt("digitized/Kamland/solar_BG_limit.dat", unpack=True)
-		f = scipy.interpolate.interp1d(e, self.MClimit, fill_value=0.0, bounds_error=False)
-		self.MClimit = f(self.bin_c)
+		f = scipy.interpolate.interp1d(e+0.8, self.MClimit, fill_value=0.0, bounds_error=False)
+		self.MClimit = f
+
+# E in MeV
+def borexino_Esmear(E):
+	return np.random.normal(E, 0.0556/np.sqrt(E))
+def kamland_Esmear(E):
+	Ep = E - 0.8
+	return np.random.normal(E, 0.064/np.sqrt(E))

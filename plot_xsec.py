@@ -37,8 +37,6 @@ xsec_nuebar_ES = xsecs.get_nuES(pdg.PDG_nuebar)
 xsec_nue_ES = xsecs.get_nuES(pdg.PDG_nue)
 
 
-
-
 ################################################################
 # PLOTTING THE EVENT RATES 
 ################################################################

@@ -21,8 +21,26 @@ import xsecs
 import exps
 import standard_oscillations as std_osc
 
-def RATES_dN_HNL_CASCADE_NU_NUBAR(flux,xsec,xsecbar,dim=3,enumin=0,enumax=2.0,params=None,bins=None,PRINT=False,eff=None,enu_eff=None):
-	f = HNL_CASCADE_NU_NUBAR(flux,xsec,xsecbar,dim=dim,enumin=enumin,enumax=enumax,params=params,bins=bins,eff=eff,enu_eff=enu_eff)
+def RATES_dN_HNL_CASCADE_NU_NUBAR(flux,xsec,xsecbar,dim=3,enumin=0,enumax=2.0,params=None,bins=None,PRINT=False,eff=None,enu_eff=None,exp=None):
+	f = HNL_CASCADE_NU_NUBAR(flux,xsec,xsecbar,dim=dim,enumin=enumin,enumax=enumax,params=params,bins=bins,eff=eff,enu_eff=enu_eff,exp=exp)
+	integ = vegas.Integrator(f.dim * [[0, 1]])
+	# adapt grid
+	training = integ(f, nitn=20, neval=1e4)
+	# compute integral
+	result = integ(f, nitn=20, neval=3e4)
+	if PRINT:	
+		print result.summary()
+		print '   I =', result['I']
+		print 'dI/I =', result['dI'] / result['I']
+		print 'check:', sum(result['dI'])
+
+	dNdEf = gv.mean(result['dI'])
+	N = gv.mean(result['I'])
+
+	return N, dNdEf
+
+def RATES_dN_HNL_TO_ZPRIME(flux,xsec,dim=2,enumin=0,enumax=2.0,params=None,bins=None,PRINT=False,eff=None,enu_eff=None,exp=None):
+	f = HNL_TO_NU_ZPRIME(flux,xsec,dim=dim,enumin=enumin,enumax=enumax,params=params,bins=bins,eff=eff,enu_eff=enu_eff,exp=exp)
 	integ = vegas.Integrator(f.dim * [[0, 1]])
 	# adapt grid
 	training = integ(f, nitn=20, neval=1000)
@@ -39,27 +57,9 @@ def RATES_dN_HNL_CASCADE_NU_NUBAR(flux,xsec,xsecbar,dim=3,enumin=0,enumax=2.0,pa
 
 	return N, dNdEf
 
-def RATES_dN_HNL_TO_ZPRIME(flux,xsec,dim=2,enumin=0,enumax=2.0,params=None,bins=None,PRINT=False,eff=None,enu_eff=None):
-	f = HNL_TO_NU_ZPRIME(flux,xsec,dim=dim,enumin=enumin,enumax=enumax,params=params,bins=bins,eff=eff,enu_eff=enu_eff)
-	integ = vegas.Integrator(f.dim * [[0, 1]])
-	# adapt grid
-	training = integ(f, nitn=20, neval=1000)
-	# compute integral
-	result = integ(f, nitn=20, neval=1e5)
-	if PRINT:	
-		print result.summary()
-		print '   I =', result['I']
-		print 'dI/I =', result['dI'] / result['I']
-		print 'check:', sum(result['dI'])
 
-	dNdEf = gv.mean(result['dI'])
-	N = gv.mean(result['I'])
-
-	return N, dNdEf
-
-
-def RATES_SBL_OSCILLATION(flux,xsec,dim=1,enumin=0,enumax=2.0,params=None,bins=None,PRINT=False,L=0.541,eff=None,enu_eff=None):
-	f = SBL_OSCILLATION(flux,xsec,dim=dim,enumin=enumin,enumax=enumax,params=params,bins=bins,L=L,eff=eff,enu_eff=enu_eff)
+def RATES_SBL_OSCILLATION(flux,xsec,dim=1,enumin=0,enumax=2.0,params=None,bins=None,PRINT=False,L=0.541,eff=None,enu_eff=None,exp=None):
+	f = SBL_OSCILLATION(flux,xsec,dim=dim,enumin=enumin,enumax=enumax,params=params,bins=bins,L=L,eff=eff,enu_eff=enu_eff,exp=exp)
 	integ = vegas.Integrator(f.dim * [[0, 1]])
 	# adapt grid
 	training = integ(f, nitn=20, neval=1000)
@@ -75,7 +75,6 @@ def RATES_SBL_OSCILLATION(flux,xsec,dim=1,enumin=0,enumax=2.0,params=None,bins=N
 	N = gv.mean(result['I'])
 
 	return N, dNdEf
-
 
 def dN(kin,flux,xsec,params,Enu,E1):
 	# SPECIAL CASE 
@@ -98,14 +97,14 @@ def dN2(kin,flux,xsec,xsecbar,params,Enu,E1,E2):
 	# N = flux(Enu)*(xsec(E1)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)*std_osc.P_Parke(E2, const.nue_to_nue))
 	
 	# antineutrinos from Boson decay
-	N= flux(Enu)*(fe*std_osc.P_Parke(E2, -const.nue_to_nue) + fmutau*std_osc.P_Parke(E2, -const.numu_to_nue))*xsecbar(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)
+	N= flux(Enu)*(fe*std_osc.Padiabatic(E2, -const.nue_to_nue) + fmutau*std_osc.Padiabatic(E2, -const.numu_to_nue))*xsecbar(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)
 	
 	h=1
 	# neutrinos from Boson decay
 	# N = flux(Enu)*(xsec(E1)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)*std_osc.P_Parke(E2, const.nue_to_nue))
 	
 	# antineutrinos from Boson decay
-	N+= flux(Enu)*(fe*std_osc.P_Parke(E2, -const.nue_to_nue) + fmutau*std_osc.P_Parke(E2, -const.numu_to_nue))*xsecbar(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)
+	N+= flux(Enu)*(fe*std_osc.Padiabatic(E2, -const.nue_to_nue) + fmutau*std_osc.Padiabatic(E2, -const.numu_to_nue))*xsecbar(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)
 	
 	return N
 
@@ -116,7 +115,7 @@ def dN_OSCILLATION(flux,xsec,params,Enu,L):
 
 
 class SBL_OSCILLATION(vegas.BatchIntegrand):
-    def __init__(self, flux,xsec, dim, enumin,enumax,params,bins,enu_eff,eff,L):
+    def __init__(self, flux,xsec, dim, enumin,enumax,params,bins,enu_eff,eff,L,exp):
 		self.dim = dim
 		self.enumin = enumin
 		self.enumax = enumax
@@ -161,7 +160,7 @@ class SBL_OSCILLATION(vegas.BatchIntegrand):
 
 
 class HNL_TO_NU_ZPRIME(vegas.BatchIntegrand):
-    def __init__(self,flux, xsec, dim, enumin,enumax, params,bins,enu_eff,eff):
+    def __init__(self,flux, xsec, dim, enumin,enumax, params,bins,enu_eff,eff,exp):
 		self.dim = dim
 		self.enumin = enumin
 		self.enumax = enumax
@@ -171,6 +170,7 @@ class HNL_TO_NU_ZPRIME(vegas.BatchIntegrand):
 		self.xsec=xsec
 		self.enu_eff=enu_eff
 		self.eff=eff
+		self.exp=exp
     def __call__(self, x):	
 		
 		# Return final answer as a dict with multiple quantities
@@ -188,6 +188,13 @@ class HNL_TO_NU_ZPRIME(vegas.BatchIntegrand):
 
 		# distribution
 		dI = np.zeros((np.size(x[:,0]),np.size(self.bins[:-1])), dtype=float)
+
+		##########
+		# Smearing on the detected neutrino energy
+		if self.exp == const.BOREXINO:
+			e2 = exps.borexino_Esmear(e2)
+		elif self.exp == const.KAMLAND:
+			e2 = exps.kamland_Esmear(e2)
 
 		# fill distribution
 		for i in range(np.size(x[:,0])):
@@ -209,7 +216,7 @@ class HNL_TO_NU_ZPRIME(vegas.BatchIntegrand):
 
 
 class HNL_CASCADE_NU_NUBAR(vegas.BatchIntegrand):
-    def __init__(self,flux, xsec, xsecbar, dim, enumin,enumax, params,bins,enu_eff,eff):
+    def __init__(self,flux,xsec,xsecbar,dim,enumin,enumax,params,bins,enu_eff,eff,exp):
 		self.dim = dim
 		self.enumin = enumin
 		self.enumax = enumax
@@ -220,6 +227,7 @@ class HNL_CASCADE_NU_NUBAR(vegas.BatchIntegrand):
 		self.xsecbar=xsecbar
 		self.enu_eff=enu_eff
 		self.eff=eff
+		self.exp=exp
 
     def __call__(self, x):	
 		
@@ -247,13 +255,20 @@ class HNL_CASCADE_NU_NUBAR(vegas.BatchIntegrand):
 		# distribution
 		dI = np.zeros((np.size(x[:,0]),np.size(self.bins[:-1])), dtype=float)
 
+		##########
+		# Smearing on the detected neutrino energy
+		if self.exp == const.BOREXINO:
+			e2 = exps.borexino_Esmear(e2)
+		elif self.exp == const.KAMLAND:
+			e2 = exps.kamland_Esmear(e2)
+
 		# fill distribution
 		for i in range(np.size(x[:,0])):
 			j = np.where( (self.bins[:-1] < e2[i]) & (self.bins[1:] > e2[i] ))[0]
 			dI[i,j] = I[i]
 		
 		################################
-		## EFFICIENCIES -- IMPROVE ME
+		## EFFICIENCIES -- FIX ME
 		# for i in range(np.size(x[:,0])):
 		# 	j = np.where( (self.enu_eff[:-1] < e2[i]) & (self.enu_eff[1:] > e2[i] ))[0]
 		# 	dI[i,:] *= self.eff[j]

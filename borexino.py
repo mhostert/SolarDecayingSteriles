@@ -45,11 +45,11 @@ xsecbar = xsecs.get_IBD(xsfile)
 params = model.decay_model_params(const.SCALAR)
 params.gx		= 1.0
 params.Ue4		= np.sqrt(4e-3)
-params.Umu4		= np.sqrt(1e-3)
+params.Umu4		= np.sqrt(1e-3)*0
 params.Utau4	= np.sqrt(1e-3)*0
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
-params.mBOSON  = 0.1*params.m4 # GeV
+params.mBOSON  = 0.9*params.m4 # GeV
 
 
 ############
@@ -79,7 +79,8 @@ NCASCADE, dNCASCADE = integrands.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 											bins=bins,\
 											PRINT=True,\
 											enu_eff=enu_eff,\
-											eff=eff)
+											eff=eff,
+											exp=const.BOREXINO)
 NCASCADE*=norm
 dNCASCADE*=norm
 
@@ -139,9 +140,9 @@ elif params.model == const.SCALAR:
 	boson_file = 'scalar'
 
 ax.legend(loc='upper right',frameon=False,ncol=1)
-ax.set_title(r'$m_h = %.0f$ eV,\, '%(params.m4*1e9)+boson_string+r'$/m_h = %.2f$, \, $|U_{e h}|^2 = %.3f$'%(params.mBOSON/params.m4,params.Umu4**2), fontsize=fsize)
+ax.set_title(r'$m_4 = %.0f$ eV,\, '%(params.m4*1e9)+boson_string+r'$/m_4 = %.2f$, \, $|U_{e 4}|^2 = %.3f$'%(params.mBOSON/params.m4,params.Ue4**2), fontsize=fsize)
 
-ax.text(13,10,r'Borexino',fontsize=14)
+ax.annotate(r'Borexino',xy=(0.45,0.35),xycoords='axes fraction',fontsize=14)
 
 ax.set_xlabel(r'$E_\nu/$MeV')
 ax.set_ylabel(r'Events/MeV')
