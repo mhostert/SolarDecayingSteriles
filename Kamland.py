@@ -43,7 +43,7 @@ params.Umu4		= np.sqrt(5e-4)*0
 params.Utau4	= np.sqrt(1e-4)*0
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
-params.mBOSON  = 0.5*params.m4 # GeV
+params.mBOSON  = 0.9*params.m4 # GeV
 
 ##############
 # Plot style -- use differential or bins
@@ -62,7 +62,7 @@ eff= np.ones((np.size(dx)))
 # COMPUTING THE EVENT RATE INTEGRALS
 ################################################################
 # HNL + BOSON DECAYS
-NCASCADE, dNCASCADE = integrands.RATES_dN_HNL_CASCADE_NU_NUBAR(\
+NCASCADE, dNCASCADE = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 											flux=flux,\
 											xsec=xsec,\
 											xsecbar=xsecbar,\
@@ -134,7 +134,6 @@ elif style=='smooth':
 	ax.fill_between(Elin,MCreactor_spall, 0*MCreactor_spall,  lw=0.2,color='indigo',alpha=0.7, label=r'atm+$n$+acc')
 	ax.plot(Elin,MClimit,lw=0.8, color='crimson', dashes=(5,1),label=r'90\% limit')
 
-
 ###################
 # DATA
 DATA =  exp.data
@@ -144,7 +143,6 @@ ERRORUP = np.sqrt(DATA)
 ax.errorbar(exp.bin_c, DATA, yerr= np.array([ERRORLOW,ERRORUP]), xerr = exp.bin_w/2.0, \
 												marker="o", markeredgewidth=0.5, capsize=1.0,markerfacecolor="black",\
 												markeredgecolor="black", ms=2, color='black', lw = 0.0, elinewidth=0.8, zorder=100,label=r'data')
-
 
 ##############
 # STYLE
@@ -158,9 +156,13 @@ elif params.model == const.SCALAR:
 ax.legend(loc='upper right',frameon=False,ncol=1)
 ax.set_title(r'$m_4 = %.0f$ eV,\, '%(params.m4*1e9)+boson_string+r'$/m_h = %.2f$, \, $|U_{e 4}|^2 = %.0f \times 10^{%i}$'%(params.mBOSON/params.m4,params.Ue4**2/1e-4, np.log10(params.Ue4**2)-1), fontsize=fsize)
 
-ax.annotate(r'KamLAND',xy=(0.45,0.35),xycoords='axes fraction',fontsize=14)
+ax.annotate(r'KamLAND',xy=(0.45,0.4),xycoords='axes fraction',fontsize=14)
 ax.set_xlim(7.5+0.81,17.31)
 ax.set_ylim(0,)
+
+_,yu = ax.get_ylim()
+if yu < 10:
+	ax.set_ylim(0,10)
 
 ax.set_xlabel(r'$E_\nu/$MeV')
 ax.set_ylabel(r'Events/MeV')

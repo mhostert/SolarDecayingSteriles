@@ -20,6 +20,57 @@ import fluxes
 import xsecs
 import exps
 import standard_oscillations as std_osc
+import stats
+################################################################
+# Compute the chi2 using the model independent limits provided by collaborations
+def fill_bins(exp,params,fluxfile,endpoint=1e100):
+	###########
+	# SET BINS TO BE THE EXPERIMENTAL BINS
+	bins = exp.bin_e # bin edges
+	bin_c = exp.bin_c # bin edges
+
+	###########
+	# NUMU FLUX
+	flux = fluxes.get_exp_flux(fluxfile)
+
+	############
+	# NUE/BAR XS
+	xsec = lambda x : np.zeros(np.size(x))
+	xsfile="xsecs/IBD_160106169/TCS_CC_anue_p_1026_SV.txt"
+	xsecbar = xsecs.get_IBD(xsfile)
+
+	############
+	# efficiencies
+	enu_eff= bins
+	eff= np.ones((np.size(bins)-1))
+
+	############
+	# number of events
+	NCASCADE, dNCASCADE = RATES_dN_HNL_CASCADE_NU_NUBAR(\
+												flux=flux,\
+												xsec=xsec,\
+												xsecbar=xsecbar,\
+												dim=3,\
+												enumin=0,\
+												enumax=16.8,\
+												params=params,\
+												bins=bins,\
+												PRINT=False,\
+												enu_eff=enu_eff,\
+												eff=eff,
+												smearing_function=exp.smearing_function)
+
+	NP_MC = dNCASCADE[bin_c<endpoint]*exp.norm
+	bin_c_end = bin_c[bin_c<endpoint]
+
+	if exp.exp_name==const.KAMLAND:
+		back_MC = exp.MCall_binned[bin_c<endpoint]
+		D = exp.data[bin_c<endpoint]
+	elif exp.exp_name==const.BOREXINO:
+		back_MC = exp.MCreactor[bin_c<endpoint]
+		D = exp.data[bin_c<endpoint]
+	
+	return bin_c_end, NP_MC, back_MC, D
 
 def RATES_dN_HNL_CASCADE_NU_NUBAR(flux,xsec,xsecbar,dim=3,enumin=0,enumax=2.0,params=None,bins=None,PRINT=False,eff=None,enu_eff=None,smearing_function=None):
 	f = HNL_CASCADE_NU_NUBAR(flux,xsec,xsecbar,dim=dim,enumin=enumin,enumax=enumax,params=params,bins=bins,eff=eff,enu_eff=enu_eff,smearing_function=smearing_function)
@@ -27,7 +78,7 @@ def RATES_dN_HNL_CASCADE_NU_NUBAR(flux,xsec,xsecbar,dim=3,enumin=0,enumax=2.0,pa
 	# adapt grid
 	training = integ(f, nitn=20, neval=1e4)
 	# compute integral
-	result = integ(f, nitn=20, neval=1e6)
+	result = integ(f, nitn=20, neval=1e4)
 	if PRINT:	
 		print result.summary()
 		print '   I =', result['I']
@@ -253,9 +304,7 @@ class HNL_CASCADE_NU_NUBAR(vegas.BatchIntegrand):
 
 		##########
 		# Smearing on the detected neutrino energy
-		# e2 = self.smearing_function(e2)
-		e2 = np.array([self.smearing_function(EE) for EE in e2])
-		# e2 = np.random.normal(Ep, 0.0556/np.sqrt(Ep))+0.8
+		e2 = np.array([self.smearing_function(EE)  if EE>const.IBD_THRESHOLD else EE for EE in e2])
 
 		# fill distribution
 		for i in range(np.size(x[:,0])):

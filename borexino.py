@@ -1,7 +1,4 @@
 import numpy as np
-from scipy import interpolate
-import scipy.stats
-from scipy.integrate import quad
 import matplotlib 
 matplotlib.use('agg') 
 import matplotlib.pyplot as plt
@@ -19,9 +16,6 @@ from source import *
 ################################################################
 exp = exps.borexino_data()
 smearing_function=exps.borexino_Esmear
-
-Enu_BEG_OF_SPECTRUM = 0.0
-Enu_END_OF_SPECTRUM = 17.0
 
 ############
 # NUMU FLUX
@@ -43,7 +37,7 @@ params.Umu4		= np.sqrt(1e-3)*0
 params.Utau4	= np.sqrt(1e-3)*0
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
-params.mBOSON  = 0.1*params.m4 # GeV
+params.mBOSON  = 0.5*params.m4 # GeV
 
 
 ############
@@ -62,19 +56,20 @@ eff= np.ones((np.size(dx)))
 ################################################################
 #############
 # HNL + BOSON DECAYS
-NCASCADE, dNCASCADE = integrands.RATES_dN_HNL_CASCADE_NU_NUBAR(\
+NCASCADE, dNCASCADE = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 											flux=flux,\
 											xsec=xsec,\
 											xsecbar=xsecbar,\
 											dim=3,\
-											enumin=Enu_BEG_OF_SPECTRUM,\
-											enumax=Enu_END_OF_SPECTRUM,\
+											enumin=const.Enu_BEG_OF_SPECTRUM,\
+											enumax=const.Enu_END_OF_SPECTRUM,\
 											params=params,\
 											bins=bins,\
 											PRINT=True,\
 											enu_eff=enu_eff,\
 											eff=eff,
 											smearing_function=smearing_function)
+
 NCASCADE*=exp.norm
 dNCASCADE*=exp.norm
 
@@ -100,7 +95,6 @@ ax = fig.add_axes(axes_form)
 MCatm = exp.MCatm
 MCreactor = exp.MCreactor
 MCgeo = exp.MCgeo
-
 MCtot = MCatm+MCreactor+MCgeo
 
 

@@ -1,8 +1,4 @@
 import numpy as np
-from scipy import interpolate
-import scipy.stats
-import matplotlib.pyplot as plt
-from scipy.integrate import quad
 
 import const
 import pdg

@@ -23,7 +23,6 @@ tau = 3
 nue_to_nue = 1
 numu_to_nue = 2
 
-
 VECTOR = 1
 SCALAR = 2
 
@@ -38,6 +37,10 @@ BOREXINO     = "borexino"
 B8FLUX = 5.94*1e6 # /cm^2/s
 B8FLUX_HM = 5.94*1e6 # /cm^2/s
 B8FLUX_LM = 5.94*1e6 # /cm^2/s
+
+IBD_THRESHOLD=1.8 # MeV
+Enu_BEG_OF_SPECTRUM = IBD_THRESHOLD
+Enu_END_OF_SPECTRUM = 17.0
 
 solar_core_Ne = 245*NAvo *cmINV_to_GeV**3 * 1e27# ev^3
 solarR = 6.955e8*m_to_eVINV # eVinv

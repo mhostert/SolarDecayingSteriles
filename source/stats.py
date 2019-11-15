@@ -64,13 +64,11 @@ def chi2_binned_rate(NP_MC,back_MC,D,sys):
 	err_flux = sys[0]
 	err_back = sys[1] 
 
-	dof = np.size(D)
-
 	chi2bin = lambda beta : 2*np.sum(NP_MC*(1+beta[0]) + back_MC*(1+beta[1]) - D + myXLOG(D, D/(NP_MC*(1+beta[0]) + back_MC*(1+beta[1])) ) ) + beta[0]**2 /(err_flux**2) + beta[1]**2 /(err_back**2) 
 	
 	res = scipy.optimize.minimize(chi2bin, [0.0,0.0])
 	
-	return chi2bin(res.x), chi2.ppf(0.90, dof)
+	return chi2bin(res.x)
 
 def myXLOG(d,x):
 	return np.array([ (di*np.log(xi) if xi > 0 else 0) for di,xi in zip(d,x)])

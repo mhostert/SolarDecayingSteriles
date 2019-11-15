@@ -85,7 +85,7 @@ params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
 params.mBOSON  = 0.9*params.m4 # GeV
 
-NCASCADE, dNCASCADE = integrands.RATES_dN_HNL_CASCADE_NU_NUBAR(\
+NCASCADE, dNCASCADE = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 											flux=flux,\
 											xsec=xsec,\
 											xsecbar=xsecbar,\
@@ -108,7 +108,7 @@ params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
 params.mBOSON  = 0.5*params.m4 # GeV
 
-NCASCADE2, dNCASCADE2 = integrands.RATES_dN_HNL_CASCADE_NU_NUBAR(\
+NCASCADE2, dNCASCADE2 = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 											flux=flux,\
 											xsec=xsec,\
 											xsecbar=xsecbar,\
@@ -130,7 +130,7 @@ params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
 params.mBOSON  = 0.1*params.m4 # GeV
 
-NCASCADE3, dNCASCADE3 = integrands.RATES_dN_HNL_CASCADE_NU_NUBAR(\
+NCASCADE3, dNCASCADE3 = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 											flux=flux,\
 											xsec=xsec,\
 											xsecbar=xsecbar,\

@@ -94,7 +94,7 @@ enu_eff= bins
 eff= np.ones((np.size(dx)))
 identity = lambda x : x
 
-NCASCADE, dNCASCADE = integrands.RATES_dN_HNL_CASCADE_NU_NUBAR(\
+NCASCADE, dNCASCADE = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 											flux=flux,\
 											xsec=xsec,\
 											xsecbar=xsecbar,\

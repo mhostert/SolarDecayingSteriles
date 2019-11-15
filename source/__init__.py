@@ -7,4 +7,5 @@ import fluxes
 import xsecs
 import exps
 import standard_oscillations as std_osc
-import integrands
+import rates
+import stats

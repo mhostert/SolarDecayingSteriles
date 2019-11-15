@@ -94,7 +94,7 @@ class kamland_data():
 		fraction_free = 0.145
 		fudge = 0.88
 		self.norm=EXPOSURE*fid_cut*efficiency*mass*NA*fraction_free*fudge
-		print EXPOSURE*fid_cut*efficiency*mass/year/1e9
+		# print EXPOSURE*fid_cut*efficiency*mass/year/1e9
 
 		self.smearing_function=kamland_Esmear
 
@@ -156,4 +156,4 @@ def borexino_Esmear(E):
 	return np.random.normal(Ep, 0.0556/np.sqrt(Ep))+0.8
 def kamland_Esmear(E):
 	Ep = E - 0.8
-	return np.random.normal(E, 0.064/np.sqrt(E))+0.8
+	return np.random.normal(Ep, 0.064/np.sqrt(Ep))+0.8
