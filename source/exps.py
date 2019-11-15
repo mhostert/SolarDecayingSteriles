@@ -42,9 +42,16 @@ class miniboone_data():
 class borexino_data():
 	def __init__(self):
 
+		N_PROTONS = 1.32e31
+		avg_efficiency = 0.850
+		exposure = 2485*60*60*24 # seconds
+		self.norm = N_PROTONS*avg_efficiency*exposure
 
 		self.exp_name=const.BOREXINO
 		self.err_back=0.10
+
+		self.smearing_function=borexino_Esmear
+
 		#######################
 		# neutrino energy data
 		self.Enu_binc, self.data = np.loadtxt("digitized/borexino/data.dat", unpack=True)
@@ -84,7 +91,12 @@ class kamland_data():
 		efficiency=0.92
 		mass=1e9 # grams
 		NA=6.022e23
-		self.norm=EXPOSURE*fid_cut*efficiency*mass*NA
+		fraction_free = 0.145
+		fudge = 0.88
+		self.norm=EXPOSURE*fid_cut*efficiency*mass*NA*fraction_free*fudge
+		print EXPOSURE*fid_cut*efficiency*mass/year/1e9
+
+		self.smearing_function=kamland_Esmear
 
 		#######################
 		# Ep energy data
@@ -114,9 +126,34 @@ class kamland_data():
 		f = scipy.interpolate.interp1d(e+0.8, self.MClimit, fill_value=0.0, bounds_error=False)
 		self.MClimit = f
 
+
+		######################
+		# Binning Montecarlo 
+		Elin = np.linspace(np.min(self.bin_e),17.3,1000)
+		dxlin = Elin[1]-Elin[0]
+
+		MCall = self.MCall(Elin)
+		MCreactor = self.MCreactor(Elin)
+		MCreactor_spall = self.MCreactor_spall(Elin)
+		MClimit = self.MClimit(Elin)
+
+		self.MCall_binned = np.zeros(np.size(self.bin_e)-1)
+		self.MCreactor_binned = np.zeros(np.size(self.bin_e)-1)
+		self.MCreactor_spall_binned = np.zeros(np.size(self.bin_e)-1)
+		self.MClimit_binned = np.zeros(np.size(self.bin_e)-1)
+		for i in range(0,np.size(self.bin_e)-1):
+			self.MCall_binned[i] = np.sum( MCall[ (Elin<self.bin_e[i+1]) & (Elin>self.bin_e[i]) ]*dxlin ) 
+			self.MCreactor_binned[i] = np.sum( MCreactor[ (Elin<self.bin_e[i+1]) & (Elin>self.bin_e[i]) ]*dxlin ) 
+			self.MCreactor_spall_binned[i] = np.sum( MCreactor_spall[ (Elin<self.bin_e[i+1]) & (Elin>self.bin_e[i]) ]*dxlin ) 
+			self.MClimit_binned[i] = np.sum( MClimit[ (Elin<self.bin_e[i+1]) & (Elin>self.bin_e[i]) ]*dxlin ) 
+
+
+
+
 # E in MeV
 def borexino_Esmear(E):
-	return np.random.normal(E, 0.0556/np.sqrt(E))
+	Ep = E - 0.8
+	return np.random.normal(Ep, 0.0556/np.sqrt(Ep))+0.8
 def kamland_Esmear(E):
 	Ep = E - 0.8
-	return np.random.normal(E, 0.064/np.sqrt(E))
+	return np.random.normal(E, 0.064/np.sqrt(E))+0.8

@@ -66,6 +66,7 @@ def chi2_spectral(exp,params,fluxfile):
 	###########
 	# SET BINS TO BE THE EXPERIMENTAL BINS
 	bins = exp.bin_e # bin edges
+	bin_c = exp.bin_c # bin edges
 
 	###########
 	# NUMU FLUX
@@ -74,7 +75,8 @@ def chi2_spectral(exp,params,fluxfile):
 	############
 	# NUE/BAR XS
 	xsec = lambda x : np.zeros(np.size(x))
-	xsecbar = lambda x : np.ones(np.size(x))
+	xsfile="xsecs/IBD_160106169/TCS_CC_anue_p_1026_SV.txt"
+	xsecbar = xsecs.get_IBD(xsfile)
 
 	############
 	# efficiencies
@@ -95,22 +97,32 @@ def chi2_spectral(exp,params,fluxfile):
 												PRINT=False,\
 												enu_eff=enu_eff,\
 												eff=eff,
-												exp=exp.exp_name)
+												smearing_function=exp.smearing_function)
 
 	err_flux = 0.1
 	err_back = exp.err_back
 
-	NP_MC = dNCASCADE*exp.norm
-	back_MC = 
+	NP_MC = dNCASCADE[bin_c<17.3]*exp.norm
+	back_MC = exp.MCall_binned[bin_c<17.3]
+	D = exp.data[bin_c<17.3]
 
-	chi2bin = lambda beta : 2*np.sum(NP_MC*(1+beta[0]) + back_MC*(1+beta[1]) - D + D*np.log(D/(NP_MC*(1+beta[0]) + back_MC*(1+beta[1]))) ) + x[0]**2 /(err_flux**2) + x[1]**2 /(err_back**2) 
+	print D/(NP_MC+back_MC)
+	print D
+	# print back_MC
+
+	dof = np.size(D)-1
+
+	chi2bin = lambda beta : 2*np.sum(NP_MC*(1+beta[0]) + back_MC*(1+beta[1]) - D + myXLOG(D, D/(NP_MC*(1+beta[0]) + back_MC*(1+beta[1])) ) ) + beta[0]**2 /(err_flux**2) + beta[1]**2 /(err_back**2) 
+	
 	res = scipy.optimize.minimize(chi2bin, [0.0,0.0])
-	return chi2bin(res.x)
+	return chi2bin(res.x)-chi2bin([-1,0])
 
 
 
-
-
+def myXLOG(d,x):
+	return np.array([ (di*np.log(xi) if xi > 0 else 0) for di,xi in zip(d,x)])
+	# print x
+	# return d*np.log(x)
 ############
 # NUMU FLUX
 fluxfile = "fluxes/b8spectrum.txt"
@@ -119,8 +131,8 @@ fluxfile = "fluxes/b8spectrum.txt"
 # DECAY MODEL PARAMETERS
 params = model.decay_model_params(const.SCALAR)
 params.gx		= 1.0
-params.Ue4		= 0.1
-params.Umu4		= np.sqrt(0.002)
+params.Ue4		= np.sqrt(0.001)
+params.Umu4		= np.sqrt(0.002)*0
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
 params.mBOSON  = 0.1*params.m4 # GeV

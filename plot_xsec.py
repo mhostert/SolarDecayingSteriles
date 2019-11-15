@@ -77,11 +77,11 @@ xsecbar = lambda x : np.ones(np.size(x))
 # DECAY MODEL PARAMETERS
 params = model.decay_model_params(const.SCALAR)
 params.gx		= 1.0
-params.Ue4		= 0.1
-params.Umu4		= np.sqrt(0.01)
+params.Ue4		= np.sqrt(0.01)
+params.Umu4		= np.sqrt(0.01)*0
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
-params.mBOSON  = 0.1*params.m4 # GeV
+params.mBOSON  = 0.9*params.m4 # GeV
 
 ############
 # EXPERIMENTAL DATA AND BINS
@@ -92,6 +92,7 @@ bin_c= bins[:-1] + dx/2.0
 # efficiencies
 enu_eff= bins
 eff= np.ones((np.size(dx)))
+identity = lambda x : x
 
 NCASCADE, dNCASCADE = integrands.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 											flux=flux,\
@@ -104,13 +105,14 @@ NCASCADE, dNCASCADE = integrands.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 											bins=bins,\
 											PRINT=True,\
 											enu_eff=enu_eff,\
-											eff=eff)
+											eff=eff,
+											smearing_function=identity)
 
 ax.fill_between(E, flux3l(E),flux3l(E)/np.max(flux(E))*0.89*0, facecolor='orange', edgecolor='orange', alpha=0.5)
 ax.plot(E, flux3l(E), color='darkorange',lw=0.7, linestyle='-')
 
-ax.fill_between(bin_c-dx/2.0, dNCASCADE,dNCASCADE/np.max(dNCASCADE)*0.89*0, facecolor='darkgrey',edgecolor='black',lw=0.5, linestyle='-',alpha=0.8)
-ax.plot(bin_c-dx/2.0, dNCASCADE, color='black',lw=0.4, linestyle='-')
+ax.fill_between(bin_c-dx/2.0, dNCASCADE/dx,dNCASCADE/np.max(dNCASCADE)*0.89*0, facecolor='darkgrey',edgecolor='black',lw=0.5, linestyle='-',alpha=0.8)
+ax.plot(bin_c-dx/2.0, dNCASCADE/dx, color='black',lw=0.4, linestyle='-')
 
 print '%.2g'%np.sum(dNCASCADE[bin_c>1.8]*norm)
 print '%.2g'%const.B8FLUX
@@ -148,16 +150,16 @@ elif params.model == const.SCALAR:
 	boson_file = 'scalar'
 
 ax.legend(loc='upper right',frameon=False,ncol=1)
-ax.set_title(r'$m_4 = %.0f$ eV,\, '%(params.m4*1e9)+boson_string+r'$/m_4 = %.2f$, \, $|U_{e 4}|^2 = %.3f$'%(params.mBOSON/params.m4,params.Umu4**2), fontsize=fsize)
+ax.set_title(r'$m_4 = %.0f$ eV,\, '%(params.m4*1e9)+boson_string+r'$/m_4 = %.1f$, \, $|U_{e 4}|^2 = %.2f$'%(params.mBOSON/params.m4,params.Umu4**2), fontsize=fsize)
 
 ax.set_xlim(np.min(E),np.max(E))
 ax.set_ylim(1e1, 1*const.B8FLUX)
 ax2.set_ylim(1e-45, 1e-40)
 
 # (?# ax.set_ylabel(r'$\Phi$ $\nu/$cm$^2$/s'))
-ax.set_ylabel(r'$\Phi$ cm$^2$\,s')
+ax.set_ylabel(r'$\frac{{\rm d}\Phi}{{\rm d}E_\nu}$ $\times$ (cm$^{2}$ s MeV)')
 ax2.set_ylabel(r'$\sigma/$cm$^2$')
 ax.set_xlabel(r'$E_\nu/$MeV')
-fig.savefig('plots/Spectrum_'+boson_file+'_%.0f_MZ_%.0f.pdf'%(params.m4*1e9,params.mBOSON*1e9))
+fig.savefig('plots/Spectrum_'+boson_file+'_%.0f_MZ_%.0f.pdf'%(params.m4*1e9,params.mBOSON*1e9),rasterized=True)
 
 plt.show()

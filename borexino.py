@@ -17,17 +17,11 @@ from source import *
 ################################################################
 # SETUP
 ################################################################
+exp = exps.borexino_data()
+smearing_function=exps.borexino_Esmear
 
-EXP_FLAG = const.BOREXINO
-
-if EXP_FLAG == const.BOREXINO:
-	Enu_BEG_OF_SPECTRUM = 0.0
-	Enu_END_OF_SPECTRUM = 20
-	N_PROTONS = 1.32e31 
-	avg_efficiency = 0.850
-	exposure = 2485*60*60*24 # seconds
-	norm = N_PROTONS*avg_efficiency*exposure
-	exp = exps.borexino_data()
+Enu_BEG_OF_SPECTRUM = 0.0
+Enu_END_OF_SPECTRUM = 17.0
 
 ############
 # NUMU FLUX
@@ -49,7 +43,7 @@ params.Umu4		= np.sqrt(1e-3)*0
 params.Utau4	= np.sqrt(1e-3)*0
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
-params.mBOSON  = 0.9*params.m4 # GeV
+params.mBOSON  = 0.1*params.m4 # GeV
 
 
 ############
@@ -80,9 +74,9 @@ NCASCADE, dNCASCADE = integrands.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 											PRINT=True,\
 											enu_eff=enu_eff,\
 											eff=eff,
-											exp=const.BOREXINO)
-NCASCADE*=norm
-dNCASCADE*=norm
+											smearing_function=smearing_function)
+NCASCADE*=exp.norm
+dNCASCADE*=exp.norm
 
 
 ################################################################
@@ -111,13 +105,14 @@ MCtot = MCatm+MCreactor+MCgeo
 
 
 # ax.step(bin_c-dx/2.0, MCtot+dNCASCADE, label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)),**kwargs)
-ax.bar(bin_c, dNCASCADE, bottom=MCtot, width=dx, lw=0.5, edgecolor='black', facecolor='None',hatch='//////////', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)))
+ax.bar(bin_c, dNCASCADE, bottom=MCtot, width=dx, lw=0.5, edgecolor='black', facecolor='None',hatch='//////', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)))
 
 ax.bar(bin_c,MCtot, lw=0.2,facecolor='orange',edgecolor='orange', width=dx,alpha=0.7, label=r'geoneutrinos')
 ax.bar(bin_c,MCatm+MCreactor, lw=0.2,facecolor='dodgerblue',edgecolor='dodgerblue', width=dx,alpha=0.7, label=r'reactors')
 ax.bar(bin_c,MCatm, lw=0.2,facecolor='indigo',edgecolor='indigo', width=dx,alpha=0.7, label=r'atmospheric')
 
 
+ax.bar(bin_c, dNCASCADE+MCtot, width=dx, lw=0.5, edgecolor='black', facecolor='None')
 
 ###################
 # DATA
@@ -142,8 +137,9 @@ elif params.model == const.SCALAR:
 ax.legend(loc='upper right',frameon=False,ncol=1)
 ax.set_title(r'$m_4 = %.0f$ eV,\, '%(params.m4*1e9)+boson_string+r'$/m_4 = %.2f$, \, $|U_{e 4}|^2 = %.3f$'%(params.mBOSON/params.m4,params.Ue4**2), fontsize=fsize)
 
-ax.annotate(r'Borexino',xy=(0.45,0.35),xycoords='axes fraction',fontsize=14)
-
+ax.annotate(r'Borexino',xy=(0.55,0.35),xycoords='axes fraction',fontsize=14)
+ax.set_xlim(1.8,15.8)
+ax.set_ylim(0,)
 ax.set_xlabel(r'$E_\nu/$MeV')
 ax.set_ylabel(r'Events/MeV')
-fig.savefig('plots/'+boson_file+'_borexino_MN_%.0f_MB_%.0f.pdf'%(params.m4*1e9,params.mBOSON*1e9))
+fig.savefig('plots/'+boson_file+'_borexino_MN_%.0f_MB_%.0f.pdf'%(params.m4*1e9,params.mBOSON*1e9),rasterized=True)
