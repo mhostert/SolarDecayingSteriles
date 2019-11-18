@@ -20,38 +20,44 @@ fluxfile = "fluxes/b8spectrum.txt"
 # DECAY MODEL PARAMETERS
 params = model.decay_model_params(const.SCALAR)
 params.gx		= 1.0
-params.Ue4		= np.sqrt(0.01)
-params.Umu4		= np.sqrt(0.01)
+params.Ue4		= np.sqrt(0.1)
+params.Umu4		= np.sqrt(0.1)
 params.Utau4    = np.sqrt(0)
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
 params.mBOSON  = 0.9*params.m4 # GeV
 
 KAM = exps.kamland_data()
-BOR = exps.kamland_data()
+BOR = exps.borexino_data()
 
 err_flux = 0.1
-err_back = KAM.err_back
+err_backK = KAM.err_back
+err_backB = BOR.err_back
 
 
 bK, npK, backK, dK = rates.fill_bins(KAM,params,fluxfile,endpoint=17)
+bB, npB, backB, dB = rates.fill_bins(BOR,params,fluxfile,endpoint=17)
 
 
 NPOINTS = 33
-UE4SQR =np.logspace(-5,-1,NPOINTS)
+UE4SQR =np.logspace(-4,-1,NPOINTS)
 UMU4SQR =np.logspace(-4,-1,NPOINTS)
-L = np.zeros((NPOINTS,NPOINTS))
+LK = np.zeros((NPOINTS,NPOINTS))
+LB = np.zeros((NPOINTS,NPOINTS))
 
-dof = np.size(dK)
-old_factor = (params.Ue4**2*std_osc.Padiabatic(bK, -const.nue_to_nue) + params.Umu4**2*std_osc.Padiabatic(bK, -const.numu_to_nue))/(params.Ue4**2 + params.Umu4**2 +params.Utau4**2)
+dofK = np.size(dK)
+dofB = np.size(dB)
+old_factorK = params.Ue4**2*(params.Ue4**2*std_osc.Padiabatic(bK, -const.nue_to_nue) + params.Umu4**2*std_osc.Padiabatic(bK, -const.numu_to_nue))/(params.Ue4**2 + params.Umu4**2 +params.Utau4**2)
+old_factorB = params.Ue4**2*(params.Ue4**2*std_osc.Padiabatic(bB, -const.nue_to_nue) + params.Umu4**2*std_osc.Padiabatic(bB, -const.numu_to_nue))/(params.Ue4**2 + params.Umu4**2 +params.Utau4**2)
 for i in range(np.size(UE4SQR)):
 	for j in range(np.size(UMU4SQR)):
-		new_factor = (UE4SQR[i]*std_osc.Padiabatic(bK, -const.nue_to_nue) + UMU4SQR[j]*std_osc.Padiabatic(bK, -const.numu_to_nue))/(UE4SQR[i] + UMU4SQR[j] +params.Utau4**2)
-		np_new = new_factor/old_factor*npK
-		L[j,i] = np.sum(np_new)#stats.chi2_binned_rate(np_new, backK, dK, [err_flux,err_back])
-
-print L
-
+		new_factorK = UE4SQR[i]*(UE4SQR[i]*std_osc.Padiabatic(bK, -const.nue_to_nue) + UMU4SQR[j]*std_osc.Padiabatic(bK, -const.numu_to_nue))/(UE4SQR[i] + UMU4SQR[j] +params.Utau4**2)
+		new_factorB = UE4SQR[i]*(UE4SQR[i]*std_osc.Padiabatic(bB, -const.nue_to_nue) + UMU4SQR[j]*std_osc.Padiabatic(bB, -const.numu_to_nue))/(UE4SQR[i] + UMU4SQR[j] +params.Utau4**2)
+		np_newK = new_factorK/old_factorK*npK
+		np_newB = new_factorB/old_factorB*npB
+		LK[j,i] = stats.chi2_binned_rate(np_newK, backK, dK, [err_flux,err_backK])
+		LB[j,i] = stats.chi2_binned_rate(np_newB, backB, dB, [err_flux,err_backB])
+print np.min(LB)
 ################################################################
 # PLOTTING THE LIMITS
 ################################################################
@@ -67,8 +73,25 @@ fig = plt.figure()
 ax = fig.add_axes(axes_form)
 
 X,Y = np.meshgrid(UE4SQR,UMU4SQR)
-# ax.contour(X,Y,L, [chi2.ppf(0.90, dof)], color='black')
-ax.contour(X,Y,L, 20, color='black')
+# ax.contourf(X,Y,LK, [chi2.ppf(0.90, dofK),1e100], colors=['black'],alpha=0.1, linewidths=[0.1])
+ax.contour(X,Y,LK, [chi2.ppf(0.90, dofK)], colors=['blue'],linewidths=[1.0])
+# ax.contour(X,Y,L, 20, color='black')
+
+# ax.contourf(X,Y,LB, [chi2.ppf(0.90, dof),1e100], colors=['black'],alpha=0.1, linewidths=[0.1])
+# ax.contour(X,Y,LB, [chi2.ppf(0.90, dofK	)], colors=['navy'],linewidths=[0.1])
+# ax.contour(X,Y,L, 20, color='black')
+
+
+ax.annotate(r'MiniBooNE',xy=(0.55,0.71),xycoords='axes fraction',color='darkorange',fontsize=10,rotation=-32)
+ax.annotate(r'LSND',xy=(0.85,0.9),xycoords='axes fraction',color='firebrick',fontsize=10,rotation=0)
+ax.annotate(r'\noindent All w/o\\LSND',xy=(0.4,0.85),xycoords='axes fraction',color='darkred',fontsize=10,rotation=0)
+ax.annotate(r'', fontsize=fsize, xy=(1.3e-3,2e-4), xytext=(5.2e-4,2e-4),color='blue',
+            arrowprops=dict(arrowstyle="-|>", mutation_scale=5, color='blue', lw = 0.5),
+            )
+ax.annotate(r'KamLAND $90\%$ C.L.', fontsize=0.8*fsize, xy=(0.45,0.17), xytext=(0.3,0.18),xycoords='axes fraction', color='blue')
+ax.annotate(r'excluded', fontsize=0.8*fsize, xy=(0.45,0.2), xytext=(0.3,0.08),xycoords='axes fraction', color='blue')
+
+
 
 ############
 # GET THE FIT REGIONS FROM DENTLER ET AL
@@ -103,8 +126,6 @@ yl_f = np.interp(x_f,xl,yl)
 ax.fill_betweenx(x_f,y_f,yl_f,facecolor='darkorange',alpha=0.5,lw=0)
 ax.fill_betweenx(x_f,y_f,yl_f,edgecolor='firebrick',facecolor='None',lw=0.8)
 
-
-
 ax.set_xscale('log')
 ax.set_yscale('log')
 ##############
@@ -120,8 +141,8 @@ ax.legend(loc='upper right',frameon=False,ncol=1)
 ax.set_title(r'$m_4 = %.0f$ eV,\, '%(params.m4*1e9)+boson_string+r'$/m_4 = %.2f$'%(params.mBOSON/params.m4), fontsize=fsize)
 
 # ax.annotate(r'Borexino',xy=(0.55,0.35),xycoords='axes fraction',fontsize=14)
-ax.set_xlim(1e-5,0.1)
-ax.set_ylim(1e-4,0.1)
+ax.set_xlim(1e-4,0.04)
+ax.set_ylim(1e-4,0.012)
 # ax.set_ylim(0,)
 ax.set_xlabel(r'$|U_{e 4}|^2$')
 ax.set_ylabel(r'$|U_{\mu 4}|^2$')

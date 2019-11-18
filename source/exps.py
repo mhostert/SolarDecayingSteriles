@@ -83,7 +83,7 @@ class kamland_data():
 	def __init__(self):
 
 		self.exp_name=const.KAMLAND
-		self.err_back=0.25
+		self.err_back=0.20
 
 		EXPOSURE=2343.0*24*60*60
 		year=365*24*60*60
