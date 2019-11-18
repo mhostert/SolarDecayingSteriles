@@ -21,6 +21,11 @@ import xsecs
 import exps
 import standard_oscillations as std_osc
 import stats
+
+###############################
+NEVAL = 3e4
+
+
 ################################################################
 # Compute the chi2 using the model independent limits provided by collaborations
 def fill_bins(exp,params,fluxfile,endpoint=1e100):
@@ -76,9 +81,9 @@ def RATES_dN_HNL_CASCADE_NU_NUBAR(flux,xsec,xsecbar,dim=3,enumin=0,enumax=2.0,pa
 	f = HNL_CASCADE_NU_NUBAR(flux,xsec,xsecbar,dim=dim,enumin=enumin,enumax=enumax,params=params,bins=bins,eff=eff,enu_eff=enu_eff,smearing_function=smearing_function)
 	integ = vegas.Integrator(f.dim * [[0, 1]])
 	# adapt grid
-	training = integ(f, nitn=20, neval=1e4)
+	training = integ(f, nitn=20, neval=1e3)
 	# compute integral
-	result = integ(f, nitn=20, neval=1e4)
+	result = integ(f, nitn=20, neval=NEVAL)
 	if PRINT:	
 		print result.summary()
 		print '   I =', result['I']
@@ -96,7 +101,7 @@ def RATES_dN_HNL_TO_ZPRIME(flux,xsec,dim=2,enumin=0,enumax=2.0,params=None,bins=
 	# adapt grid
 	training = integ(f, nitn=20, neval=1000)
 	# compute integral
-	result = integ(f, nitn=20, neval=1e5)
+	result = integ(f, nitn=20, neval=NEVAL)
 	if PRINT:	
 		print result.summary()
 		print '   I =', result['I']
@@ -115,7 +120,7 @@ def RATES_SBL_OSCILLATION(flux,xsec,dim=1,enumin=0,enumax=2.0,params=None,bins=N
 	# adapt grid
 	training = integ(f, nitn=20, neval=1000)
 	# compute integral
-	result = integ(f, nitn=20, neval=1e4)
+	result = integ(f, nitn=20, neval=NEVAL)
 	if PRINT:	
 		print result.summary()
 		print '   I =', result['I']

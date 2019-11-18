@@ -39,6 +39,31 @@ class miniboone_data():
 		self.enu_eff = np.array([0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.3,1.5,1.7,1.9,2.1,3.0])
 
 
+class superk_data():
+	def __init__(self):
+
+		N_PROTONS = 1.5e33
+		TIME = 2778**60*60*24# seconds
+		avg_efficiency = 0.193
+		self.norm = N_PROTONS*avg_efficiency*TIME
+
+		self.exp_name=const.SUPERK_IV
+		self.err_back=0.10
+
+		self.smearing_function=superK_Esmear
+
+		#######################
+		# neutrino energy data
+		self.Enu_binc, self.data = np.loadtxt("digitized/borexino/data.dat", unpack=True)
+		
+		_, self.MCatm = np.loadtxt("digitized/borexino/atmospheric.dat", unpack=True)
+		_, self.MCgeo = np.loadtxt("digitized/borexino/geoneutrinos.dat", unpack=True)
+		_, self.MCreactor = np.loadtxt("digitized/borexino/reactors.dat", unpack=True)
+
+		self.bin_e = np.linspace(9.3,)
+		self.bin_w = (self.bin_e[1:] - self.bin_e[:-1])
+		self.bin_c = self.bin_e[:-1] + self.bin_w/2.0
+
 class borexino_data():
 	def __init__(self):
 
@@ -63,6 +88,13 @@ class borexino_data():
 		self.bin_e = np.array([1.8,2.8,3.8,4.8,5.8,6.8,7.8,8.8,9.8,10.8,11.8,12.8,13.8,14.8,15.8,16.8])
 		self.bin_w = (self.bin_e[1:] - self.bin_e[:-1])
 		self.bin_c = self.bin_e[:-1] + self.bin_w/2.0
+
+class superK_IV_limit():
+	def __init__(self):
+		_, self.fluxlimit = np.loadtxt("digitized/superK/fluxlimits_superK_IV.dat", unpack=True)
+		self.Enu_bin_e = np.lins(9.3,31.3,23,endpoint=True)
+		self.Enu_bin_w = (self.Enu_bin_e[1:] - self.Enu_bin_e[:-1])
+		self.Enu_bin_c = self.Enu_bin_e[:-1] + self.Enu_bin_c/2.0
 
 class borexino_limit():
 	def __init__(self):
