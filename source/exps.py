@@ -92,7 +92,7 @@ class borexino_data():
 class superK_IV_limit():
 	def __init__(self):
 		_, self.fluxlimit = np.loadtxt("digitized/superK/fluxlimits_superK_IV.dat", unpack=True)
-		self.Enu_bin_e = np.lins(9.3,31.3,23,endpoint=True)
+		self.Enu_bin_e = np.linspace(9.3,31.3,23,endpoint=True)
 		self.Enu_bin_w = (self.Enu_bin_e[1:] - self.Enu_bin_e[:-1])
 		self.Enu_bin_c = self.Enu_bin_e[:-1] + self.Enu_bin_c/2.0
 

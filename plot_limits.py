@@ -30,6 +30,12 @@ Kbin_w = exp2.Enu_bin_w
 Kbin_e = exp2.Enu_bin_e
 Kfluxlimit = exp2.fluxlimit
 
+exp3 = exps.superK_IV_limit()
+Sbin_c = exp3.Enu_bin_c
+Sbin_w = exp3.Enu_bin_w
+Sbin_e = exp3.Enu_bin_e
+Sfluxlimit = exp3.fluxlimit
+
 ############
 # NUMU FLUX
 fluxfile = "fluxes/b8spectrum.txt"
@@ -154,6 +160,9 @@ if params.model == const.VECTOR:
 elif params.model == const.SCALAR:
 	boson_string = r'$m_\phi$'
 	boson_file = 'scalar'
+
+ax.step(np.append(Sbin_c-0.5,Sbin_c[-1]+0.5), np.append(Sfluxlimit,1e8), where = 'post', color='grey', lw=0.5)
+ax.fill_between(np.append(Sbin_c-0.5,Sbin_c[-1]+0.5), np.append(Sfluxlimit,1e8), np.ones(np.size(Bbin_c)+1)*1e10, step = 'post', lw=0.0, alpha=0.5, color='grey')
 
 ax.step(np.append(Kbin_c-0.5,Kbin_c[-1]+0.5), np.append(Kfluxlimit,1e8), where = 'post', color='indigo', lw=0.5)
 ax.fill_between(np.append(Kbin_c-0.5,Kbin_c[-1]+0.5), np.append(Kfluxlimit,1e8), np.ones(np.size(Kbin_c)+1)*1e10, step = 'post', lw=0.0, alpha=0.5, color='indigo')
