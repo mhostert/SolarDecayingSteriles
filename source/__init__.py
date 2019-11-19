@@ -9,3 +9,8 @@ import exps
 import standard_oscillations as std_osc
 import rates
 import stats
+
+
+import superk
+import kamland
+import borexino

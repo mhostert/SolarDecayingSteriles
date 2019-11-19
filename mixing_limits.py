@@ -10,7 +10,10 @@ import vegas
 import gvar as gv
 from scipy.stats import chi2
 from source import *
+import matplotlib.colors as colors
 
+rates.NEVALwarmup = 3e3
+rates.NEVAL = 3e3
 
 ############
 # NUMU FLUX
@@ -29,35 +32,50 @@ params.mBOSON  = 0.9*params.m4 # GeV
 
 KAM = exps.kamland_data()
 BOR = exps.borexino_data()
+SK = exps.superk_data()
 
 err_flux = 0.1
 err_backK = KAM.err_back
 err_backB = BOR.err_back
+err_backS = SK.err_back
 
 
 bK, npK, backK, dK = rates.fill_bins(KAM,params,fluxfile,endpoint=17)
-bB, npB, backB, dB = rates.fill_bins(BOR,params,fluxfile,endpoint=17)
+bB, npB, backB, dB = rates.fill_bins(BOR,params,fluxfile,startpoint=3,endpoint=14)
+bS, npS, backS, dS = rates.fill_bins(SK,params,fluxfile,endpoint=17)
 
+# print backB, dB, npB
 
 NPOINTS = 33
 UE4SQR =np.logspace(-4,-1,NPOINTS)
 UMU4SQR =np.logspace(-4,-1,NPOINTS)
 LK = np.zeros((NPOINTS,NPOINTS))
 LB = np.zeros((NPOINTS,NPOINTS))
+LS = np.zeros((NPOINTS,NPOINTS))
 
 dofK = np.size(dK)
 dofB = np.size(dB)
+dofS = np.size(dS)
 old_factorK = params.Ue4**2*(params.Ue4**2*std_osc.Padiabatic(bK, -const.nue_to_nue) + params.Umu4**2*std_osc.Padiabatic(bK, -const.numu_to_nue))/(params.Ue4**2 + params.Umu4**2 +params.Utau4**2)
 old_factorB = params.Ue4**2*(params.Ue4**2*std_osc.Padiabatic(bB, -const.nue_to_nue) + params.Umu4**2*std_osc.Padiabatic(bB, -const.numu_to_nue))/(params.Ue4**2 + params.Umu4**2 +params.Utau4**2)
+old_factorS = params.Ue4**2*(params.Ue4**2*std_osc.Padiabatic(bS, -const.nue_to_nue) + params.Umu4**2*std_osc.Padiabatic(bS, -const.numu_to_nue))/(params.Ue4**2 + params.Umu4**2 +params.Utau4**2)
+
 for i in range(np.size(UE4SQR)):
 	for j in range(np.size(UMU4SQR)):
 		new_factorK = UE4SQR[i]*(UE4SQR[i]*std_osc.Padiabatic(bK, -const.nue_to_nue) + UMU4SQR[j]*std_osc.Padiabatic(bK, -const.numu_to_nue))/(UE4SQR[i] + UMU4SQR[j] +params.Utau4**2)
 		new_factorB = UE4SQR[i]*(UE4SQR[i]*std_osc.Padiabatic(bB, -const.nue_to_nue) + UMU4SQR[j]*std_osc.Padiabatic(bB, -const.numu_to_nue))/(UE4SQR[i] + UMU4SQR[j] +params.Utau4**2)
+		new_factorS = UE4SQR[i]*(UE4SQR[i]*std_osc.Padiabatic(bS, -const.nue_to_nue) + UMU4SQR[j]*std_osc.Padiabatic(bS, -const.numu_to_nue))/(UE4SQR[i] + UMU4SQR[j] +params.Utau4**2)
 		np_newK = new_factorK/old_factorK*npK
 		np_newB = new_factorB/old_factorB*npB
-		LK[j,i] = stats.chi2_binned_rate(np_newK, backK, dK, [err_flux,err_backK])
-		LB[j,i] = stats.chi2_binned_rate(np_newB, backB, dB, [err_flux,err_backB])
-print np.min(LB)
+		np_newS = new_factorS/old_factorS*npS
+		# print new_factorK,new_factorB
+		LK[j,i] = stats.chi2_binned_rate(np_newK, backK, dK, [err_flux,err_backK])#np.sum(np_newK)
+		LB[j,i] = stats.chi2_binned_rate(np_newB, backB, dB, [err_flux,err_backB])#np.sum(np_newB)
+		LS[j,i] = stats.chi2_binned_rate(np_newS, backS, dS, [err_flux,err_backS])#np.sum(np_newS)
+print np.min(LK), dofK
+print np.min(LB), dofB
+print np.min(LS), dofS
+
 ################################################################
 # PLOTTING THE LIMITS
 ################################################################
@@ -77,12 +95,17 @@ X,Y = np.meshgrid(UE4SQR,UMU4SQR)
 ax.contour(X,Y,LK, [chi2.ppf(0.90, dofK)], colors=['blue'],linewidths=[1.0])
 # ax.contour(X,Y,L, 20, color='black')
 
-# ax.contourf(X,Y,LB, [chi2.ppf(0.90, dof),1e100], colors=['black'],alpha=0.1, linewidths=[0.1])
-# ax.contour(X,Y,LB, [chi2.ppf(0.90, dofK	)], colors=['navy'],linewidths=[0.1])
-# ax.contour(X,Y,L, 20, color='black')
+# ax.contourf(X,Y,LB, [chi2.ppf(0.90, dofB),1e100], colors=['black'],alpha=0.1, linewidths=[0.1])
+ax.contour(X,Y,LB, [chi2.ppf(0.90, dofB)], colors=['red'],linewidths=[1.0])
+Z = LB
+# pcm = ax.pcolor(X, Y, Z,
+#                    norm=colors.LogNorm(vmin=Z.min(), vmax=Z.max()),
+#                    cmap='PuBu_r')# ax.contour(X,Y,L, 20, color='black')
+# fig.colorbar(pcm, ax=ax, extend='max')
 
+ax.contour(X,Y,LS, [chi2.ppf(0.90, dofS)], colors=['green'],linewidths=[1.0], ls='--')
 
-ax.annotate(r'MiniBooNE',xy=(0.55,0.71),xycoords='axes fraction',color='darkorange',fontsize=10,rotation=-32)
+ax.annotate(r'MiniBooNE',xy=(0.55,0.71),xycoords='axes fraction',color='firebrick',fontsize=10,rotation=-32)
 ax.annotate(r'LSND',xy=(0.85,0.9),xycoords='axes fraction',color='firebrick',fontsize=10,rotation=0)
 ax.annotate(r'\noindent All w/o\\LSND',xy=(0.4,0.85),xycoords='axes fraction',color='darkred',fontsize=10,rotation=0)
 ax.annotate(r'', fontsize=fsize, xy=(1.3e-3,2e-4), xytext=(5.2e-4,2e-4),color='blue',

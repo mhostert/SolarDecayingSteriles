@@ -57,14 +57,19 @@ def chi2_model_independent(exp,params,fluxfile):
 	return chi2, chi2/(np.size(bins)-2)
 
 
+
+
 def chi2_binned_rate(NP_MC,back_MC,D,sys):
 
 	err_flux = sys[0]
 	err_back = sys[1] 
 
-	chi2bin = lambda beta : 2*np.sum(NP_MC*(1+beta[0]) + back_MC*(1+beta[1]) - D + myXLOG(D, D/(NP_MC*(1+beta[0]) + back_MC*(1+beta[1])) ) ) + beta[0]**2/(err_flux**2) + beta[1]**2 /(err_back**2) 
-	
+	def chi2bin(beta):
+		return 2*np.sum(NP_MC*(1+beta[0]) + back_MC*(1+beta[1]) - D + myXLOG(D, NP_MC*(1+beta[0]) + back_MC*(1+beta[1]) ) ) + beta[0]**2/(err_flux**2) + beta[1]**2 /(err_back**2) 
+		# return 2*np.sum(   (NP_MC*(1+beta[0]) + back_MC*(1+beta[1]) - D)**2/(NP_MC*(1+beta[0]) + back_MC*(1+beta[1]))) + beta[0]**2/(err_flux**2) + beta[1]**2 /(err_back**2)
+
 	res = scipy.optimize.minimize(chi2bin, [0.0,0.0])
+	
 	f = chi2bin(res.x)
 	if np.abs(np.sum(res.x))>1:
 		return 1e100
@@ -72,4 +77,4 @@ def chi2_binned_rate(NP_MC,back_MC,D,sys):
 		return f
 
 def myXLOG(d,x):
-	return np.array([ (di*np.log(xi) if xi > 0 else 0) for di,xi in zip(d,x)])
+	return np.array([ (di*np.log(di/xi) if (di> 0 and xi>0) else 0) for di,xi in zip(d,x)])

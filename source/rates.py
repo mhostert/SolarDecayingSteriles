@@ -3,11 +3,6 @@ from scipy import interpolate
 import scipy.stats
 from scipy.integrate import quad
 
-import matplotlib.pyplot as plt
-from matplotlib import rc, rcParams
-from matplotlib.pyplot import *
-from matplotlib.legend_handler import HandlerLine2D
-
 import vegas
 import gvar as gv
 
@@ -23,12 +18,14 @@ import standard_oscillations as std_osc
 import stats
 
 ###############################
+NEVALwarmup = 3e4
 NEVAL = 3e4
 
 
 ################################################################
 # Compute the chi2 using the model independent limits provided by collaborations
-def fill_bins(exp,params,fluxfile,endpoint=1e100):
+def fill_bins(exp,params,fluxfile,endpoint=1e100,startpoint=0):
+	print 'Filling the bins in', exp.exp_name
 	###########
 	# SET BINS TO BE THE EXPERIMENTAL BINS
 	bins = exp.bin_e # bin edges
@@ -56,8 +53,8 @@ def fill_bins(exp,params,fluxfile,endpoint=1e100):
 												xsec=xsec,\
 												xsecbar=xsecbar,\
 												dim=3,\
-												enumin=0,\
-												enumax=16.8,\
+												enumin=const.Enu_BEG_OF_SPECTRUM,\
+												enumax=const.Enu_END_OF_SPECTRUM,\
 												params=params,\
 												bins=bins,\
 												PRINT=False,\
@@ -65,23 +62,27 @@ def fill_bins(exp,params,fluxfile,endpoint=1e100):
 												eff=eff,
 												smearing_function=exp.smearing_function)
 
-	NP_MC = dNCASCADE[bin_c<endpoint]*exp.norm
-	bin_c_end = bin_c[bin_c<endpoint]
+	NP_MC = dNCASCADE[ (startpoint<bin_c)&(bin_c<endpoint)]*exp.norm
+	bin_c_end = bin_c[ (startpoint<bin_c)&(bin_c<endpoint)]
 
 	if exp.exp_name==const.KAMLAND:
-		back_MC = exp.MCall_binned[bin_c<endpoint]
-		D = exp.data[bin_c<endpoint]
+		back_MC = exp.MCall_binned[ (startpoint<bin_c)&(bin_c<endpoint)]
+		D = exp.data[ (startpoint<bin_c)&(bin_c<endpoint)]
 	elif exp.exp_name==const.BOREXINO:
-		back_MC = exp.MCreactor[bin_c<endpoint]
-		D = exp.data[bin_c<endpoint]
-	
+		back_MC = exp.MCall[ (startpoint<bin_c)&(bin_c<endpoint)]
+		D = exp.data[ (startpoint<bin_c)&(bin_c<endpoint)]
+	elif exp.exp_name==const.SUPERK_IV:
+		back_MC = exp.MCall[ (startpoint<bin_c)&(bin_c<endpoint)]
+		D = exp.data[ (startpoint<bin_c)&(bin_c<endpoint)]
+	else: 
+		print 'ERROR! Could not find experiment when filling the bins.'
 	return bin_c_end, NP_MC, back_MC, D
 
 def RATES_dN_HNL_CASCADE_NU_NUBAR(flux,xsec,xsecbar,dim=3,enumin=0,enumax=2.0,params=None,bins=None,PRINT=False,eff=None,enu_eff=None,smearing_function=None):
 	f = HNL_CASCADE_NU_NUBAR(flux,xsec,xsecbar,dim=dim,enumin=enumin,enumax=enumax,params=params,bins=bins,eff=eff,enu_eff=enu_eff,smearing_function=smearing_function)
 	integ = vegas.Integrator(f.dim * [[0, 1]])
 	# adapt grid
-	training = integ(f, nitn=20, neval=1e3)
+	training = integ(f, nitn=20, neval=NEVALwarmup)
 	# compute integral
 	result = integ(f, nitn=20, neval=NEVAL)
 	if PRINT:	
@@ -99,7 +100,7 @@ def RATES_dN_HNL_TO_ZPRIME(flux,xsec,dim=2,enumin=0,enumax=2.0,params=None,bins=
 	f = HNL_TO_NU_ZPRIME(flux,xsec,dim=dim,enumin=enumin,enumax=enumax,params=params,bins=bins,eff=eff,enu_eff=enu_eff,smearing_function=smearing_function)
 	integ = vegas.Integrator(f.dim * [[0, 1]])
 	# adapt grid
-	training = integ(f, nitn=20, neval=1000)
+	training = integ(f, nitn=20, neval=NEVALwarmup)
 	# compute integral
 	result = integ(f, nitn=20, neval=NEVAL)
 	if PRINT:	
@@ -118,7 +119,7 @@ def RATES_SBL_OSCILLATION(flux,xsec,dim=1,enumin=0,enumax=2.0,params=None,bins=N
 	f = SBL_OSCILLATION(flux,xsec,dim=dim,enumin=enumin,enumax=enumax,params=params,bins=bins,L=L,eff=eff,enu_eff=enu_eff,smearing_function=smearing_function)
 	integ = vegas.Integrator(f.dim * [[0, 1]])
 	# adapt grid
-	training = integ(f, nitn=20, neval=1000)
+	training = integ(f, nitn=20, neval=NEVALwarmup)
 	# compute integral
 	result = integ(f, nitn=20, neval=NEVAL)
 	if PRINT:	

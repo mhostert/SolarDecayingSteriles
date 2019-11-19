@@ -14,6 +14,11 @@ import gvar as gv
 
 from source import *
 
+##########
+# integration evaluations
+rates.NEVALwarmup = 1e4
+rates.NEVAL = 1e6
+
 ################################################################
 # SETUP
 ################################################################
@@ -30,7 +35,7 @@ Kbin_w = exp2.Enu_bin_w
 Kbin_e = exp2.Enu_bin_e
 Kfluxlimit = exp2.fluxlimit
 
-exp3 = exps.superK_IV_limit()
+exp3 = exps.superk_limit()
 Sbin_c = exp3.Enu_bin_c
 Sbin_w = exp3.Enu_bin_w
 Sbin_e = exp3.Enu_bin_e
@@ -162,7 +167,7 @@ elif params.model == const.SCALAR:
 	boson_file = 'scalar'
 
 ax.step(np.append(Sbin_c-0.5,Sbin_c[-1]+0.5), np.append(Sfluxlimit,1e8), where = 'post', color='grey', lw=0.5)
-ax.fill_between(np.append(Sbin_c-0.5,Sbin_c[-1]+0.5), np.append(Sfluxlimit,1e8), np.ones(np.size(Bbin_c)+1)*1e10, step = 'post', lw=0.0, alpha=0.5, color='grey')
+ax.fill_between(np.append(Sbin_c-0.5,Sbin_c[-1]+0.5), np.append(Sfluxlimit,1e8), np.ones(np.size(Sbin_c)+1)*1e10, step = 'post', lw=0.0, alpha=0.5, color='grey')
 
 ax.step(np.append(Kbin_c-0.5,Kbin_c[-1]+0.5), np.append(Kfluxlimit,1e8), where = 'post', color='indigo', lw=0.5)
 ax.fill_between(np.append(Kbin_c-0.5,Kbin_c[-1]+0.5), np.append(Kfluxlimit,1e8), np.ones(np.size(Kbin_c)+1)*1e10, step = 'post', lw=0.0, alpha=0.5, color='indigo')
@@ -179,16 +184,17 @@ ax.plot(bin_c-dx/2.0, dNCASCADE3/dx, lw=1, color='firebrick', label=boson_string
 ax.set_yscale('log')
 
 ax.text(14,1e2,r'Borexino',fontsize=10,color='blue')
-ax.text(13.6,5,r'KamLAND',fontsize=10,color='indigo')
+ax.text(11.4,37,r'KamLAND',fontsize=10,color='indigo')
+ax.text(14.5,5.5,r'SK-IV',fontsize=10,color='black')
 
 ##############
 # STYLE
 ax.legend(loc='lower left',frameon=False,ncol=1, fontsize=fsize)
 # ax.set_title(r'$m_h = %.0f$ keV,\, $m_{Z^\prime} = %.0f$ keV, \, $|U_{\mu h}| = %.3f$'%(params.m4*1e6,params.mzprime*1e6,params.Umu4), fontsize=fsize)
-ax.set_title(r'$m_4 = %.0f$ eV, \, $|U_{e 4}|^2 = %.3f$'%(params.m4*1e9, params.Umu4**2), fontsize=fsize)
+ax.set_title(r'$m_4 = %.0f$ eV, \, $|U_{e 4}|^2 = %.3f$'%(params.m4*1e9, params.Ue4**2), fontsize=fsize)
 
-ax.set_xlim(0,17.3)
-ax.set_ylim(1e0, 5e5)
+ax.set_xlim(0,18.3)
+ax.set_ylim(0.4, 2e5)
 
 ax.set_ylabel(r'$\frac{{\rm d}\Phi}{{\rm d}E_\nu}$ $\times$ (cm$^{2}$ s MeV)')
 ax.set_xlabel(r'$E_\nu/$MeV')

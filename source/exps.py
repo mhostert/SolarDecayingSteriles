@@ -43,24 +43,25 @@ class superk_data():
 	def __init__(self):
 
 		N_PROTONS = 1.5e33
-		TIME = 2778**60*60*24# seconds
-		avg_efficiency = 0.193
-		self.norm = N_PROTONS*avg_efficiency*TIME
+		TIME = 2778*60*60*24# seconds
+		tot_efficiency = 0.193*0.354*0.50
+		self.norm = N_PROTONS*tot_efficiency*TIME
 
 		self.exp_name=const.SUPERK_IV
-		self.err_back=0.10
+		self.err_back=0.20
 
-		self.smearing_function=superK_Esmear
+		self.smearing_function=superk_Esmear
 
 		#######################
 		# neutrino energy data
-		self.Enu_binc, self.data = np.loadtxt("digitized/borexino/data.dat", unpack=True)
+		_, self.data = np.loadtxt("digitized/superk/data.dat", unpack=True)
 		
-		_, self.MCatm = np.loadtxt("digitized/borexino/atmospheric.dat", unpack=True)
-		_, self.MCgeo = np.loadtxt("digitized/borexino/geoneutrinos.dat", unpack=True)
-		_, self.MCreactor = np.loadtxt("digitized/borexino/reactors.dat", unpack=True)
+		_, self.MCall = np.loadtxt("digitized/superk/MCall.dat", unpack=True)
+		_, self.MCaccidental = np.loadtxt("digitized/superk/MC_only_accidental.dat", unpack=True)
+		_, self.MCreactor = np.loadtxt("digitized/superk/MC_except_reactor.dat", unpack=True)
+		_, self.MCreactorLi = np.loadtxt("digitized/superk/MC_except_Li_reactor.dat", unpack=True)
 
-		self.bin_e = np.linspace(9.3,)
+		self.bin_e = np.linspace(9.3,31.3,23,endpoint=True)
 		self.bin_w = (self.bin_e[1:] - self.bin_e[:-1])
 		self.bin_c = self.bin_e[:-1] + self.bin_w/2.0
 
@@ -84,17 +85,18 @@ class borexino_data():
 		_, self.MCatm = np.loadtxt("digitized/borexino/atmospheric.dat", unpack=True)
 		_, self.MCgeo = np.loadtxt("digitized/borexino/geoneutrinos.dat", unpack=True)
 		_, self.MCreactor = np.loadtxt("digitized/borexino/reactors.dat", unpack=True)
+		self.MCall = self.MCatm+self.MCreactor+self.MCgeo
 
 		self.bin_e = np.array([1.8,2.8,3.8,4.8,5.8,6.8,7.8,8.8,9.8,10.8,11.8,12.8,13.8,14.8,15.8,16.8])
 		self.bin_w = (self.bin_e[1:] - self.bin_e[:-1])
 		self.bin_c = self.bin_e[:-1] + self.bin_w/2.0
 
-class superK_IV_limit():
+class superk_limit():
 	def __init__(self):
-		_, self.fluxlimit = np.loadtxt("digitized/superK/fluxlimits_superK_IV.dat", unpack=True)
+		_, self.fluxlimit = np.loadtxt("digitized/superk/fluxlimits_superK_IV.dat", unpack=True)
 		self.Enu_bin_e = np.linspace(9.3,31.3,23,endpoint=True)
 		self.Enu_bin_w = (self.Enu_bin_e[1:] - self.Enu_bin_e[:-1])
-		self.Enu_bin_c = self.Enu_bin_e[:-1] + self.Enu_bin_c/2.0
+		self.Enu_bin_c = self.Enu_bin_e[:-1] + self.Enu_bin_w/2.0
 
 class borexino_limit():
 	def __init__(self):
@@ -180,8 +182,6 @@ class kamland_data():
 			self.MClimit_binned[i] = np.sum( MClimit[ (Elin<self.bin_e[i+1]) & (Elin>self.bin_e[i]) ]*dxlin ) 
 
 
-
-
 # E in MeV
 def borexino_Esmear(E):
 	Ep = E - 0.8
@@ -189,3 +189,6 @@ def borexino_Esmear(E):
 def kamland_Esmear(E):
 	Ep = E - 0.8
 	return np.random.normal(Ep, 0.064/np.sqrt(Ep))+0.8
+def superk_Esmear(E):
+	Ep = E - 0.8
+	return np.random.normal(Ep, 0.20/np.sqrt(Ep))+0.8

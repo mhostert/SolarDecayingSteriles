@@ -7,7 +7,7 @@ import model
 
 # see https://arxiv.org/pdf/hep-ph/0310238.pdf
 def Padiabatic(Enu, channel):
-	Enu = Enu*1e9
+	Enu = Enu*1e6
 	ACC = 2*np.sqrt(2)*Enu*const.Gf*const.solar_core_Ne * 1e-18 # eV^2
 
 	# ANTINEUTRINO
@@ -29,7 +29,7 @@ def DsolarNeDX(x): # x in eV^-1
 	return 1.0/const.parkeSolarR
 
 def P_Parke(Enu, channel):
-	Enu = Enu*1e9
+	Enu = Enu*1e6
 	ACC = 2*np.sqrt(2)*Enu*const.Gf*const.solar_core_Ne * 1e-18 # eV^2
 
 	# ANTINEUTRINO
@@ -74,10 +74,10 @@ if __name__ == "__main__":
 	fig = plt.figure()
 	ax = fig.add_axes(axes_form)
 
-	E = np.logspace(-4,-2,100)
+	E = np.logspace(-1,1,100)
 
-	ax.plot(E*1e3, Padiabatic(E,const.nue_to_nue), lw=1.0, label=r'$\nu_e \to \nu_e$')
-	ax.plot(E*1e3, Padiabatic(E,-const.nue_to_nue), lw=1.0, label=r'$\overline{\nu_e} \to \overline{\nu_e}$')
+	ax.plot(E, Padiabatic(E,const.nue_to_nue), lw=1.0, label=r'$\nu_e \to \nu_e$')
+	ax.plot(E, Padiabatic(E,-const.nue_to_nue), lw=1.0, label=r'$\overline{\nu_e} \to \overline{\nu_e}$')
 
 	# ax.plot(E, P_Parke(E)/Padiabatic(E), lw=1.5, ls='--', label=r'Parke')
 

@@ -29,6 +29,7 @@ SCALAR = 2
 # Experiments 
 KAMLAND     = "kamland"
 BOREXINO     = "borexino"
+SUPERK_IV     = "SUPERK_IV"
 
 
 ###########
