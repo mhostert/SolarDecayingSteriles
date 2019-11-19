@@ -13,6 +13,18 @@ import vegas
 import gvar as gv
 from scipy.stats import chi2
 
+import const
+import pdg
+import model
+import decay_rates as dr
+import prob
+import fluxes
+import xsecs
+import exps
+import standard_oscillations as std_osc
+import rates
+
+
 ################################################################
 # Compute the chi2 using the model independent limits provided by collaborations
 def chi2_model_independent(exp,params,fluxfile):
@@ -39,7 +51,7 @@ def chi2_model_independent(exp,params,fluxfile):
 
 	############
 	# number of events
-	NCASCADE, dNCASCADE = integrands.RATES_dN_HNL_CASCADE_NU_NUBAR(\
+	NCASCADE, dNCASCADE = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 												flux=flux,\
 												xsec=xsec,\
 												xsecbar=xsecbar,\
@@ -51,24 +63,23 @@ def chi2_model_independent(exp,params,fluxfile):
 												PRINT=False,\
 												enu_eff=enu_eff,\
 												eff=eff,
-												exp=exp.exp_name)
+												smearing_function=lambda x: x)
 
 	chi2 = np.sum( 2.71 * (dNCASCADE)**2/fluxlimit**2 )
 	return chi2, chi2/(np.size(bins)-2)
 
-
-
-
 def chi2_binned_rate(NP_MC,back_MC,D,sys):
 
 	err_flux = sys[0]
-	err_back = sys[1] 
+	err_back = sys[1]
 
-	def chi2bin(beta):
-		return 2*np.sum(NP_MC*(1+beta[0]) + back_MC*(1+beta[1]) - D + myXLOG(D, NP_MC*(1+beta[0]) + back_MC*(1+beta[1]) ) ) + beta[0]**2/(err_flux**2) + beta[1]**2 /(err_back**2) 
+	def chi2bin(sys):
+		alpha=sys[:np.size(D)]
+		beta = sys[np.size(D):]
+		return 2*np.sum(NP_MC*(1+beta) + back_MC*(1+beta) - D + myXLOG(D, NP_MC*(1+alpha) + back_MC*(1+beta) ) ) + np.sum(alpha**2/(err_flux**2)) + np.sum(beta**2 /(err_back**2))
 		# return 2*np.sum(   (NP_MC*(1+beta[0]) + back_MC*(1+beta[1]) - D)**2/(NP_MC*(1+beta[0]) + back_MC*(1+beta[1]))) + beta[0]**2/(err_flux**2) + beta[1]**2 /(err_back**2)
 
-	res = scipy.optimize.minimize(chi2bin, [0.0,0.0])
+	res = scipy.optimize.minimize(chi2bin, np.zeros(np.size(D)*2))
 	
 	f = chi2bin(res.x)
 	if np.abs(np.sum(res.x))>1:

@@ -17,7 +17,7 @@ from source import *
 ##########
 # integration evaluations
 rates.NEVALwarmup = 1e4
-rates.NEVAL = 1e6
+rates.NEVAL = 1e5
 
 ################################################################
 # SETUP
@@ -90,7 +90,7 @@ identity = lambda x : x
 # DECAY MODEL PARAMETERS
 params = model.decay_model_params(const.SCALAR)
 params.gx		= 1.0
-params.Ue4		= np.sqrt(0.001)
+params.Ue4		= np.sqrt(0.00025)
 params.Umu4		= np.sqrt(0.001)*0
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
@@ -112,51 +112,51 @@ NCASCADE, dNCASCADE = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 
 params = model.decay_model_params(const.SCALAR)
 params.gx		= 1.0
-params.Ue4		= np.sqrt(0.001)
+params.Ue4		= np.sqrt(0.0005)
 params.Umu4		= np.sqrt(0.001)*0
 params.Utau4		= np.sqrt(0.001)*0
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
 params.mBOSON  = 0.5*params.m4 # GeV
 
-NCASCADE2, dNCASCADE2 = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
-											flux=flux,\
-											xsec=xsec,\
-											xsecbar=xsecbar,\
-											dim=3,\
-											enumin=0,\
-											enumax=16.8,\
-											params=params,\
-											bins=bins,\
-											PRINT=True,\
-											enu_eff=enu_eff,\
-											eff=eff,
-											smearing_function=identity)
+# NCASCADE2, dNCASCADE2 = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
+# 											flux=flux,\
+# 											xsec=xsec,\
+# 											xsecbar=xsecbar,\
+# 											dim=3,\
+# 											enumin=0,\
+# 											enumax=16.8,\
+# 											params=params,\
+# 											bins=bins,\
+# 											PRINT=True,\
+# 											enu_eff=enu_eff,\
+# 											eff=eff,
+# 											smearing_function=identity)
 
-params = model.decay_model_params(const.SCALAR)
-params.gx		= 1.0
-params.Ue4		= np.sqrt(0.001)
-params.Umu4		= np.sqrt(0.001)*0
-params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
-params.m4		= 300e-9 # GeV
-params.mBOSON  = 0.1*params.m4 # GeV
+# params = model.decay_model_params(const.SCALAR)
+# params.gx		= 1.0
+# params.Ue4		= np.sqrt(0.0005)
+# params.Umu4		= np.sqrt(0.001)*0
+# params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
+# params.m4		= 300e-9 # GeV
+# params.mBOSON  = 0.1*params.m4 # GeV
 
-NCASCADE3, dNCASCADE3 = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
-											flux=flux,\
-											xsec=xsec,\
-											xsecbar=xsecbar,\
-											dim=3,\
-											enumin=0,\
-											enumax=16.8,\
-											params=params,\
-											bins=bins,\
-											PRINT=True,\
-											enu_eff=enu_eff,\
-											eff=eff,
-											smearing_function=identity)
+# NCASCADE3, dNCASCADE3 = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
+# 											flux=flux,\
+# 											xsec=xsec,\
+# 											xsecbar=xsecbar,\
+# 											dim=3,\
+# 											enumin=0,\
+# 											enumax=16.8,\
+# 											params=params,\
+# 											bins=bins,\
+# 											PRINT=True,\
+# 											enu_eff=enu_eff,\
+# 											eff=eff,
+# 											smearing_function=identity)
 
-print '%.2g'%np.sum(dNCASCADE[bin_c>1.8]*norm)
-print '%.2g'%const.B8FLUX
+# print '%.2g'%np.sum(dNCASCADE[bin_c>1.8]*norm)
+# print '%.2g'%const.B8FLUX
 
 ##########################################################################
 if params.model == const.VECTOR:
@@ -176,8 +176,8 @@ ax.step(np.append(Bbin_c-0.5,Bbin_c[-1]+0.5), np.append(Bfluxlimit,1e8), where =
 ax.fill_between(np.append(Bbin_c-0.5,Bbin_c[-1]+0.5), np.append(Bfluxlimit,1e8), np.ones(np.size(Bbin_c)+1)*1e10, step = 'post', lw=0.0, alpha=0.5, color='dodgerblue')
 
 ax.plot(bin_c-dx/2.0, dNCASCADE/dx, lw=1.5, color='darkorange', label=boson_string+r'/$m_4 = 0.9$')
-ax.plot(bin_c-dx/2.0, dNCASCADE2/dx, lw=1, color='darkgreen', label=boson_string+r'/$m_4 = 0.5$')
-ax.plot(bin_c-dx/2.0, dNCASCADE3/dx, lw=1, color='firebrick', label=boson_string+r'/$m_4 = 0.1$')
+# ax.plot(bin_c-dx/2.0, dNCASCADE2/dx, lw=1, color='darkgreen', label=boson_string+r'/$m_4 = 0.5$')
+# ax.plot(bin_c-dx/2.0, dNCASCADE3/dx, lw=1, color='firebrick', label=boson_string+r'/$m_4 = 0.1$')
 
 # r'$\nu_4 \to\overline{\nu_e}$ ($%.1g$ cm$^{-2}$ s$^{-1}$)'%(np.sum(dNCASCADE))
 
@@ -189,9 +189,14 @@ ax.text(14.5,5.5,r'SK-IV',fontsize=10,color='black')
 
 ##############
 # STYLE
-ax.legend(loc='lower left',frameon=False,ncol=1, fontsize=fsize)
-# ax.set_title(r'$m_h = %.0f$ keV,\, $m_{Z^\prime} = %.0f$ keV, \, $|U_{\mu h}| = %.3f$'%(params.m4*1e6,params.mzprime*1e6,params.Umu4), fontsize=fsize)
-ax.set_title(r'$m_4 = %.0f$ eV, \, $|U_{e 4}|^2 = %.3f$'%(params.m4*1e9, params.Ue4**2), fontsize=fsize)
+def to_scientific_notation(number):
+    a, b = '{:.4E}'.format(number).split('E')
+    b = int(b)
+    a = float(a)
+    return r'$%.0f \times 10^{%i}$'%(a,b)
+UEQSR = to_scientific_notation(params.Ue4**2)
+ax.legend(loc='lower left',frameon=False,ncol=1,markerfirst=True)
+ax.set_title(r'$m_4 = %.0f$ eV, $|U_{e 4}|^2 = \,$'%(params.m4*1e9)+UEQSR, fontsize=fsize)
 
 ax.set_xlim(0,18.3)
 ax.set_ylim(0.4, 2e5)

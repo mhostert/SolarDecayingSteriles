@@ -101,9 +101,9 @@ class superk_limit():
 class borexino_limit():
 	def __init__(self):
 		self.Enu_bin_l, self.Nevents, self.Nbkg, self.NbkgATM, self.fluxlimit, self.fluxlimitATM = np.loadtxt("digitized/borexino/Table2.dat", unpack=True)
+		self.Enu_bin_e = np.append(self.Enu_bin_l,self.Enu_bin_l[-1]+1.0)
 		self.Enu_bin_c = self.Enu_bin_l+0.5
 		self.Enu_bin_w = np.ones(np.size(self.Enu_bin_c))
-		self.Enu_bin_e = np.append(self.Enu_bin_l,self.Enu_bin_l[-1]+1.0)
 
 class kamland_limit():
 	def __init__(self):

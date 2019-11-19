@@ -56,7 +56,7 @@ def plot(params,fluxfile,xsfile):
 												PRINT=True,\
 												enu_eff=enu_eff,\
 												eff=eff,
-												smearing_function=smearing_function)
+												smearing_function=lambda x: x)
 
 	NCASCADE*=exp.norm
 	dNCASCADE*=exp.norm

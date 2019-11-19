@@ -12,8 +12,8 @@ from scipy.stats import chi2
 from source import *
 import matplotlib.colors as colors
 
-rates.NEVALwarmup = 3e3
-rates.NEVAL = 3e3
+rates.NEVALwarmup = 1e4
+rates.NEVAL = 1e5
 
 ############
 # NUMU FLUX
@@ -23,8 +23,8 @@ fluxfile = "fluxes/b8spectrum.txt"
 # DECAY MODEL PARAMETERS
 params = model.decay_model_params(const.SCALAR)
 params.gx		= 1.0
-params.Ue4		= np.sqrt(0.1)
-params.Umu4		= np.sqrt(0.1)
+params.Ue4		= np.sqrt(0.0003)
+params.Umu4		= np.sqrt(0.0003)
 params.Utau4    = np.sqrt(0)
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
@@ -34,14 +34,16 @@ KAM = exps.kamland_data()
 BOR = exps.borexino_data()
 SK = exps.superk_data()
 
+print stats.chi2_model_independent(exps.borexino_limit(),params,fluxfile)
+
 err_flux = 0.1
-err_backK = KAM.err_back
+err_backK = KAM.err_back/2.0
 err_backB = BOR.err_back
-err_backS = SK.err_back
+err_backS = SK.err_back/2.0
 
 
 bK, npK, backK, dK = rates.fill_bins(KAM,params,fluxfile,endpoint=17)
-bB, npB, backB, dB = rates.fill_bins(BOR,params,fluxfile,startpoint=3,endpoint=14)
+bB, npB, backB, dB = rates.fill_bins(BOR,params,fluxfile,startpoint=0,endpoint=17)
 bS, npS, backS, dS = rates.fill_bins(SK,params,fluxfile,endpoint=17)
 
 # print backB, dB, npB
@@ -73,8 +75,11 @@ for i in range(np.size(UE4SQR)):
 		LB[j,i] = stats.chi2_binned_rate(np_newB, backB, dB, [err_flux,err_backB])#np.sum(np_newB)
 		LS[j,i] = stats.chi2_binned_rate(np_newS, backS, dS, [err_flux,err_backS])#np.sum(np_newS)
 print np.min(LK), dofK
+LK = LK - np.min(LK)
 print np.min(LB), dofB
+LB = LB - np.min(LB)
 print np.min(LS), dofS
+LS = LS - np.min(LS)
 
 ################################################################
 # PLOTTING THE LIMITS
