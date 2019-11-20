@@ -74,12 +74,14 @@ def plot(params,fluxfile,xsfile,style='binned'):
 	rcparams={'axes.labelsize':fsize,'xtick.labelsize':fsize,'ytick.labelsize':fsize,\
 					'figure.figsize':(1.2*3.7,1.4*2.3617)	}
 	rc('font',**{'family':'serif', 'serif': ['computer modern roman']})
-	matplotlib.rcParams['hatch.linewidth'] = 0.1  # previous pdf hatch linewidth
+	matplotlib.rcParams['hatch.linewidth'] = 0.5  # previous pdf hatch linewidth
 	rcParams.update(rcparams)
 	axes_form  = [0.15,0.15,0.82,0.76]
 	fig = plt.figure()
 	ax = fig.add_axes(axes_form)
 
+	RAST = True
+	ax.set_rasterized(True)
 
 	######################
 	# Montecarlo 
@@ -102,19 +104,19 @@ def plot(params,fluxfile,xsfile,style='binned'):
 			MCreactor_spall_binned[i] = np.sum( MCreactor_spall[ (Elin<bins[i+1]) & (Elin>bins[i]) ]*dxlin ) 
 			MClimit_binned[i] = np.sum( MClimit[ (Elin<bins[i+1]) & (Elin>bins[i]) ]*dxlin ) 
 
-		ax.bar(bin_c, dNCASCADE, bottom=MCall_binned, width=dx, lw=0.8, facecolor='None', edgecolor='black', hatch='////', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE*dx)), rasterized=False)
-		ax.step(bin_c-dx/2.0,MClimit_binned,lw=1, where='post',dashes=(5,1), color='crimson', label=r'90\% limit', rasterized=False)
-		ax.bar(bin_c,MCall_binned-MCreactor_binned, bottom=MCreactor_binned, width=dx,  lw=0.5,color='orange',alpha=0.7, label=r'reactors', rasterized=False)
-		ax.bar(bin_c,MCreactor_binned-MCreactor_spall_binned, bottom=MCreactor_spall_binned, width=dx,  lw=0.5,color='dodgerblue',alpha=0.7, label=r'spallation', rasterized=False)
-		ax.bar(bin_c,MCreactor_spall_binned, bottom=0*MCreactor_spall_binned, width=dx,  lw=0.5,color='indigo',alpha=0.7, label=r'atm+$n$+acc', rasterized=False)
+		ax.bar(bin_c, dNCASCADE, bottom=MCall_binned, width=dx, lw=0, facecolor='grey', edgecolor='None', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE*dx)), rasterized=False)
+		# ax.step(bin_c-dx/2.0,MClimit_binned,lw=1, where='post',dashes=(5,1), color='crimson', label=r'90\% limit', rasterized=False)
+		ax.bar(bin_c,MCall_binned-MCreactor_binned, bottom=MCreactor_binned, width=dx,  lw=0.5,edgecolor='#FFD500', label=r'reactors', rasterized=RAST,facecolor='None',hatch='xxxxxxxxxx')
+		ax.bar(bin_c,MCreactor_binned-MCreactor_spall_binned, bottom=MCreactor_spall_binned, width=dx,  lw=0.5,edgecolor='#5BD355', label=r'spallation', rasterized=RAST,facecolor='None',hatch='xxxxxxxxxx')
+		ax.bar(bin_c,MCreactor_spall_binned, bottom=0*MCreactor_spall_binned, width=dx,  lw=0.5,edgecolor='#5955D8', label=r'atm+$n$+acc', rasterized=RAST,facecolor='None',hatch='xxxxxxxxxx')
 
-		ax.bar(bin_c, dNCASCADE+MCall_binned, width=dx, lw=0.5, facecolor='None', edgecolor='black', rasterized=False)
+		ax.bar(bin_c, dNCASCADE+MCall_binned, width=dx, lw=0.6, facecolor='None', edgecolor='black', rasterized=False)
 
 	elif style=='smooth':
 		MCall_binned = exp.MCall(bin_c)
 		ax.fill_between(bin_c, dNCASCADE+MCall_binned, MCall_binned, lw=0.5, facecolor='None', edgecolor='black', hatch='////', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE*dx)))
-		ax.fill_between(Elin,MCall, MCreactor,  lw=0.2,color='orange',alpha=0.7, label=r'reactors')
-		ax.fill_between(Elin,MCreactor, MCreactor_spall,  lw=0.2,color='dodgerblue',alpha=0.7, label=r'spallation')
+		ax.fill_between(Elin,MCall, MCreactor,  lw=0.2,color='dodgerblue',alpha=0.7, label=r'reactors')
+		ax.fill_between(Elin,MCreactor, MCreactor_spall,  lw=0.2,color='pink',alpha=0.7, label=r'spallation')
 		ax.fill_between(Elin,MCreactor_spall, 0*MCreactor_spall,  lw=0.2,color='indigo',alpha=0.7, label=r'atm+$n$+acc')
 		ax.plot(Elin,MClimit,lw=0.8, color='crimson', dashes=(5,1),label=r'90\% limit')
 
@@ -144,15 +146,15 @@ def plot(params,fluxfile,xsfile,style='binned'):
 	    return r'$%.0f \times 10^{%i}$'%(a,b)
 	UEQSR = to_scientific_notation(params.Ue4**2)
 	ax.legend(loc='upper right',frameon=False,ncol=1,markerfirst=False)
-	ax.set_title(r'$m_4 = %.0f$ eV,\, '%(params.m4*1e9)+boson_string+r'$/m_h = %.2f$, \, $|U_{e 4}|^2 = \,$'%(params.mBOSON/params.m4)+UEQSR, fontsize=fsize)
+	ax.set_title(r'$m_4 = %.0f$ eV,\, '%(params.m4*1e9)+boson_string+r'$/m_4 = %.2f$, \, $|U_{e 4}|^2 = \,$'%(params.mBOSON/params.m4)+UEQSR, fontsize=fsize)
 
 	ax.annotate(r'KamLAND',xy=(0.7,0.4),xycoords='axes fraction',fontsize=14)
 	ax.set_xlim(7.5+0.81,17.31)
 	ax.set_ylim(0,)
 
 	_,yu = ax.get_ylim()
-	if yu < 10:
-		ax.set_ylim(0,10)
+	if yu < 16:
+		ax.set_ylim(0,20)
 
 	ax.set_xlabel(r'$E_\nu/$MeV')
 	ax.set_ylabel(r'Events/MeV')

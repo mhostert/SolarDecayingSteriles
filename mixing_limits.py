@@ -37,9 +37,9 @@ SK = exps.superk_data()
 print stats.chi2_model_independent(exps.borexino_limit(),params,fluxfile)
 
 err_flux = 0.1
-err_backK = KAM.err_back/2.0
+err_backK = KAM.err_back
 err_backB = BOR.err_back
-err_backS = SK.err_back/2.0
+err_backS = SK.err_back
 
 
 bK, npK, backK, dK = rates.fill_bins(KAM,params,fluxfile,endpoint=17)

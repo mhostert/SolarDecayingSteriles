@@ -70,13 +70,14 @@ def plot(params,fluxfile,xsfile):
 	rcparams={'axes.labelsize':fsize,'xtick.labelsize':fsize,'ytick.labelsize':fsize,\
 					'figure.figsize':(1.2*3.7,1.4*2.3617)	}
 	rc('font',**{'family':'serif', 'serif': ['computer modern roman']})
-	matplotlib.rcParams['hatch.linewidth'] = 0.1  # previous pdf hatch linewidth
+	matplotlib.rcParams['hatch.linewidth'] = 0.5  # previous pdf hatch linewidth
+	matplotlib.rcParams['hatch.color'] = 'firebrick'  # previous pdf hatch linewidth
 	rcParams.update(rcparams)
 	axes_form  = [0.15,0.15,0.82,0.76]
 	fig = plt.figure()
 	ax = fig.add_axes(axes_form)
 
-
+	ax.set_rasterized(True)
 
 	######################
 	# Montecarlo 
@@ -85,16 +86,13 @@ def plot(params,fluxfile,xsfile):
 	MCgeo = exp.MCgeo
 	MCtot = exp.MCall
 
-
 	# ax.step(bin_c-dx/2.0, MCtot+dNCASCADE, label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)),**kwargs)
-	ax.bar(bin_c, dNCASCADE, bottom=MCtot, width=dx, lw=0.8, edgecolor='black', facecolor='None',hatch='//////', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)), rasterized=False)
+	ax.bar(bin_c, dNCASCADE, bottom=MCtot, width=dx, lw=0, facecolor='grey', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)))
 
-	ax.bar(bin_c,MCtot, lw=0.2,facecolor='orange',edgecolor='orange', width=dx,alpha=0.7, label=r'geoneutrinos', rasterized=False)
-	ax.bar(bin_c,MCatm+MCreactor, lw=0.2,facecolor='dodgerblue',edgecolor='dodgerblue', width=dx,alpha=0.7, label=r'reactors', rasterized=False)
-	ax.bar(bin_c,MCatm, lw=0.2,facecolor='indigo',edgecolor='indigo', width=dx,alpha=0.7, label=r'atmospheric', rasterized=False)
-
-
-	ax.bar(bin_c, dNCASCADE+MCtot, width=dx, lw=0.5, edgecolor='black', facecolor='None', rasterized=False)
+	ax.bar(bin_c,MCgeo,bottom=MCreactor+MCatm, lw=0.5,facecolor='None',edgecolor='dodgerblue',width=dx, label=r'geoneutrinos', hatch='xxxxxxxxxx')
+	ax.bar(bin_c,MCreactor,bottom=MCatm, lw=0.5,facecolor='None',edgecolor='#FFD500', width=dx, label=r'reactors', hatch='xxxxxxxxxx')
+	ax.bar(bin_c,MCatm, lw=0.5,facecolor='None',edgecolor='#5955D8', width=dx, label=r'atm', hatch='xxxxxxxxxx')
+	ax.bar(bin_c, dNCASCADE+MCtot, width=dx, lw=0.6, edgecolor='black', facecolor='None')
 
 	###################
 	# DATA
@@ -122,11 +120,11 @@ def plot(params,fluxfile,xsfile):
 	    return r'$%.0f \times 10^{%i}$'%(a,b)
 	UEQSR = to_scientific_notation(params.Ue4**2)
 	ax.legend(loc='upper right',frameon=False,ncol=1,markerfirst=False)
-	ax.set_title(r'$m_4 = %.0f$ eV,\, '%(params.m4*1e9)+boson_string+r'$/m_h = %.2f$, \, $|U_{e 4}|^2 = \,$'%(params.mBOSON/params.m4)+UEQSR, fontsize=fsize)
+	ax.set_title(r'$m_4 = %.0f$ eV,\, '%(params.m4*1e9)+boson_string+r'$/m_4 = %.2f$, \, $|U_{e 4}|^2 = \,$'%(params.mBOSON/params.m4)+UEQSR, fontsize=fsize)
 
 	ax.annotate(r'Borexino',xy=(0.7,0.35),xycoords='axes fraction',fontsize=14)
 	ax.set_xlim(1.8,15.8)
-	ax.set_ylim(0,)
+	ax.set_ylim(0,48)
 	ax.set_xlabel(r'$E_\nu/$MeV')
 	ax.set_ylabel(r'Events/MeV')
 	fig_name = 'plots/'+boson_file+'_borexino_MN_%.0f_MB_%.0f.pdf'%(params.m4*1e9,params.mBOSON*1e9)

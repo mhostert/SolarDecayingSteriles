@@ -11,14 +11,14 @@ import gvar as gv
 
 from source import *
 
-rates.NEVALwarmup = 3e4
-rates.NEVAL = 3e4
+rates.NEVALwarmup = 5e4
+rates.NEVAL = 5e4
 
 ############
 # DECAY MODEL PARAMETERS
 params = model.decay_model_params(const.SCALAR)
 params.gx		= 1.0
-params.Ue4		= np.sqrt(3e-4)
+params.Ue4		= np.sqrt(1e-3)
 params.Umu4		= np.sqrt(1e-3)*0
 params.Utau4	= np.sqrt(1e-3)*0
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
@@ -40,10 +40,10 @@ xsecbar = xsecs.get_IBD(xsfile)
 exp = exps.borexino_limit()
 expdata = exps.borexino_data()
 
-elin = np.linspace(7.8,8.8,1000)
+# elin = np.linspace(7.8,8.8,1000)
 # print np.sum(flux(elin))*(elin[1]-elin[0])
-print np.sum(exp.fluxlimit[(exp.Enu_bin_c<17)&(exp.Enu_bin_c>7.8)])
-print np.sum(flux(elin)/const.B8FLUX*xsecbar(elin)*expdata.norm)*(elin[1]-elin[0])*138/0.36
+# print np.sum(exp.fluxlimit[(exp.Enu_bin_c<17)&(exp.Enu_bin_c>7.8)])
+# print np.sum(flux(elin)/const.B8FLUX*xsecbar(elin)*expdata.norm)*(elin[1]-elin[0])*138/0.36
 
 
 #####################
@@ -52,23 +52,23 @@ print np.sum(flux(elin)/const.B8FLUX*xsecbar(elin)*expdata.norm)*(elin[1]-elin[0
 # borexino.plot(params,fluxfile,xsfile)
 # params.mBOSON  = 0.5*params.m4 # GeV
 # borexino.plot(params,fluxfile,xsfile)
-params.mBOSON  = 0.9*params.m4 # GeV
-borexino.plot(params,fluxfile,xsfile)
+# params.mBOSON  = 0.9*params.m4 # GeV
+# borexino.plot(params,fluxfile,xsfile)
 
 
 
-#####################
-# KAMLAND AND SUPER -- lower mixing
-params.Ue4	   = np.sqrt(5e-4)
+# #####################
+# # KAMLAND AND SUPER -- lower mixing
+# params.Ue4	   = np.sqrt(8e-4)
 
 params.mBOSON  = 0.1*params.m4 # GeV
-# kamland.plot(params,fluxfile,xsfile)
-# superk.plot(params,fluxfile,xsfile)
+kamland.plot(params,fluxfile,xsfile)
+superk.plot(params,fluxfile,xsfile)
 
 params.mBOSON  = 0.5*params.m4 # GeV
-# kamland.plot(params,fluxfile,xsfile)
-# superk.plot(params,fluxfile,xsfile)
+kamland.plot(params,fluxfile,xsfile)
+superk.plot(params,fluxfile,xsfile)
 
 params.mBOSON  = 0.9*params.m4 # GeV
-# kamland.plot(params,fluxfile,xsfile)
-# superk.plot(params,fluxfile,xsfile)
+kamland.plot(params,fluxfile,xsfile)
+superk.plot(params,fluxfile,xsfile)

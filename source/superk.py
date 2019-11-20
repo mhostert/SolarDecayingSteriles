@@ -70,13 +70,14 @@ def plot(params,fluxfile,xsfile):
 	rcparams={'axes.labelsize':fsize,'xtick.labelsize':fsize,'ytick.labelsize':fsize,\
 					'figure.figsize':(1.2*3.7,1.4*2.3617)	}
 	rc('font',**{'family':'serif', 'serif': ['computer modern roman']})
-	matplotlib.rcParams['hatch.linewidth'] = 0.1  # previous pdf hatch linewidth
+	matplotlib.rcParams['hatch.linewidth'] = 0.5  # previous pdf hatch linewidth
 	rcParams.update(rcparams)
 	axes_form  = [0.15,0.15,0.82,0.76]
 	fig = plt.figure()
 	ax = fig.add_axes(axes_form)
 
-
+	RAST=True
+	ax.set_rasterized(True)
 
 	######################
 	# Montecarlo 
@@ -87,14 +88,14 @@ def plot(params,fluxfile,xsfile):
 
 
 	# ax.step(bin_c-dx/2.0, MCtot+dNCASCADE, label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)),**kwargs)
-	ax.bar(bin_c, dNCASCADE, bottom=MCall, width=dx, lw=0.5, edgecolor='black', facecolor='None',hatch='///////', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)), rasterized=False)
+	ax.bar(bin_c, dNCASCADE, bottom=MCall, width=dx, lw=0, edgecolor='None', facecolor='grey', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)), rasterized=False)
 
-	ax.bar(bin_c,MCall,lw=0.2, facecolor='orange',edgecolor='orange', width=dx,alpha=0.7, label=r'reactors', rasterized=False)
-	ax.bar(bin_c,MCreactor, lw=0.2,facecolor='dodgerblue',edgecolor='dodgerblue', width=dx,alpha=0.7, label=r'$^9$Li', rasterized=False)
-	ax.bar(bin_c,MCreactorLi, lw=0.2,facecolor='pink',edgecolor='pink', width=dx,alpha=0.7, label=r'NC+atm', rasterized=False)
-	ax.bar(bin_c,MCaccidental, lw=0.2,facecolor='indigo',edgecolor='indigo', alpha=0.7,width=dx, label=r'Accidental', rasterized=False)
+	ax.bar(bin_c, MCall-MCreactor, bottom=MCreactor, lw=0.5, edgecolor='#FFD500', width=dx, label=r'reactors', rasterized=RAST,facecolor='None', hatch='xxxxxxxxxx')
+	ax.bar(bin_c,MCreactor-MCreactorLi, bottom=MCreactorLi, lw=0.5, edgecolor='#5BD355', width=dx, label=r'spall ($^9$Li)', rasterized=RAST,facecolor='None', hatch='xxxxxxxxxx')
+	ax.bar(bin_c,MCreactorLi, lw=0.5, edgecolor='#5955D8', width=dx, label=r'atm+NC+acc', rasterized=RAST,facecolor='None', hatch='xxxxxxxxxx')
+	# ax.bar(bin_c,MCaccidental, facecolor='lightskyblue',edgecolor='lightskyblue', width=dx, label=r'accidental', rasterized=False)
 	ax.bar(bin_c, dNCASCADE, bottom=MCall, width=dx, lw=0.5, edgecolor='black', facecolor='None', rasterized=False)
-	ax.bar(bin_c, dNCASCADE+MCall, width=dx, lw=0.5, facecolor='None', edgecolor='black', rasterized=False)
+	ax.bar(bin_c, dNCASCADE+MCall, width=dx, lw=0.6, facecolor='None', edgecolor='black', rasterized=False)
 
 	###################
 	# DATA
@@ -122,13 +123,13 @@ def plot(params,fluxfile,xsfile):
 	    return r'$%.0f \times 10^{%i}$'%(a,b)
 	UEQSR = to_scientific_notation(params.Ue4**2)
 	ax.legend(loc='upper right',frameon=False,ncol=1,markerfirst=False)
-	ax.set_title(r'$m_4 = %.0f$ eV,\, '%(params.m4*1e9)+boson_string+r'$/m_h = %.2f$, \, $|U_{e 4}|^2 = \,$'%(params.mBOSON/params.m4)+UEQSR, fontsize=fsize)
+	ax.set_title(r'$m_4 = %.0f$ eV,\, '%(params.m4*1e9)+boson_string+r'$/m_4 = %.2f$, \, $|U_{e 4}|^2 = \,$'%(params.mBOSON/params.m4)+UEQSR, fontsize=fsize)
 
 	ax.annotate(r'SK-IV',xy=(0.8,0.4),xycoords='axes fraction',fontsize=14)
 	ax.set_xlim(9.3,17.3)
 	ax.set_ylim(0,)
 	_,yu = ax.get_ylim()
-	ax.set_ylim(0,1.3*yu)
+	ax.set_ylim(0,16)
 
 	ax.set_xlabel(r'$E_\nu/$MeV')
 	ax.set_ylabel(r'Events/MeV')
