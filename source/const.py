@@ -2,6 +2,8 @@ import numpy as np
 import scipy
 from scipy import interpolate
 
+# from source import *
+
 
 #Avogadro's number
 NAvo = 6.022*1e23
@@ -22,6 +24,7 @@ tau = 3
 
 nue_to_nue = 1
 numu_to_nue = 2
+nutau_to_nue = 3
 
 VECTOR = 1
 SCALAR = 2

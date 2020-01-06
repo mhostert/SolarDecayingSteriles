@@ -9,7 +9,7 @@ from matplotlib.legend_handler import HandlerLine2D
 import vegas
 import gvar as gv
 
-from source import *
+import source 
 
 def plot(params,fluxfile,xsfile):
 	################################################################

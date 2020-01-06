@@ -1,8 +1,9 @@
 import numpy as np
 
-import const
-import pdg
-	
+from numba import jit
+
+from source import *
+
 def tau_GeV_to_s(decay_rate):
 	return 1./decay_rate/1.52/1e24
 
@@ -23,14 +24,17 @@ def I1_2body(x,y):
 ######################################################################
 
 ####
+@jit
 def dCostheta_dE1(kin):
 	return (kin.mh/kin.PnuH/kin.P1CM)
 
 ####
+@jit
 def dCostheta_dEZprime(kin):
 	return (kin.mh/kin.PnuH/kin.PBOSONCM)
 
 ####
+@jit
 def dCosthetaZ_dE2(kin):
 	return (kin.mBOSON/kin.PBOSON/kin.P2CM)
 
@@ -42,6 +46,7 @@ def dCosthetaZ_dE2(kin):
 
 ##########################################
 # nu_h DECAYS to nu_alpha Zprime
+@jit
 def dGamma_nuh_nualpha_Zprime_dCostheta(params,CosTheta, h):
 	mh = params.m4
 	mzprime = params.mBOSON
@@ -62,6 +67,7 @@ def GammaTOT_nuh_nualpha_Zprime(params):
 
 ##########################################
 # Z PRIME DECAYS 
+@jit
 def dGamma_Zprime_nu_nu_dCostheta(params,CosThetaZ):
 	mzprime = params.mBOSON
 	gx = params.gx

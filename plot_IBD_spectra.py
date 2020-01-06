@@ -23,7 +23,7 @@ params.Umu4		= np.sqrt(1e-3)*0
 params.Utau4	= np.sqrt(1e-3)*0
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
-params.mBOSON   = 0.1*params.m4 # GeV
+# params.mBOSON   = 0.1*params.m4 # GeV
 
 fluxfile = "fluxes/b8spectrum.txt"
 xsfile="xsecs/IBD_160106169/TCS_CC_anue_p_1026_SV.txt"
@@ -51,25 +51,25 @@ expdata = exps.borexino_data()
 params.mBOSON  = 0.1*params.m4 # GeV
 borexino.plot(params,fluxfile,xsfile)
 plt.show()
-# params.mBOSON  = 0.5*params.m4 # GeV
-# borexino.plot(params,fluxfile,xsfile)
-# params.mBOSON  = 0.9*params.m4 # GeV
-# borexino.plot(params,fluxfile,xsfile)
+params.mBOSON  = 0.5*params.m4 # GeV
+borexino.plot(params,fluxfile,xsfile)
+params.mBOSON  = 0.9*params.m4 # GeV
+borexino.plot(params,fluxfile,xsfile)
 
 
 
-# #####################
-# # KAMLAND AND SUPER -- lower mixing
-# params.Ue4	   = np.sqrt(8e-4)
+#####################
+# KAMLAND AND SUPER -- lower mixing
+params.Ue4	   = np.sqrt(8e-4)
 
-# params.mBOSON  = 0.1*params.m4 # GeV
-# kamland.plot(params,fluxfile,xsfile)
-# superk.plot(params,fluxfile,xsfile)
+params.mBOSON  = 0.1*params.m4 # GeV
+kamland.plot(params,fluxfile,xsfile)
+superk.plot(params,fluxfile,xsfile)
 
-# params.mBOSON  = 0.5*params.m4 # GeV
-# kamland.plot(params,fluxfile,xsfile)
-# superk.plot(params,fluxfile,xsfile)
+params.mBOSON  = 0.5*params.m4 # GeV
+kamland.plot(params,fluxfile,xsfile)
+superk.plot(params,fluxfile,xsfile)
 
-# params.mBOSON  = 0.9*params.m4 # GeV
-# kamland.plot(params,fluxfile,xsfile)
-# superk.plot(params,fluxfile,xsfile)
+params.mBOSON  = 0.9*params.m4 # GeV
+kamland.plot(params,fluxfile,xsfile)
+superk.plot(params,fluxfile,xsfile)

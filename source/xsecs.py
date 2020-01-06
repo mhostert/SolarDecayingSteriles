@@ -2,8 +2,9 @@ import numpy as np
 from scipy import interpolate
 import scipy.stats
 from scipy.integrate import quad
-import pdg 
-import const 
+
+from source import *
+
 
 def get_nue_CCQE(xsfile):
 	if (xsfile == "xsecs/GLOBES/XCC.dat"):

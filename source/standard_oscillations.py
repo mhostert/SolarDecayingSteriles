@@ -1,9 +1,7 @@
 import numpy as np
 
 
-import pdg
-import const
-import model
+from source import *
 
 # see https://arxiv.org/pdf/hep-ph/0310238.pdf
 def Padiabatic(Enu, channel):

@@ -12,13 +12,13 @@ from matplotlib.legend_handler import HandlerLine2D
 import vegas
 import gvar as gv
 
-from source import *
+from source import * 
 
 ################################################################
 # SETUP
 # integration evaluations
 rates.NEVALwarmup = 1e4
-rates.NEVAL = 1e6
+rates.NEVAL = 1e5
 
 ############
 # NUMU FLUX
@@ -72,7 +72,7 @@ NCASCADE, dNCASCADE = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 											xsec=xsec,\
 											xsecbar=xsecbar,\
 											dim=3,\
-											enumin=0,\
+											enumin=0.01,\
 											enumax=const.Enu_END_OF_SPECTRUM,\
 											params=params,\
 											bins=bins,\
@@ -110,8 +110,8 @@ E = np.linspace(0.001,16.3,1000)
 ax.fill_between(E, flux3l(E),flux3l(E)/np.max(flux(E))*0.89*0, facecolor='orange', edgecolor='', alpha=0.6)
 ax.plot(E, flux3l(E), color='black',lw=0.7, linestyle='-')
 
-ax.fill_between(bin_c-dx/2.0, dNCASCADE/dx,dNCASCADE/np.max(dNCASCADE)*0.89*0, facecolor='darkgrey',edgecolor='',lw=0.5, linestyle='-',alpha=0.8)
-ax.plot(bin_c-dx/2.0, dNCASCADE/dx, color='black',lw=0.7, linestyle='-')
+ax.fill_between(bin_c-dx/2.0, dNCASCADE/dx/4.0,dNCASCADE/np.max(dNCASCADE), facecolor='darkgrey',edgecolor='',lw=0.5, linestyle='-',alpha=0.8)
+ax.plot(bin_c-dx/2.0, dNCASCADE/dx/4.0, color='black',lw=0.7, linestyle='-')
 
 ################
 # PLOT XSEC
@@ -131,7 +131,7 @@ ax2.text(12,1.5e-41,r'$\sigma_{\rm IBD}$',color='dodgerblue', rotation=13	, font
 ax2.text(12.3,1.7e-43,r'$\sigma_{\nu_e - e}$',color='darkgreen', rotation=5, fontsize=11)
 ax2.text(12.5,2.8e-44,r'$\sigma_{\overline{\nu_e} - e}$',color='indigo', rotation=5, fontsize=11)
 ax.text(2,1e6,r'$\frac{{\rm d} \Phi^{\nu_e}}{{\rm d} E_\nu}  (^8{\rm B})$',color='darkorange', rotation=0, fontsize=10)
-ax.text(7.5,2e1,r'$\frac{{\rm d} \Phi^{\overline{\nu_e}}}{{\rm d} E_\nu}$({\small decay})',color='black', rotation=0, fontsize=10)
+ax.text(7.5,2e1,r'$\frac{{\rm d} \Phi^{\overline{\nu_e^R}}}{{\rm d} E_\nu}$({\small decay})',color='black', rotation=0, fontsize=10)
 
 # title
 if params.model == const.VECTOR:
@@ -157,4 +157,4 @@ ax2.set_ylim(1e-45, 1e-40)
 ax.set_ylabel(r'$\frac{{\rm d}\Phi}{{\rm d}E_\nu}$ \big[cm$^{-2}$ s$^{-1}$ MeV$^{-1}$\big]')
 ax2.set_ylabel(r'$\sigma$ [cm$^2$]')
 ax.set_xlabel(r'$E_\nu$ [MeV]')
-fig.savefig('plots/Spectrum_'+boson_file+'_%.0f_MZ_%.0f.pdf'%(params.m4*1e9,params.mBOSON*1e9),rasterized=True)
+# fig.savefig('plots/Spectrum_'+boson_file+'_%.0f_MZ_%.0f_TEST.pdf'%(params.m4*1e9,params.mBOSON*1e9),rasterized=True)

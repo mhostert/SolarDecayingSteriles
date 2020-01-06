@@ -1,13 +1,13 @@
 import numpy as np
 
-import pdg
-import const
-import decay_rates
-import model
+from numba import jit
+
+from source import *
 
 
 #####################################3
 # Probabilities of flavour transition for nu_H -> nu Z'
+@jit
 def dPdEnu1(params,kin,Enu,E1,h):
 	mh = params.m4
 	
@@ -23,6 +23,7 @@ def dPdEnu1(params,kin,Enu,E1,h):
 
 #####################################3
 # Probabilities of flavour transition nu_H -> nu Z' -> nu nu nubar
+@jit
 def dPdEnu2dEnu1(params,kin,Enu,E1,E2,h):
 	mh = params.m4
 
@@ -35,7 +36,7 @@ def dPdEnu2dEnu1(params,kin,Enu,E1,E2,h):
 		lproper_decay_N = decay_rates.L_GeV_to_cm(decay_rates.GammaTOT_nuh_nualpha_Phi(params))/100.0 # meters 
 		lproper_decay_Zprime = decay_rates.L_GeV_to_cm(decay_rates.GammaTOT_Phi_nu_nu(params))/100.0 # meters 
 	else:
-		print 'ERROR! Could not specify what model we have.'
+		print('ERROR! Could not specify what model we have.')
 		return None
 
 	ans = params.Ue4*params.Ue4
@@ -50,6 +51,7 @@ def dPdEnu2dEnu1(params,kin,Enu,E1,E2,h):
 	return ans
 
 ######
+@jit
 def R1(params,kin,E1,h):
 	if params.model == const.VECTOR:
 		tot=decay_rates.GammaTOT_nuh_nualpha_Zprime(params)
@@ -58,10 +60,10 @@ def R1(params,kin,E1,h):
 		tot=decay_rates.GammaTOT_nuh_nualpha_Phi(params)
 		dif=decay_rates.dGamma_nuh_nualpha_Phi_dCostheta(params,kin.CosTheta(E1), h)*decay_rates.dCostheta_dE1(kin)
 	else:
-		print 'ERROR! Could not specify what model we have.'
+		print('ERROR! Could not specify what model we have.')
 		return None
 	return dif/tot
-
+@jit
 def R2(params,kin,E1,E2,h):
 	if params.model == const.VECTOR:
 		tot=decay_rates.GammaTOT_Zprime_nu_nu(params)
@@ -70,7 +72,7 @@ def R2(params,kin,E1,E2,h):
 		tot=decay_rates.GammaTOT_Phi_nu_nu(params)
 		dif=decay_rates.dGamma_Phi_nu_nu_dCostheta(params,kin.CosThetaZ(E2))*decay_rates.dCosthetaZ_dE2(kin)
 	else:
-		print 'ERROR! Could not specify what model we have.'
+		print('ERROR! Could not specify what model we have.')
 		return None
 	
 	return dif/tot
@@ -78,6 +80,7 @@ def R2(params,kin,E1,E2,h):
 ##############################
 # Deprecated -- test for oscillations at SBL
 # SBL OSCILLATION
+@jit
 def dPdE1_OSCILLATION(params,Enu,L):
 	Umu4 = params.Umu4
 	Ue4 = params.Ue4

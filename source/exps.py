@@ -2,7 +2,7 @@ import numpy as np
 import scipy
 import numpy.random
 
-import const 
+from source import *
 
 class miniboone_data():
 	def __init__(self):
@@ -128,7 +128,6 @@ class kamland_data():
 		fraction_free = 0.145
 		fudge = 0.88
 		self.norm=EXPOSURE*fid_cut*efficiency*mass*NA*fraction_free*fudge
-		# print EXPOSURE*fid_cut*efficiency*mass/year/1e9
 
 		self.smearing_function=kamland_Esmear
 

@@ -1,5 +1,6 @@
 import numpy as np
-import const 
+
+from source import *
 
 class decay_model_params():
 

@@ -1,16 +1,14 @@
-import const
-import pdg
-import model
-import decay_rates as dr
-import prob
-import fluxes
-import xsecs
-import exps
-import standard_oscillations as std_osc
-import rates
-import stats
-
-
-import superk
-import kamland
-import borexino
+from source import const
+from source import pdg
+from source import model
+from source import decay_rates as dr
+from source import prob
+from source import fluxes
+from source import xsecs
+from source import exps
+from source import flavour_transitions as osc
+from source import rates
+from source import stats
+from source import superk
+from source import kamland
+from source import borexino
