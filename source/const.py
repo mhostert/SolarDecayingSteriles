@@ -9,10 +9,10 @@ from scipy import interpolate
 NAvo = 6.022*1e23
 # from GeV^-2 to cm^2
 GeV2_to_cm2 = 3.9204e-28
-cmINV_to_GeV = 1.98e-14
-GeVINV_to_cm = 1.0/1.98e-14
+cmINV_to_GeV = 1.973e-14
+GeVINV_to_cm = 1.0/1.973e-14
 
-m_to_eVINV = 1.0/1.98e-7
+m_to_eVINV = 1.0/1.973e-7
 
 # speed of light (PDG) m/s
 c_LIGHT = 299792458
@@ -46,17 +46,16 @@ IBD_THRESHOLD=1.8 # MeV
 Enu_BEG_OF_SPECTRUM = IBD_THRESHOLD
 Enu_END_OF_SPECTRUM = 17.0
 
-solar_core_Ne = 245*NAvo *cmINV_to_GeV**3 * 1e27# ev^3
+solar_core_Ne = 102*NAvo*cmINV_to_GeV**3 * 1e27# ev^3
 solarR = 6.955e8*m_to_eVINV # eVinv
 parkeSolarR = solarR/10.54 # eVinv
 
-# Neutrino Mixing from JHEP 01 (2019) 106 [arXiv:1811.05487]  
 # Normal Ordering
-theta12 = 33.82*np.pi/180.0
-theta13 = 8.61*np.pi/180.0
-theta23 = 48.3*np.pi/180.0
-dmSQR21 = 7.39e-5
-dmSQR31 = 2.523e-3
+theta12 = 0.583996
+theta13 = 0.148190
+theta23 = 0.737324
+dmSQR21 = 7.5e-5
+dmSQR31 = 2.57e-3
 
 
 ## MASSES in GeV

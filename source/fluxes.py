@@ -13,9 +13,9 @@ def get_exp_flux(fluxfile,get_3sigma=False):
 		bf *= const.B8FLUX
 		high3 *= const.B8FLUX
 		low3 *= const.B8FLUX
-		flux = scipy.interpolate.interp1d(E, bf, fill_value=0.0, bounds_error=False)
-		flux3h = scipy.interpolate.interp1d(E, high3, fill_value=0.0, bounds_error=False)
-		flux3l = scipy.interpolate.interp1d(E, low3, fill_value=0.0, bounds_error=False)
+		flux = scipy.interpolate.interp1d(E, bf, fill_value=0.0, bounds_error=False, kind='linear')
+		flux3h = scipy.interpolate.interp1d(E, high3, fill_value=0.0, bounds_error=False, kind='linear')
+		flux3l = scipy.interpolate.interp1d(E, low3, fill_value=0.0, bounds_error=False, kind='linear')
 
 	else:
 		print("ERROR! Could not identify the fluxfile.")

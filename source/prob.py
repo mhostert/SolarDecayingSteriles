@@ -1,13 +1,11 @@
 import numpy as np
-
-from numba import jit
+# from numba import jit
 
 from source import *
 
-
 #####################################3
 # Probabilities of flavour transition for nu_H -> nu Z'
-@jit
+
 def dPdEnu1(params,kin,Enu,E1,h):
 	mh = params.m4
 	
@@ -23,7 +21,7 @@ def dPdEnu1(params,kin,Enu,E1,h):
 
 #####################################3
 # Probabilities of flavour transition nu_H -> nu Z' -> nu nu nubar
-@jit
+
 def dPdEnu2dEnu1(params,kin,Enu,E1,E2,h):
 	mh = params.m4
 
@@ -51,7 +49,7 @@ def dPdEnu2dEnu1(params,kin,Enu,E1,E2,h):
 	return ans
 
 ######
-@jit
+
 def R1(params,kin,E1,h):
 	if params.model == const.VECTOR:
 		tot=decay_rates.GammaTOT_nuh_nualpha_Zprime(params)
@@ -63,7 +61,7 @@ def R1(params,kin,E1,h):
 		print('ERROR! Could not specify what model we have.')
 		return None
 	return dif/tot
-@jit
+
 def R2(params,kin,E1,E2,h):
 	if params.model == const.VECTOR:
 		tot=decay_rates.GammaTOT_Zprime_nu_nu(params)
@@ -80,7 +78,7 @@ def R2(params,kin,E1,E2,h):
 ##############################
 # Deprecated -- test for oscillations at SBL
 # SBL OSCILLATION
-@jit
+
 def dPdE1_OSCILLATION(params,Enu,L):
 	Umu4 = params.Umu4
 	Ue4 = params.Ue4

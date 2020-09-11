@@ -45,23 +45,28 @@ def plot(params,fluxfile,xsfile,style='binned'):
 	################################################################
 	# COMPUTING THE EVENT RATE INTEGRALS
 	################################################################
-	# HNL + BOSON DECAYS
-	NCASCADE, dNCASCADE = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
-												flux=flux,\
-												xsec=xsec,\
-												xsecbar=xsecbar,\
-												dim=3,\
-												enumin=Enu_BEG_OF_SPECTRUM,\
-												enumax=Enu_END_OF_SPECTRUM,\
-												params=params,\
-												bins=bins,\
-												PRINT=False,\
-												enu_eff=enu_eff,\
-												eff=eff,
-												smearing_function=smearing_function)
-	NCASCADE*=exp.norm
-	dNCASCADE*=exp.norm/dx
+	# # HNL + BOSON DECAYS
+	# NCASCADE, dNCASCADE = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
+	# 											flux=flux,\
+	# 											xsec=xsec,\
+	# 											xsecbar=xsecbar,\
+	# 											dim=3,\
+	# 											enumin=Enu_BEG_OF_SPECTRUM,\
+	# 											enumax=Enu_END_OF_SPECTRUM,\
+	# 											params=params,\
+	# 											bins=bins,\
+	# 											PRINT=False,\
+	# 											enu_eff=enu_eff,\
+	# 											eff=eff,
+	# 											smearing_function=smearing_function)
+	# NCASCADE*=exp.norm
+	# dNCASCADE*=exp.norm/dx
+	KAM = exps.kamland_data()
+	bK, npK, backK, dK = rates.fill_bins(KAM,params,fluxfile,endpoint=16.3)
+	dbK = (bK[1:]-bK[:-1])
+	bKc = bK[:-1]+dbK/2.0
 
+	print(bK, npK)
 	# elin = np.linspace(8.3,17,1000)
 	# print np.sum(flux(elin)/const.B8FLUX)*(elin[1]-elin[0])*315.13
 	# print np.sum(flux(elin)*xsecbar(elin)*315.13)*(elin[1]-elin[0])*exp.norm/const.B8FLUX
@@ -72,11 +77,11 @@ def plot(params,fluxfile,xsfile,style='binned'):
 	fsize=11
 	rc('text', usetex=True)
 	rcparams={'axes.labelsize':fsize,'xtick.labelsize':fsize,'ytick.labelsize':fsize,\
-					'figure.figsize':(1.2*3.7,1.4*2.3617)	}
+					'figure.figsize':(1.2*3.7,2.3617)	}
 	rc('font',**{'family':'serif', 'serif': ['computer modern roman']})
 	matplotlib.rcParams['hatch.linewidth'] = 0.5  # previous pdf hatch linewidth
 	rcParams.update(rcparams)
-	axes_form  = [0.15,0.15,0.82,0.76]
+	axes_form  = [0.15,0.175,0.82,0.7]
 	fig = plt.figure()
 	ax = fig.add_axes(axes_form)
 
@@ -85,7 +90,7 @@ def plot(params,fluxfile,xsfile,style='binned'):
 
 	######################
 	# Montecarlo 
-	Elin = np.linspace(np.min(exp.bin_e),17.3,100)
+	Elin = np.linspace(np.min(exp.bin_e),17.3,1000)
 	dxlin = Elin[1]-Elin[0]
 
 	MCall = exp.MCall(Elin)
@@ -104,13 +109,15 @@ def plot(params,fluxfile,xsfile,style='binned'):
 			MCreactor_spall_binned[i] = np.sum( MCreactor_spall[ (Elin<bins[i+1]) & (Elin>bins[i]) ]*dxlin ) 
 			MClimit_binned[i] = np.sum( MClimit[ (Elin<bins[i+1]) & (Elin>bins[i]) ]*dxlin ) 
 
-		ax.bar(bin_c, dNCASCADE, bottom=MCall_binned, width=dx, lw=0, facecolor='grey', edgecolor='None', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE*dx)), rasterized=False)
+		# ax.bar(bKc, npK, bottom=backK, width=dbK, lw=0, facecolor='grey', edgecolor='None', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(npK)), rasterized=False)
+		ax.bar(bKc, npK, bottom=backK, width=dbK, lw=0, facecolor='grey', edgecolor='None', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(npK)))
+
 		# ax.step(bin_c-dx/2.0,MClimit_binned,lw=1, where='post',dashes=(5,1), color='crimson', label=r'90\% limit', rasterized=False)
 		ax.bar(bin_c,MCall_binned-MCreactor_binned, bottom=MCreactor_binned, width=dx,  lw=0.5,edgecolor='#FFD500', label=r'reactors', rasterized=RAST,facecolor='None',hatch='xxxxxxxxxx')
 		ax.bar(bin_c,MCreactor_binned-MCreactor_spall_binned, bottom=MCreactor_spall_binned, width=dx,  lw=0.5,edgecolor='#5BD355', label=r'spallation', rasterized=RAST,facecolor='None',hatch='xxxxxxxxxx')
 		ax.bar(bin_c,MCreactor_spall_binned, bottom=0*MCreactor_spall_binned, width=dx,  lw=0.5,edgecolor='#5955D8', label=r'atm+$n$+acc', rasterized=RAST,facecolor='None',hatch='xxxxxxxxxx')
 
-		ax.bar(bin_c, dNCASCADE+MCall_binned, width=dx, lw=0.6, facecolor='None', edgecolor='black', rasterized=False)
+		ax.bar(bKc, npK+backK, width=dbK, lw=0.6, facecolor='None', edgecolor='black', rasterized=False)
 
 	elif style=='smooth':
 		MCall_binned = exp.MCall(bin_c)
@@ -145,10 +152,10 @@ def plot(params,fluxfile,xsfile,style='binned'):
 	    a = float(a)
 	    return r'$%.0f \times 10^{%i}$'%(a,b)
 	UEQSR = to_scientific_notation(params.Ue4**2)
-	ax.legend(loc='upper right',frameon=False,ncol=1,markerfirst=False)
-	ax.set_title(r'$m_4 = %.0f$ eV,\, '%(params.m4*1e9)+boson_string+r'$/m_4 = %.2f$, \, $|U_{e 4}|^2 = \,$'%(params.mBOSON/params.m4)+UEQSR, fontsize=fsize)
+	ax.legend(loc='upper right',frameon=False,ncol=1,markerfirst=False,fontsize=9)
+	ax.set_title(r'$m_4 = %.0f$ eV,\, '%(params.m4*1e9)+boson_string+r'$/m_4 = %.2f$, \, $|U_{e 4}|^2 = \,$'%(params.mBOSON/params.m4)+UEQSR, fontsize=9)
 
-	ax.annotate(r'KamLAND',xy=(0.7,0.4),xycoords='axes fraction',fontsize=14)
+	ax.annotate(r'KamLAND',xy=(0.7,0.2),xycoords='axes fraction',fontsize=14)
 	ax.set_xlim(7.5+0.81,17.31)
 	ax.set_ylim(0,)
 

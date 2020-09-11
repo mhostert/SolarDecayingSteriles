@@ -1,0 +1,186 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      5619,        176]
+NotebookOptionsPosition[      4767,        153]
+NotebookOutlinePosition[      5130,        169]
+CellTagsIndexPosition[      5087,        166]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"PL", "=", 
+   FractionBox[
+    RowBox[{"1", "-", 
+     RowBox[{"dm", "[", "5", "]"}]}], "2"]}], ";", 
+  RowBox[{"PR", "=", 
+   FractionBox[
+    RowBox[{"1", "+", 
+     RowBox[{"dm", "[", "5", "]"}]}], "2"]}], ";"}]], "Input",
+ CellChangeTimes->{{3.805077977936276*^9, 3.80507799516689*^9}},
+ CellLabel->
+  "In[161]:=",ExpressionUUID->"dc52a6e7-8404-4011-80a9-4338256abe05"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"vertex", "=", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"gs", " ", "Sij", " ", "PL"}], " ", "+", " ", 
+      RowBox[{"gsbar", " ", "Sji", " ", "PR"}]}], ")"}], " ", "+", " ", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"ga", " ", "Sij", " ", "PL"}], "-", 
+       RowBox[{"gabar", " ", "Sji", "  ", "PR"}]}], ")"}], " ", 
+     RowBox[{"dm", "[", "5", "]"}]}]}], "//", "Simplify"}]}]], "Input",
+ CellChangeTimes->{{3.805077663463697*^9, 3.805077767065816*^9}, {
+  3.805077816958908*^9, 3.805077819607078*^9}, {3.80507806294803*^9, 
+  3.80507806487988*^9}},
+ CellLabel->
+  "In[172]:=",ExpressionUUID->"d9b0e3c9-c410-419b-a731-41bd1c31d0a1"],
+
+Cell[BoxData[
+ FormBox[
+  RowBox[{
+   FractionBox["1", "2"], " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"-", 
+      RowBox[{
+       SuperscriptBox[
+        OverscriptBox["\[Gamma]", "_"], 
+        FormBox["5",
+         TraditionalForm]], " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"ga", " ", "Sij", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            SuperscriptBox[
+             OverscriptBox["\[Gamma]", "_"], 
+             FormBox["5",
+              TraditionalForm]], "-", "1"}], ")"}]}], "+", 
+         RowBox[{"gabar", " ", "Sji", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            SuperscriptBox[
+             OverscriptBox["\[Gamma]", "_"], 
+             FormBox["5",
+              TraditionalForm]], "+", "1"}], ")"}]}]}], ")"}]}]}], "+", 
+     RowBox[{"gs", " ", 
+      RowBox[{"(", 
+       RowBox[{"Sij", "-", 
+        RowBox[{"Sij", " ", 
+         SuperscriptBox[
+          OverscriptBox["\[Gamma]", "_"], 
+          FormBox["5",
+           TraditionalForm]]}]}], ")"}]}], "+", 
+     RowBox[{"gsbar", " ", "Sji", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        SuperscriptBox[
+         OverscriptBox["\[Gamma]", "_"], 
+         FormBox["5",
+          TraditionalForm]], "+", "1"}], ")"}]}]}], ")"}]}], 
+  TraditionalForm]], "Output",
+ CellChangeTimes->{
+  3.805077668297977*^9, {3.805077731905961*^9, 3.805077767632992*^9}, {
+   3.8050778149976177`*^9, 3.805077820120579*^9}, {3.8050779971494703`*^9, 
+   3.805078025717167*^9}, 3.805078065697719*^9},
+ CellLabel->
+  "Out[172]=",ExpressionUUID->"88e547ca-f0ca-4e0f-874f-cc6ba603bee0"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     FractionBox["vertex", 
+      RowBox[{"Sij", " ", "gs"}]], " ", "/.", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"gsbar", "\[Rule]", " ", "gs"}], ",", 
+       RowBox[{"gabar", "\[Rule]", " ", 
+        RowBox[{"-", " ", "ga"}]}], ",", 
+       RowBox[{"Sji", "\[Rule]", " ", "Sij"}]}], "}"}]}], "/.", 
+    RowBox[{"{", 
+     RowBox[{"ga", "\[Rule]", 
+      RowBox[{"I", " ", "gs"}]}], "}"}]}], "//", "FullSimplify"}], "//", 
+  "DiracSimplify"}]], "Input",
+ CellChangeTimes->{{3.805077746663245*^9, 3.805077788288137*^9}, {
+  3.805077827114444*^9, 3.805077895224654*^9}, {3.805078018577483*^9, 
+  3.805078210474745*^9}},
+ CellLabel->
+  "In[185]:=",ExpressionUUID->"6ffb7710-9dd5-4061-aa9a-bd5dd5342439"],
+
+Cell[BoxData[
+ FormBox[
+  RowBox[{"1", "+", 
+   RowBox[{"\[ImaginaryI]", " ", 
+    SuperscriptBox[
+     OverscriptBox["\[Gamma]", "_"], 
+     FormBox["5",
+      TraditionalForm]]}]}], TraditionalForm]], "Output",
+ CellChangeTimes->{{3.8050777697494497`*^9, 3.8050777886397943`*^9}, {
+   3.805077822125086*^9, 3.8050778492268763`*^9}, 3.8050778957037582`*^9, {
+   3.805077998988244*^9, 3.805078208097918*^9}},
+ CellLabel->
+  "Out[185]=",ExpressionUUID->"2c259195-a8d5-4fc6-bb9b-fe06f64edbb0"]
+}, Open  ]],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.805077778148687*^9, 
+  3.805077781334887*^9}},ExpressionUUID->"54b1711f-bb8d-4452-b0bc-\
+56cc420875f3"]
+},
+WindowSize->{1385, 876},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
+Magnification:>1.7 Inherited,
+FrontEndVersion->"12.0 for Linux x86 (64-bit) (April 8, 2019)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 408, 12, 108, "Input",ExpressionUUID->"dc52a6e7-8404-4011-80a9-4338256abe05"],
+Cell[CellGroupData[{
+Cell[991, 36, 708, 18, 79, "Input",ExpressionUUID->"d9b0e3c9-c410-419b-a731-41bd1c31d0a1"],
+Cell[1702, 56, 1592, 49, 107, "Output",ExpressionUUID->"88e547ca-f0ca-4e0f-874f-cc6ba603bee0"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3331, 110, 771, 21, 153, "Input",ExpressionUUID->"6ffb7710-9dd5-4061-aa9a-bd5dd5342439"],
+Cell[4105, 133, 491, 12, 85, "Output",ExpressionUUID->"2c259195-a8d5-4fc6-bb9b-fe06f64edbb0"]
+}, Open  ]],
+Cell[4611, 148, 152, 3, 53, "Input",ExpressionUUID->"54b1711f-bb8d-4452-b0bc-56cc420875f3"]
+}
+]
+*)
+
+(* End of internal cache information *)
+

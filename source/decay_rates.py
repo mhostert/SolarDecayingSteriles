@@ -1,6 +1,6 @@
 import numpy as np
 
-from numba import jit
+# from numba import jit
 
 from source import *
 
@@ -24,17 +24,17 @@ def I1_2body(x,y):
 ######################################################################
 
 ####
-@jit
+
 def dCostheta_dE1(kin):
 	return (kin.mh/kin.PnuH/kin.P1CM)
 
 ####
-@jit
+
 def dCostheta_dEZprime(kin):
 	return (kin.mh/kin.PnuH/kin.PBOSONCM)
 
 ####
-@jit
+
 def dCosthetaZ_dE2(kin):
 	return (kin.mBOSON/kin.PBOSON/kin.P2CM)
 
@@ -46,7 +46,7 @@ def dCosthetaZ_dE2(kin):
 
 ##########################################
 # nu_h DECAYS to nu_alpha Zprime
-@jit
+
 def dGamma_nuh_nualpha_Zprime_dCostheta(params,CosTheta, h):
 	mh = params.m4
 	mzprime = params.mBOSON
@@ -67,7 +67,7 @@ def GammaTOT_nuh_nualpha_Zprime(params):
 
 ##########################################
 # Z PRIME DECAYS 
-@jit
+
 def dGamma_Zprime_nu_nu_dCostheta(params,CosThetaZ):
 	mzprime = params.mBOSON
 	gx = params.gx
@@ -99,7 +99,7 @@ def dGamma_nuh_nualpha_Phi_dCostheta(params,CosTheta,h):
 	Ue4 = params.Ue4
 	couplings = gx*gx*Ue4*Ue4
 
-	amp2 = -((-1 + 2*CosTheta*h - h*h)*(mh - mphi)*(mh + mphi))/4.
+	amp2 = -((-1 + CosTheta*h)*(mh - mphi)*(mh + mphi))/2.
 
 	dPS2 = (1.0-mphi*mphi/mh/mh)/32.0/np.pi/np.pi
 	flux_factor = 1.0/2.0/mh
@@ -108,8 +108,7 @@ def dGamma_nuh_nualpha_Phi_dCostheta(params,CosTheta,h):
 	return amp2*dPS2*flux_factor*couplings*integral_dPhi
 
 def GammaTOT_nuh_nualpha_Phi(params):
-	integral_dcos = 2.0
-	return dGamma_nuh_nualpha_Phi_dCostheta(params,0,0)*integral_dcos
+	return params.gx*params.gx*params.Ue4*params.Ue4*params.m4*(1 - params.mBOSON*params.mBOSON/(params.m4*params.m4))**2/(16.*np.pi)
 
 ##########################################
 # PHI DECAYS 

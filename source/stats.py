@@ -13,7 +13,7 @@ import vegas
 import gvar as gv
 from scipy.stats import chi2
 
-from numba import jit
+# from numba import jit
 
 from source import *
 

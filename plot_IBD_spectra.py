@@ -12,14 +12,14 @@ import gvar as gv
 from source import *
 
 rates.NEVALwarmup = 5e4
-rates.NEVAL = 5e4
+rates.NEVAL = 1e5
 
 ############
 # DECAY MODEL PARAMETERS
 params = model.decay_model_params(const.SCALAR)
 params.gx		= 1.0
-params.Ue4		= np.sqrt(1e-3)
-params.Umu4		= np.sqrt(1e-3)*0
+params.Ue4		= np.sqrt(2e-2)
+params.Umu4		= np.sqrt(1e-3)
 params.Utau4	= np.sqrt(1e-3)*0
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
@@ -44,7 +44,7 @@ expdata = exps.borexino_data()
 # print np.sum(flux(elin))*(elin[1]-elin[0])
 # print np.sum(exp.fluxlimit[(exp.Enu_bin_c<17)&(exp.Enu_bin_c>7.8)])
 # print np.sum(flux(elin)/const.B8FLUX*xsecbar(elin)*expdata.norm)*(elin[1]-elin[0])*138/0.36
-
+	
 
 #####################
 # BOREXINO
@@ -60,7 +60,7 @@ borexino.plot(params,fluxfile,xsfile)
 
 #####################
 # KAMLAND AND SUPER -- lower mixing
-params.Ue4	   = np.sqrt(8e-4)
+params.Ue4 = np.sqrt(1e-2)
 
 params.mBOSON  = 0.1*params.m4 # GeV
 kamland.plot(params,fluxfile,xsfile)

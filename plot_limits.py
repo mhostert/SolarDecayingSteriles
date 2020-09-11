@@ -13,8 +13,8 @@ from source import *
 
 ##########
 # integration evaluations
-rates.NEVALwarmup = 1e4
-rates.NEVAL = 3e5
+rates.NEVALwarmup = 1e6
+rates.NEVAL = 1e6
 
 ################################################################
 # SETUP
@@ -47,28 +47,28 @@ flux = fluxes.get_exp_flux(fluxfile)
 # NUE/BAR XS
 xsfile="xsecs/IBD_160106169/TCS_CC_anue_p_1026_SV.txt"
 xsec = lambda x : np.zeros(np.size(x)) 
-xsecbar = lambda x : np.ones(np.size(x)) 
+xsecbar = lambda x: np.ones(np.size(x))*1e-38
 
-bins = np.linspace(0,16,50)
+bins = np.linspace(0.0,14.5,50)
 dx = (bins[1:] - bins[:-1])
 bin_c = bins[:-1] + dx/2.0
 
 #############
 # efficiencies
 enu_eff= bins
-eff= np.ones((np.size(dx)))
-identity = lambda x : x
+eff= np.ones((np.size(bins)-1))
+identity = lambda TTT : TTT
 
 ###########
 # DECAY MODEL PARAMETERS
-params = model.decay_model_params(const.VECTOR)
+params = model.decay_model_params(const.SCALAR)
 params.gx		= 1.0
 params.Ue4		= np.sqrt(0.001)
-params.Umu4		= np.sqrt(0.001)*0
+params.Umu4		= np.sqrt(0.001)
 params.UD4		= np.sqrt(1.0-params.Ue4*params.Ue4-params.Umu4*params.Umu4)
 params.m4		= 300e-9 # GeV
-params.mBOSON  = 0.9*params.m4 # GeV
 
+params.mBOSON  = 0.9*params.m4 # GeV
 NCASCADE, dNCASCADE = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 											flux=flux,\
 											xsec=xsec,\
@@ -78,7 +78,7 @@ NCASCADE, dNCASCADE = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 											enumax=const.Enu_END_OF_SPECTRUM,\
 											params=params,\
 											bins=bins,\
-											PRINT=False,\
+											PRINT=True,\
 											enu_eff=enu_eff,\
 											eff=eff,
 											smearing_function=identity)
@@ -113,7 +113,54 @@ NCASCADE3, dNCASCADE3 = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
 											eff=eff,
 											smearing_function=identity)
 
+###################################3
+params.Ue4		= np.sqrt(0.01)
+params.mBOSON  = 0.9*params.m4 # GeV
+NCASCADE_001, dNCASCADE_001 = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
+											flux=flux,\
+											xsec=xsec,\
+											xsecbar=xsecbar,\
+											dim=3,\
+											enumin=0,\
+											enumax=const.Enu_END_OF_SPECTRUM,\
+											params=params,\
+											bins=bins,\
+											PRINT=True,\
+											enu_eff=enu_eff,\
+											eff=eff,
+											smearing_function=identity)
 
+params.mBOSON  = 0.5*params.m4 # GeV
+NCASCADE2_001, dNCASCADE2_001 = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
+											flux=flux,\
+											xsec=xsec,\
+											xsecbar=xsecbar,\
+											dim=3,\
+											enumin=0,\
+											enumax=const.Enu_END_OF_SPECTRUM,\
+											params=params,\
+											bins=bins,\
+											PRINT=False,\
+											enu_eff=enu_eff,\
+											eff=eff,
+											smearing_function=identity)
+
+params.mBOSON  = 0.1*params.m4 # GeV
+NCASCADE3_001, dNCASCADE3_001 = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
+											flux=flux,\
+											xsec=xsec,\
+											xsecbar=xsecbar,\
+											dim=3,\
+											enumin=0,\
+											enumax=const.Enu_END_OF_SPECTRUM,\
+											params=params,\
+											bins=bins,\
+											PRINT=False,\
+											enu_eff=enu_eff,\
+											eff=eff,
+											smearing_function=identity)
+
+print(dNCASCADE3)
 ################################################################
 # PLOTTING THE EVENT RATES 
 ################################################################
@@ -129,7 +176,7 @@ axes_form  = [0.15,0.15,0.82,0.75]
 fig = plt.figure()
 ax = fig.add_axes(axes_form)
 
-E = np.linspace(0.001,16.0,1000)
+# E = np.linspace(0.001,13.5,1000)
 
 
 ##########################################################################
@@ -148,13 +195,19 @@ ax.step(np.append(0.0,np.append(Sbin_c-0.5,Sbin_c[-1]+0.5)), np.append(1e8,np.ap
 ax.step(np.append(0.0,np.append(Kbin_c-0.5,Kbin_c[-1]+0.5)), np.append(1e8,np.append(Kfluxlimit,1e8)), where = 'post', color='indigo', lw=0.5)
 ax.step(np.append(0.0,np.append(Bbin_c-0.5,Bbin_c[-1]+0.5)), np.append(1e8,np.append(Bfluxlimit,1e8)), where = 'post', color='blue', lw=0.5)
 
-ax.plot(bin_c-dx/2.0, dNCASCADE/dx, lw=1.2, color='black', label=boson_string+r'/$m_4 = 0.9$')
-ax.plot(bin_c-dx/2.0, dNCASCADE2/dx, lw=1, dashes = (6,1), color='black', label=boson_string+r'/$m_4 = 0.5$')
-ax.plot(bin_c-dx/2.0, dNCASCADE3/dx, lw=1, dashes = (2,1), color='black', label=boson_string+r'/$m_4 = 0.1$')
+ax.plot(bin_c, dNCASCADE/dx*1e38, lw=1.2, color='black', label=boson_string+r'/$m_4 = 0.9$')
+ax.plot(bin_c, dNCASCADE2/dx*1e38, lw=1, dashes = (6,1), color='black', label=boson_string+r'/$m_4 = 0.5$')
+ax.plot(bin_c, dNCASCADE3/dx*1e38, lw=1, dashes = (2,1), color='black', label=boson_string+r'/$m_4 = 0.1$')
+
+ax.plot(bin_c, dNCASCADE_001/dx*1e38, lw=1.2, color='darkorange')
+ax.plot(bin_c, dNCASCADE2_001/dx*1e38, lw=1, dashes = (6,1), color='darkorange')
+ax.plot(bin_c, dNCASCADE3_001/dx*1e38, lw=1, dashes = (2,1), color='darkorange')
 
 ax.text(9.5,2.2e2,r'Borexino',fontsize=10,color='white')
 ax.text(11.4,37,r'KamLAND',fontsize=10,color='white')
 ax.text(14.5,5.5,r'SK-IV',fontsize=10,color='white')
+ax.text(0.4,0.4e4,r'$|U_{e4}|^2=10^{-2}$',fontsize=8.5,color='chocolate',rotation=-20)
+ax.text(0.3,3e2,r'$|U_{e4}|^2=10^{-3}$',fontsize=8.5,color='black',rotation=-18)
 
 ##############
 # STYLE
@@ -165,9 +218,9 @@ def to_scientific_notation(number):
     b = int(b)
     a = float(a)
     return r'$%.0f \times 10^{%i}$'%(a,b)
-UEQSR = to_scientific_notation(params.Ue4**2)
-ax.legend(loc='lower left',frameon=False,ncol=1,markerfirst=True)
-ax.set_title(r'$m_4 = %.0f$ eV, $|U_{e 4}|^2 = \,$'%(params.m4*1e9)+UEQSR, fontsize=0.95*fsize)
+UQSR = to_scientific_notation(params.Umu4**2)
+ax.legend(loc='lower left',frameon=False,ncol=1,markerfirst=True,fontsize=8.5)
+ax.set_title(r'$m_4 = %.0f$ eV, $|U_{\mu 4}|^2 = \,$'%(params.m4*1e9)+UQSR, fontsize=8.5)
 
 ax.set_xlim(0,18.3)
 ax.set_ylim(0.4, 2e5)

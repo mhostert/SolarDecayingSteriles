@@ -8,7 +8,7 @@ from matplotlib.legend_handler import HandlerLine2D
 
 sys.path.insert(1, '../source')
 
-import standard_oscillations as std_osc
+from standard_oscillations as std_osc
 import const
 
 a = np.genfromtxt('Pab_noCP.dat', unpack=True)

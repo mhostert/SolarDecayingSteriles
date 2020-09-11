@@ -6,14 +6,13 @@ from scipy.integrate import quad
 import vegas
 import gvar as gv
 
-from numba import jit,jitclass
+# from numba import jit,jitclass
 
 from source import *
 
 ###############################
-NEVALwarmup = 3e4
+NEVALwarmup = 3e3
 NEVAL = 3e4
-
 
 ################################################################
 # Compute the chi2 using the model independent limits provided by collaborations
@@ -55,23 +54,25 @@ def fill_bins(exp,params,fluxfile,endpoint=1e100,startpoint=0):
 												eff=eff,
 												smearing_function=exp.smearing_function)
 
-	NP_MC = dNCASCADE[ (startpoint<bin_c)&(bin_c<endpoint)]*exp.norm
-	bin_c_end = bin_c[ (startpoint<bin_c)&(bin_c<endpoint)]
+	mask=(startpoint<bin_c)&(bin_c<endpoint)
+	NP_MC = dNCASCADE[mask]*exp.norm
+	bin_c_end = bin_c[mask]
+	bins_end = bins[(startpoint<=bins)&(bins<=endpoint)]
 
 	if exp.exp_name==const.KAMLAND:
-		back_MC = exp.MCall_binned[ (startpoint<bin_c)&(bin_c<endpoint)]
-		D = exp.data[ (startpoint<bin_c)&(bin_c<endpoint)]
+		back_MC = exp.MCall_binned[mask]
+		D = exp.data[mask]
 	elif exp.exp_name==const.BOREXINO:
-		back_MC = exp.MCall[ (startpoint<bin_c)&(bin_c<endpoint)]
-		D = exp.data[ (startpoint<bin_c)&(bin_c<endpoint)]
+		back_MC = exp.MCall[mask]
+		D = exp.data[mask]
 	elif exp.exp_name==const.SUPERK_IV:
-		back_MC = exp.MCall[ (startpoint<bin_c)&(bin_c<endpoint)]
-		D = exp.data[ (startpoint<bin_c)&(bin_c<endpoint)]
+		back_MC = exp.MCall[mask]
+		D = exp.data[mask]
 	else: 
 		print('ERROR! Could not find experiment when filling the bins.')
-	return bin_c_end, NP_MC, back_MC, D
+	return bins_end, NP_MC, back_MC, D
 
-@jit(forceobj=True)
+# @jit(forceobj=True)
 def RATES_dN_HNL_CASCADE_NU_NUBAR(flux,xsec,xsecbar,dim=3,enumin=0,enumax=2.0,params=None,bins=None,PRINT=False,eff=None,enu_eff=None,smearing_function=None):
 	f = HNL_CASCADE_NU_NUBAR(flux,xsec,xsecbar,dim=dim,enumin=enumin,enumax=enumax,params=params,bins=bins,eff=eff,enu_eff=enu_eff,smearing_function=smearing_function)
 	integ = vegas.Integrator(f.dim * [[0, 1]])
@@ -90,7 +91,7 @@ def RATES_dN_HNL_CASCADE_NU_NUBAR(flux,xsec,xsecbar,dim=3,enumin=0,enumax=2.0,pa
 
 	return N, dNdEf
 
-@jit(forceobj=True)
+# @jit(forceobj=True)
 def RATES_dN_HNL_TO_ZPRIME(flux,xsec,dim=2,enumin=0,enumax=2.0,params=None,bins=None,PRINT=False,eff=None,enu_eff=None,smearing_function=None):
 	f = HNL_TO_NU_ZPRIME(flux,xsec,dim=dim,enumin=enumin,enumax=enumax,params=params,bins=bins,eff=eff,enu_eff=enu_eff,smearing_function=smearing_function)
 	integ = vegas.Integrator(f.dim * [[0, 1]])
@@ -110,7 +111,7 @@ def RATES_dN_HNL_TO_ZPRIME(flux,xsec,dim=2,enumin=0,enumax=2.0,params=None,bins=
 	return N, dNdEf
 
 
-@jit(forceobj=True)
+# @jit(forceobj=True)
 def RATES_SBL_OSCILLATION(flux,xsec,dim=1,enumin=0,enumax=2.0,params=None,bins=None,PRINT=False,L=0.541,eff=None,enu_eff=None,smearing_function=None):
 	f = SBL_OSCILLATION(flux,xsec,dim=dim,enumin=enumin,enumax=enumax,params=params,bins=bins,L=L,eff=eff,enu_eff=enu_eff,smearing_function=smearing_function)
 	integ = vegas.Integrator(f.dim * [[0, 1]])
@@ -129,7 +130,7 @@ def RATES_SBL_OSCILLATION(flux,xsec,dim=1,enumin=0,enumax=2.0,params=None,bins=N
 
 	return N, dNdEf
 
-@jit(forceobj=True)
+# @jit(forceobj=True)
 def dN(kin,flux,xsec,params,Enu,E1):
 	# SPECIAL CASE 
 	h=1
@@ -140,27 +141,25 @@ def dN(kin,flux,xsec,params,Enu,E1):
 
 ############
 # Full Cascade -- only take nuebar
-@jit(forceobj=True)
+# @jit(forceobj=True)
 def dN2(kin,flux,xsec,xsecbar,params,Enu,E1,E2):
 	# fraction of final states with nuebar
-	fe = params.Ue4**2/(params.Ue4**2 + params.Umu4**2 +params.Utau4**2)
-	# fraction of final states with numubar and nutaubar
-	fmutau = (params.Umu4**2+params.Utau4**2)/(params.Ue4**2 + params.Umu4**2 +params.Utau4**2)
 
 	h=-1
 	# neutrinos from Boson decay
 	# N = flux(Enu)*(xsec(E1)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)*osc.P_Parke(E2, const.nue_to_nue))
 	
 	# antineutrinos from Boson decay
-	N= flux(Enu)*(fe*osc.Psolar(E2, -const.nue_to_nue) + fmutau*osc.Psolar(E2, -const.numu_to_nue))*xsecbar(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)
+	N = flux(Enu)*osc.Pse(E2, params.Ue4*params.Ue4, params.Umu4*params.Umu4)*xsecbar(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)
 	
 	h=1
 	# neutrinos from Boson decay
 	# N = flux(Enu)*(xsec(E1)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)*osc.P_Parke(E2, const.nue_to_nue))
 	
 	# antineutrinos from Boson decay
-	N+= flux(Enu)*(fe*osc.Psolar(E2, -const.nue_to_nue) + fmutau*osc.Psolar(E2, -const.numu_to_nue))*xsecbar(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)
 	
+	N += flux(Enu)*osc.Pse(E2, params.Ue4*params.Ue4, params.Umu4*params.Umu4)*xsecbar(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)
+		
 	return N
 
 
@@ -286,43 +285,38 @@ class HNL_CASCADE_NU_NUBAR(vegas.BatchIntegrand):
 		
 		# Return final answer as a dict with multiple quantities
 		ans = {}
-		POWER1 = 1.0
 		# Physical limits of integration
-		enup = (self.enumax**(1.0/POWER1)-self.enumin**(1.0/POWER1))*x[:,0] + self.enumin**(1.0/POWER1)
-		enu = enup**POWER1
-
-		POWER = 1.0
+		enu = (self.enumax-self.enumin)*x[:,0] + self.enumin
 
 		kin = model.kinematics(self.params,enu)
-		e1min = kin.E1L_MIN()**(1.0/POWER)
-		e1max = kin.E1L_MAX()**(1.0/POWER)
-		e1p = (e1max-e1min)*x[:,1] + e1min
-		e1 = e1p**(POWER)
+		e1min = kin.E1L_MIN()
+		e1max = kin.E1L_MAX()
+		e1 = (e1max-e1min)*x[:,1] + e1min
 
 		# Zprime decay
 		ez = enu - e1
 		kin.set_BOSON_decay_variables(ez)
-		e2min = kin.E2L_MIN()**(1.0/POWER1)
-		e2max = kin.E2L_MAX()**(1.0/POWER1)
-		e2p = (e2max-e2min)*x[:,2] + e2min
-		e2 = e2p**(POWER1)
-		JACOB = np.abs(POWER*POWER1**2*((e2p**(POWER1-1))*(e1p**(POWER-1)))*(enup**(POWER1-1)))
-		JACOB *= np.abs((self.enumax**(1.0/POWER1)-self.enumin**(1.0/POWER1))*(e1max-e1min)*(e2max-e2min))
+		e2min = kin.E2L_MIN()
+		e2max = kin.E2L_MAX()
+		e2 = (e2max-e2min)*x[:,2] + e2min
+
+		JACOB = (self.enumax-self.enumin)*(e1max-e1min)*(e2max-e2min)
 		# integral
 		I = JACOB*dN2(kin,self.flux,self.xsec,self.xsecbar,self.params,enu,e1,e2)
 
 		# distribution
-		dI = np.zeros((np.size(x[:,0]),np.size(self.bins[:-1])), dtype=float)
+		dI = np.zeros((np.size(x[:,0]),np.size(self.bins[:-1])), dtype=np.float64)
 
 		##########
 		# Smearing on the detected neutrino energy
-		e2 = np.array([self.smearing_function(EE)  if EE>const.IBD_THRESHOLD else EE for EE in e2])
+		e2 = np.array([self.smearing_function(EE)  if EE > const.IBD_THRESHOLD else EE for EE in e2])
 
 		# fill distribution
 		for i in range(np.size(x[:,0])):
-			j = np.where( (self.bins[:-1] < e2[i]) & (self.bins[1:] > e2[i] ))[0]
+			j = np.where( (self.bins[:-1] <= e2[i]) & (self.bins[1:] > e2[i] ))[0]
+			# print(j)
 			dI[i,j] = I[i]
-		
+		# print(dI)
 		################################
 		## EFFICIENCIES -- FIX ME
 		# for i in range(np.size(x[:,0])):

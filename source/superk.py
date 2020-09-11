@@ -9,7 +9,7 @@ from matplotlib.legend_handler import HandlerLine2D
 import vegas
 import gvar as gv
 
-import source 
+from source import *
 
 def plot(params,fluxfile,xsfile):
 	################################################################
@@ -68,11 +68,11 @@ def plot(params,fluxfile,xsfile):
 	fsize=11
 	rc('text', usetex=True)
 	rcparams={'axes.labelsize':fsize,'xtick.labelsize':fsize,'ytick.labelsize':fsize,\
-					'figure.figsize':(1.2*3.7,1.4*2.3617)	}
+					'figure.figsize':(1.2*3.7,2.3617)	}
 	rc('font',**{'family':'serif', 'serif': ['computer modern roman']})
 	matplotlib.rcParams['hatch.linewidth'] = 0.5  # previous pdf hatch linewidth
 	rcParams.update(rcparams)
-	axes_form  = [0.15,0.15,0.82,0.76]
+	axes_form  = [0.15,0.175,0.82,0.7]
 	fig = plt.figure()
 	ax = fig.add_axes(axes_form)
 
@@ -88,7 +88,7 @@ def plot(params,fluxfile,xsfile):
 
 
 	# ax.step(bin_c-dx/2.0, MCtot+dNCASCADE, label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)),**kwargs)
-	ax.bar(bin_c, dNCASCADE, bottom=MCall, width=dx, lw=0, edgecolor='None', facecolor='grey', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)), rasterized=False)
+	ax.bar(bin_c, dNCASCADE, bottom=MCall, width=dx, lw=0, facecolor='grey', edgecolor='None', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)))
 
 	ax.bar(bin_c, MCall-MCreactor, bottom=MCreactor, lw=0.5, edgecolor='#FFD500', width=dx, label=r'reactors', rasterized=RAST,facecolor='None', hatch='xxxxxxxxxx')
 	ax.bar(bin_c,MCreactor-MCreactorLi, bottom=MCreactorLi, lw=0.5, edgecolor='#5BD355', width=dx, label=r'spall ($^9$Li)', rasterized=RAST,facecolor='None', hatch='xxxxxxxxxx')
@@ -122,14 +122,14 @@ def plot(params,fluxfile,xsfile):
 	    a = float(a)
 	    return r'$%.0f \times 10^{%i}$'%(a,b)
 	UEQSR = to_scientific_notation(params.Ue4**2)
-	ax.legend(loc='upper right',frameon=False,ncol=1,markerfirst=False)
-	ax.set_title(r'$m_4 = %.0f$ eV,\, '%(params.m4*1e9)+boson_string+r'$/m_4 = %.2f$, \, $|U_{e 4}|^2 = \,$'%(params.mBOSON/params.m4)+UEQSR, fontsize=fsize)
+	ax.legend(loc='upper right',frameon=False,ncol=1,markerfirst=False,fontsize=9)
+	ax.set_title(r'$m_4 = %.0f$ eV,\, '%(params.m4*1e9)+boson_string+r'$/m_4 = %.2f$, \, $|U_{e 4}|^2 = \,$'%(params.mBOSON/params.m4)+UEQSR, fontsize=9)
 
-	ax.annotate(r'SK-IV',xy=(0.8,0.4),xycoords='axes fraction',fontsize=14)
+	ax.annotate(r'SK-IV',xy=(0.8,0.26),xycoords='axes fraction',fontsize=13)
 	ax.set_xlim(9.3,17.3)
 	ax.set_ylim(0,)
-	_,yu = ax.get_ylim()
-	ax.set_ylim(0,16)
+	# _,yu = ax.get_ylim()
+	# ax.set_ylim(0,20)
 
 	ax.set_xlabel(r'$E_\nu/$MeV')
 	ax.set_ylabel(r'Events/MeV')
