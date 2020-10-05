@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2019.10.17)  26 AUG 2020 17:36
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2019.10.17)  11 SEP 2020 15:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2073,16 +2073,16 @@ File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 File: Spectrum_scalar_300_MZ_270.pdf Graphic file (type pdf)
 
 <use Spectrum_scalar_300_MZ_270.pdf>
-Package pdftex.def Info: Spectrum_scalar_300_MZ_270.pdf used on input line 143.
+Package pdftex.def Info: Spectrum_scalar_300_MZ_270.pdf used on input line 142.
 
 (pdftex.def)             Requested size: 249.9028pt x 186.09746pt.
 
-Overfull \hbox (3.9028pt too wide) in paragraph at lines 143--145
+Overfull \hbox (3.9028pt too wide) in paragraph at lines 142--144
  [][] 
  []
 
 
-Underfull \hbox (badness 2529) in paragraph at lines 149--150
+Underfull \hbox (badness 2529) in paragraph at lines 148--149
 []\OT1/cmr/m/n/10 The most sig-nif-i-cant de-vi-a-tions from the three-
  []
 
@@ -2091,10 +2091,10 @@ Underfull \hbox (badness 2529) in paragraph at lines 149--150
 File: Fluxlimit_scalar.pdf Graphic file (type pdf)
 
 <use Fluxlimit_scalar.pdf>
-Package pdftex.def Info: Fluxlimit_scalar.pdf used on input line 163.
+Package pdftex.def Info: Fluxlimit_scalar.pdf used on input line 162.
 (pdftex.def)             Requested size: 249.9028pt x 186.09746pt.
 
-Overfull \hbox (3.9028pt too wide) in paragraph at lines 163--164
+Overfull \hbox (3.9028pt too wide) in paragraph at lines 162--163
  [][] 
  []
 
@@ -2104,7 +2104,7 @@ File: scalar_borexino_MN_300_MB_30.pdf Graphic file (type pdf)
 
 <use scalar_borexino_MN_300_MB_30.pdf>
 Package pdftex.def Info: scalar_borexino_MN_300_MB_30.pdf used on input line 21
-8.
+7.
 (pdftex.def)             Requested size: 239.70062pt x 127.49927pt.
 
 <scalar_borexino_MN_300_MB_270.pdf, id=339, 320.8788pt x 170.68007pt>
@@ -2112,7 +2112,7 @@ File: scalar_borexino_MN_300_MB_270.pdf Graphic file (type pdf)
 
 <use scalar_borexino_MN_300_MB_270.pdf>
 Package pdftex.def Info: scalar_borexino_MN_300_MB_270.pdf used on input line 2
-19.
+18.
 (pdftex.def)             Requested size: 239.70062pt x 127.49927pt.
 
 <binned_scalar_kamland_MN_300_MB_30.pdf, id=340, 320.8788pt x 170.68007pt>
@@ -2120,7 +2120,7 @@ File: binned_scalar_kamland_MN_300_MB_30.pdf Graphic file (type pdf)
 
 <use binned_scalar_kamland_MN_300_MB_30.pdf>
 Package pdftex.def Info: binned_scalar_kamland_MN_300_MB_30.pdf used on input l
-ine 220.
+ine 219.
 (pdftex.def)             Requested size: 239.70062pt x 127.49927pt.
 
 <binned_scalar_kamland_MN_300_MB_270.pdf, id=341, 320.8788pt x 170.68007pt>
@@ -2128,25 +2128,25 @@ File: binned_scalar_kamland_MN_300_MB_270.pdf Graphic file (type pdf)
 
 <use binned_scalar_kamland_MN_300_MB_270.pdf>
 Package pdftex.def Info: binned_scalar_kamland_MN_300_MB_270.pdf used on input 
-line 221.
+line 220.
 (pdftex.def)             Requested size: 239.70062pt x 127.49927pt.
 
 <scalar_SK-IV_MN_300_MB_30.pdf, id=342, 320.8788pt x 170.68007pt>
 File: scalar_SK-IV_MN_300_MB_30.pdf Graphic file (type pdf)
 
 <use scalar_SK-IV_MN_300_MB_30.pdf>
-Package pdftex.def Info: scalar_SK-IV_MN_300_MB_30.pdf used on input line 222.
+Package pdftex.def Info: scalar_SK-IV_MN_300_MB_30.pdf used on input line 221.
 (pdftex.def)             Requested size: 239.70062pt x 127.49927pt.
 
 <scalar_SK-IV_MN_300_MB_270.pdf, id=343, 320.8788pt x 170.68007pt>
 File: scalar_SK-IV_MN_300_MB_270.pdf Graphic file (type pdf)
 
 <use scalar_SK-IV_MN_300_MB_270.pdf>
-Package pdftex.def Info: scalar_SK-IV_MN_300_MB_270.pdf used on input line 223.
+Package pdftex.def Info: scalar_SK-IV_MN_300_MB_270.pdf used on input line 222.
 
 (pdftex.def)             Requested size: 239.70062pt x 127.49927pt.
 
-Underfull \hbox (badness 2096) in paragraph at lines 227--228
+Underfull \hbox (badness 2096) in paragraph at lines 226--227
  []\OT1/cmr/m/it/10 a. Back-grounds[] \OT1/cmr/m/n/10 For Borex-ino, re-ac-tor 
 neu-tri-nos
  []
@@ -2155,24 +2155,24 @@ neu-tri-nos
 File: limits_MN_300_MB_270.pdf Graphic file (type pdf)
 
 <use limits_MN_300_MB_270.pdf>
-Package pdftex.def Info: limits_MN_300_MB_270.pdf used on input line 257.
+Package pdftex.def Info: limits_MN_300_MB_270.pdf used on input line 256.
 (pdftex.def)             Requested size: 249.9028pt x 223.3206pt.
 
 <limits_MN_300_MB_270_v2.pdf, id=374, 267.39899pt x 238.95207pt>
 File: limits_MN_300_MB_270_v2.pdf Graphic file (type pdf)
 
 <use limits_MN_300_MB_270_v2.pdf>
-Package pdftex.def Info: limits_MN_300_MB_270_v2.pdf used on input line 258.
+Package pdftex.def Info: limits_MN_300_MB_270_v2.pdf used on input line 257.
 (pdftex.def)             Requested size: 249.9028pt x 223.3206pt.
 
 <limits_MN_100_MB_50.pdf, id=375, 267.39899pt x 238.95207pt>
 File: limits_MN_100_MB_50.pdf Graphic file (type pdf)
 
 <use limits_MN_100_MB_50.pdf>
-Package pdftex.def Info: limits_MN_100_MB_50.pdf used on input line 265.
+Package pdftex.def Info: limits_MN_100_MB_50.pdf used on input line 264.
 (pdftex.def)             Requested size: 249.9028pt x 223.3206pt.
 
-Overfull \hbox (3.9028pt too wide) in paragraph at lines 265--266
+Overfull \hbox (3.9028pt too wide) in paragraph at lines 264--265
  [][] 
  []
 
@@ -2197,7 +2197,7 @@ nclusion: multiple pdfs with page group included in a single page
 pdfTeX warning: /usr/bin/pdflatex (file ./scalar_SK-IV_MN_300_MB_270.pdf): PDF 
 inclusion: multiple pdfs with page group included in a single page
 >]
-Underfull \hbox (badness 1009) in paragraph at lines 276--277
+Underfull \hbox (badness 1009) in paragraph at lines 275--276
 []\OT1/cmr/m/n/10 In Fig. [][]5[][], we show our con-straints for the case
  []
 
@@ -2212,19 +2212,19 @@ on: multiple pdfs with page group included in a single page
 >] [7] [8] <Psolar_0.pdf, id=621, 320.8788pt x 433.62pt>
 File: Psolar_0.pdf Graphic file (type pdf)
  <use Psolar_0.pdf>
-Package pdftex.def Info: Psolar_0.pdf used on input line 392.
+Package pdftex.def Info: Psolar_0.pdf used on input line 391.
 (pdftex.def)             Requested size: 163.20374pt x 220.54117pt.
 
 <Psolar_1.pdf, id=622, 320.8788pt x 433.62pt>
 File: Psolar_1.pdf Graphic file (type pdf)
  <use Psolar_1.pdf>
-Package pdftex.def Info: Psolar_1.pdf used on input line 393.
+Package pdftex.def Info: Psolar_1.pdf used on input line 392.
 (pdftex.def)             Requested size: 163.20374pt x 220.54117pt.
 
 <Psolar_10.pdf, id=623, 320.8788pt x 433.62pt>
 File: Psolar_10.pdf Graphic file (type pdf)
  <use Psolar_10.pdf>
-Package pdftex.def Info: Psolar_10.pdf used on input line 394.
+Package pdftex.def Info: Psolar_10.pdf used on input line 393.
 (pdftex.def)             Requested size: 163.20374pt x 220.54117pt.
  [9] [10 <./Psolar_0.pdf> <./Psolar_1.pdf
 
@@ -2237,27 +2237,27 @@ le pdfs with page group included in a single page
 >]
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 441.
+(hyperref)                removing `math shift' on input line 440.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\varphi' on input line 441.
+(hyperref)                removing `\varphi' on input line 440.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 441.
+(hyperref)                removing `math shift' on input line 440.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 467.
+(hyperref)                removing `math shift' on input line 466.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\varphi' on input line 467.
+(hyperref)                removing `\varphi' on input line 466.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 467.
+(hyperref)                removing `math shift' on input line 466.
 
 (./main.bbl
 Underfull \hbox (badness 10000) in paragraph at lines 56--62
@@ -2310,46 +2310,64 @@ Underfull \hbox (badness 6592) in paragraph at lines 476--483
  \OT1/cmr/m/n/9 Machado, M. Mal-toni, I. Martinez-Soler,  and
  []
 
+
+Underfull \hbox (badness 10000) in paragraph at lines 542--547
+ []\OT1/cmr/m/n/9 L. Vec-chi, [][]Phys. Rev. D \OT1/cmr/bx/n/9 94\OT1/cmr/m/n/9
+ , 113015 (2016)[][],
+ []
+
+
+Underfull \hbox (badness 6542) in paragraph at lines 550--555
+ []\OT1/cmr/m/n/9 Y. Farzan, [][]Phys. Lett. B \OT1/cmr/bx/n/9 797\OT1/cmr/m/n/
+9 , 134911 (2019)[][],
+ []
+
+
+Underfull \hbox (badness 2894) in paragraph at lines 558--565
+ []\OT1/cmr/m/n/9 J. M. Cline, [][]Phys. Lett. B \OT1/cmr/bx/n/9 802\OT1/cmr/m/
+n/9 , 135182 (2020)[][],
+ []
+
 [12]
-Underfull \hbox (badness 1436) in paragraph at lines 812--818
+Underfull \hbox (badness 1436) in paragraph at lines 836--842
  []\OT1/cmr/m/n/9 M. Bus-ta-mante, C. Rosen-str^^\m, S. Shal-gar,  and
  []
 
 
-Underfull \hbox (badness 3525) in paragraph at lines 812--818
+Underfull \hbox (badness 3525) in paragraph at lines 836--842
  \OT1/cmr/m/n/9 I. Tam-borra, [][]Phys. Rev. D \OT1/cmr/bx/n/9 101\OT1/cmr/m/n/
 9 , 123024 (2020)[][],
  []
 
 
-Underfull \hbox (badness 1552) in paragraph at lines 886--892
+Underfull \hbox (badness 1552) in paragraph at lines 910--916
  \OT1/cmr/m/n/9 Con-rad, A. Diaz,  and M. H. Shae-vitz,  (2019),
  []
 
 
-Underfull \hbox (badness 4805) in paragraph at lines 897--904
+Underfull \hbox (badness 4805) in paragraph at lines 921--928
  []\OT1/cmr/m/n/9 D. Cianci, A. Fur-man-ski, G. Kara-giorgi,  and
  []
 
 
-Underfull \hbox (badness 7888) in paragraph at lines 943--948
+Underfull \hbox (badness 7888) in paragraph at lines 967--972
  []\OT1/cmr/m/n/9 A. Palazzo, [][]Phys. Rev. D \OT1/cmr/bx/n/9 83\OT1/cmr/m/n/9
  , 113013 (2011)[][],
  []
 
 ) [13]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 496.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 495.
  (./main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 496.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 496.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 495.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 495.
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 367FA7B1D66C763159789F30169BABA3;1222.
  ) 
 Here is how much of TeX's memory you used:
- 27842 strings out of 494953
- 506217 string characters out of 6180976
- 597875 words of memory out of 5000000
- 30550 multiletter control sequences out of 15000+600000
+ 27858 strings out of 494953
+ 506541 string characters out of 6180976
+ 597978 words of memory out of 5000000
+ 30563 multiletter control sequences out of 15000+600000
  18382 words of font info for 71 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  55i,15n,54p,10401b,680s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -2379,10 +2397,10 @@ hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/share/te
 xlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/share/texlive/t
 exmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/share/texlive/te
 xmf-dist/fonts/type1/public/rsfs/rsfs10.pfb>
-Output written on main.pdf (13 pages, 1652477 bytes).
+Output written on main.pdf (13 pages, 1652912 bytes).
 PDF statistics:
- 1096 PDF objects out of 1200 (max. 8388607)
- 1007 compressed objects within 11 object streams
- 164 named destinations out of 1000 (max. 500000)
+ 1105 PDF objects out of 1200 (max. 8388607)
+ 1016 compressed objects within 11 object streams
+ 167 named destinations out of 1000 (max. 500000)
  227 words of extra memory for PDF output out of 10000 (max. 10000000)
 

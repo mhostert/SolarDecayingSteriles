@@ -34,45 +34,45 @@ Warning--missing journal in Moulai:2019gpi
 Warning--missing journal in Antonello:2015lea
 Warning--missing journal in Ajimura:2017fld
 Warning--missing journal in Shalgar:2019rqe
-You've used 82 entries,
+You've used 85 entries,
             5847 wiz_defined-function locations,
-            2308 strings with 31878 characters,
-and the built_in function-call counts, 80485 in all, are:
-= -- 5385
-> -- 1894
-< -- 480
-+ -- 608
-- -- 440
-* -- 12903
-:= -- 7983
-add.period$ -- 82
-call.type$ -- 82
-change.case$ -- 336
-chr.to.int$ -- 80
-cite$ -- 96
-duplicate$ -- 7568
-empty$ -- 6046
-format.name$ -- 1160
-if$ -- 15839
+            2332 strings with 32345 characters,
+and the built_in function-call counts, 82984 in all, are:
+= -- 5580
+> -- 1924
+< -- 495
++ -- 620
+- -- 446
+* -- 13260
+:= -- 8253
+add.period$ -- 85
+call.type$ -- 85
+change.case$ -- 348
+chr.to.int$ -- 83
+cite$ -- 99
+duplicate$ -- 7802
+empty$ -- 6244
+format.name$ -- 1175
+if$ -- 16334
 int.to.chr$ -- 3
-int.to.str$ -- 90
-missing$ -- 934
-newline$ -- 352
-num.names$ -- 246
-pop$ -- 2980
+int.to.str$ -- 93
+missing$ -- 964
+newline$ -- 361
+num.names$ -- 255
+pop$ -- 3073
 preamble$ -- 1
-purify$ -- 410
+purify$ -- 425
 quote$ -- 0
-skip$ -- 2860
+skip$ -- 2968
 stack$ -- 0
-substring$ -- 2049
-swap$ -- 7198
-text.length$ -- 196
+substring$ -- 2145
+swap$ -- 7408
+text.length$ -- 199
 text.prefix$ -- 0
 top$ -- 8
-type$ -- 1122
+type$ -- 1158
 warning$ -- 14
-while$ -- 231
+while$ -- 240
 width$ -- 0
-write$ -- 809
+write$ -- 836
 (There were 14 warnings)
