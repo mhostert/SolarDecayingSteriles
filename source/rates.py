@@ -268,56 +268,6 @@ def dN2(kin,flux,xsec,xsecbar,params,Enu,E1,E2):
 		
 	return N
 
-
-def dN_OSCILLATION(flux,xsec,params,Enu,L):
-	N = flux(Enu)*xsec(Enu)*prob.dPdE1_OSCILLATION(params,Enu,L)
-	return N
-
-
-class SBL_OSCILLATION(vegas.BatchIntegrand):
-	def __init__(self, flux,xsec, dim, enumin,enumax,params,bins,enu_eff,eff,L,exp):
-		self.dim = dim
-		self.enumin = enumin
-		self.enumax = enumax
-		self.params = params
-		self.bins = bins
-		self.L = L
-		self.flux=flux
-		self.xsec=xsec
-		self.enu_eff=enu_eff
-		self.eff=eff
-	def __call__(self, x):	
-		
-		# Return final answer as a dict with multiple quantities
-		ans = {}
-
-		# Physical limits of integration
-		enu = (self.enumax-self.enumin)*x[:,0] + self.enumin
-
-		# integral
-		I = dN_OSCILLATION(self.flux,self.xsec,self.params,enu,self.L)*(self.enumax-self.enumin)
-
-		# distribution
-		dI = np.zeros((np.size(x[:,0]),np.size(self.bins[:-1])), dtype=float)
-
-		# fill distribution
-		for i in range(np.size(x[:,0])):
-			j = np.where( (self.bins[:-1] < enu[i]) & (self.bins[1:] > enu[i] ))[0]
-			dI[i,j] += I[i]
-
-		################################
-		## EFFICIENCIES -- IMPROVE ME
-		for i in range(np.size(x[:,0])):
-			j = np.where( (self.enu_eff[:-1] < enu[i]) & (self.enu_eff[1:] > enu[i] ))[0]
-			dI[i,:] *= self.eff[j]
-			I[i] *= self.eff[j]
-		################################
-
-
-		ans['I'] = I
-		ans['dI'] = dI
-		return ans
-
 class HNL_TO_NU_ZPRIME(vegas.BatchIntegrand):
 	def __init__(self,flux, xsec, dim, enumin,enumax, params,bins,enu_eff,eff,smearing_function):
 		self.dim = dim
