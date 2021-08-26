@@ -1,5 +1,4 @@
 import numpy as np
-# from numba import jit
 
 from source import *
 
@@ -78,7 +77,6 @@ def R2(params,kin,E1,E2,h):
 ##############################
 # Deprecated -- test for oscillations at SBL
 # SBL OSCILLATION
-
 def dPdE1_OSCILLATION(params,Enu,L):
 	Umu4 = params.Umu4
 	Ue4 = params.Ue4

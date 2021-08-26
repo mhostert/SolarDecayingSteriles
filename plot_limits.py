@@ -41,7 +41,7 @@ Sfluxlimit = exp3.fluxlimit
 ###########
 # NUMU FLUX
 fluxfile = "fluxes/b8spectrum.txt"
-flux = fluxes.get_exp_flux(fluxfile)
+flux = fluxes.get_neutrino_flux(fluxfile)
 
 ############
 # NUE/BAR XS
@@ -228,4 +228,4 @@ ax.set_ylim(0.4, 2e5)
 ax.set_ylabel(r'$\frac{{\rm d}\Phi}{{\rm d}E_\nu}$ [cm$^{-2}$ s$^{-1}$ MeV$^{-1}$]')
 ax.set_xlabel(r'$E_\nu$ [MeV]')
 
-fig.savefig('plots/Fluxlimit_'+boson_file+'.pdf',rasterized=True)
+fig.savefig('plots/Fluxlimit_'+boson_file+'_v2.pdf',rasterized=True)

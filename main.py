@@ -32,7 +32,7 @@ if EXP_FLAG == const.MINIBOONE:
 ############
 # NUMU FLUX
 fluxfile = "fluxes/MiniBooNE_nu_mode_flux.dat"
-flux = fluxes.get_exp_flux(fluxfile)
+flux = fluxes.get_neutrino_flux(fluxfile)
 norm = POTS*TARGETS /1e55
 
 ############

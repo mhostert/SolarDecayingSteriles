@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib 
-matplotlib.use('agg') 
 import matplotlib.pyplot as plt
 from matplotlib import rc, rcParams
 from matplotlib.pyplot import *
@@ -11,7 +10,7 @@ import gvar as gv
 
 from source import *
 
-def plot(params,fluxfile,xsfile):
+def plot_IBD_spectrum(params,fluxfile,xsfile, rasterized=True):
 	################################################################
 	# SETUP
 	################################################################
@@ -20,7 +19,7 @@ def plot(params,fluxfile,xsfile):
 
 	############
 	# NUMU FLUX
-	flux = fluxes.get_exp_flux(fluxfile)
+	flux = fluxes.get_neutrino_flux(fluxfile)
 
 	############
 	# NUE/BAR XS
@@ -53,7 +52,7 @@ def plot(params,fluxfile,xsfile):
 												enumax=const.Enu_END_OF_SPECTRUM,\
 												params=params,\
 												bins=bins,\
-												PRINT=True,\
+												PRINT=False,\
 												enu_eff=enu_eff,\
 												eff=eff,
 												smearing_function=smearing_function)
@@ -71,13 +70,13 @@ def plot(params,fluxfile,xsfile):
 					'figure.figsize':(1.2*3.7,2.3617)	}
 	rc('font',**{'family':'serif', 'serif': ['computer modern roman']})
 	matplotlib.rcParams['hatch.linewidth'] = 0.5  # previous pdf hatch linewidth
+	my_hatch = 'xxxxxxxxxxxxxxxx'
 	rcParams.update(rcparams)
-	axes_form  = [0.15,0.175,0.82,0.7]
+	axes_form  = [0.15,0.185,0.82,0.7]
 	fig = plt.figure()
 	ax = fig.add_axes(axes_form)
-
-	RAST=True
-	ax.set_rasterized(True)
+	ax.patch.set_alpha(0.0)
+	ax.set_rasterization_zorder(0)
 
 	######################
 	# Montecarlo 
@@ -88,14 +87,20 @@ def plot(params,fluxfile,xsfile):
 
 
 	# ax.step(bin_c-dx/2.0, MCtot+dNCASCADE, label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)),**kwargs)
-	ax.bar(bin_c, dNCASCADE, bottom=MCall, width=dx, lw=0, facecolor='grey', edgecolor='None', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)))
+	ax.bar(bin_c, dNCASCADE, bottom=MCall, width=dx, lw=0, facecolor='grey', edgecolor='None', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)),
+		rasterized=rasterized, zorder=1)
 
-	ax.bar(bin_c, MCall-MCreactor, bottom=MCreactor, lw=0.5, edgecolor='#FFD500', width=dx, label=r'reactors', rasterized=RAST,facecolor='None', hatch='xxxxxxxxxx')
-	ax.bar(bin_c,MCreactor-MCreactorLi, bottom=MCreactorLi, lw=0.5, edgecolor='#5BD355', width=dx, label=r'spall ($^9$Li)', rasterized=RAST,facecolor='None', hatch='xxxxxxxxxx')
-	ax.bar(bin_c,MCreactorLi, lw=0.5, edgecolor='#5955D8', width=dx, label=r'atm+NC+acc', rasterized=RAST,facecolor='None', hatch='xxxxxxxxxx')
+	ax.bar(bin_c, MCall-MCreactor, bottom=MCreactor, lw=0.5, edgecolor='#FFD500', width=dx, label=r'reactors', facecolor='None', hatch=my_hatch,
+		rasterized=rasterized, zorder=1)
+	ax.bar(bin_c,MCreactor-MCreactorLi, bottom=MCreactorLi, lw=0.5, edgecolor='#5BD355', width=dx, label=r'spall ($^9$Li)', facecolor='None', hatch=my_hatch,
+		rasterized=rasterized, zorder=1)
+	ax.bar(bin_c,MCreactorLi, lw=0.5, edgecolor='#5955D8', width=dx, label=r'atm+NC+acc', facecolor='None', hatch=my_hatch,
+		rasterized=rasterized, zorder=1)
 	# ax.bar(bin_c,MCaccidental, facecolor='lightskyblue',edgecolor='lightskyblue', width=dx, label=r'accidental', rasterized=False)
-	ax.bar(bin_c, dNCASCADE, bottom=MCall, width=dx, lw=0.5, edgecolor='black', facecolor='None', rasterized=False)
-	ax.bar(bin_c, dNCASCADE+MCall, width=dx, lw=0.6, facecolor='None', edgecolor='black', rasterized=False)
+	ax.bar(bin_c, dNCASCADE, bottom=MCall, width=dx, lw=0.5, edgecolor='black', facecolor='None',
+		rasterized=rasterized, zorder=1)
+	ax.bar(bin_c, dNCASCADE+MCall, width=dx, lw=0.6, facecolor='None', edgecolor='black',
+		rasterized=rasterized, zorder=1)
 
 	###################
 	# DATA
@@ -128,11 +133,11 @@ def plot(params,fluxfile,xsfile):
 	ax.annotate(r'SK-IV',xy=(0.8,0.26),xycoords='axes fraction',fontsize=13)
 	ax.set_xlim(9.3,17.3)
 	ax.set_ylim(0,)
-	# _,yu = ax.get_ylim()
-	# ax.set_ylim(0,20)
 
 	ax.set_xlabel(r'$E_\nu/$MeV')
 	ax.set_ylabel(r'Events/MeV')
-	fig_name = 'plots/'+boson_file+'_SK-IV_MN_%.0f_MB_%.0f.pdf'%(params.m4*1e9,params.mBOSON*1e9)
-	fig.savefig(fig_name, dpi=500)
+	fig_name = 'plots/IBD_spectra/'+boson_file+'_SK-IV_MN_%.0f_MB_%.0f.pdf'%(params.m4*1e9,params.mBOSON*1e9)
+	fig.savefig(fig_name,dpi=300)
+	fig.savefig(fig_name.replace("pdf","png"),dpi=300)	
+	plt.close()
 	return fig, fig_name, ax

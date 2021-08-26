@@ -20,7 +20,6 @@ PDG_nutaubar = -16
 PDG_neutrino4 = 18
 PDG_neutrino5 = 19
 
-
 # Baryons
 PDG_proton = 2212
 PDG_neutron = 2112
@@ -28,7 +27,6 @@ PDG_neutron = 2112
 # Nuclei
 PDG_Argon40 = 1000180400
 PDG_Carbon12 = 1000060120
-
 
 PDG_neutrino4=1000022
 PDG_neutrino5=1000023

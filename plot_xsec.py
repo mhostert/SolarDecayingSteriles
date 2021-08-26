@@ -20,15 +20,15 @@ rates.NEVAL = 1e5
 # ############
 # # NUMU FLUX
 # fluxfile = "fluxes/b8spectrum.txt"
-# flux, flux3h, flux3l = fluxes.get_exp_flux(fluxfile, get_3sigma=True)
+# flux, flux3h, flux3l = fluxes.get_neutrino_flux(fluxfile, get_3sigma=True)
 # norm = 1e-55
 
 
 ###########
 # NUMU FLUX
 fluxfile = "fluxes/b8spectrum.txt"
-# flux = fluxes.get_exp_flux(fluxfile)
-flux, flux3h, flux3l = fluxes.get_exp_flux(fluxfile, get_3sigma=True)
+# flux = fluxes.get_neutrino_flux(fluxfile)
+flux, flux3h, flux3l = fluxes.get_neutrino_flux(fluxfile, get_3sigma=True)
 
 ############
 # NUE/BAR XS

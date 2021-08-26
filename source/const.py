@@ -11,7 +11,6 @@ NAvo = 6.022*1e23
 GeV2_to_cm2 = 3.9204e-28
 cmINV_to_GeV = 1.973e-14
 GeVINV_to_cm = 1.0/1.973e-14
-
 m_to_eVINV = 1.0/1.973e-7
 
 # speed of light (PDG) m/s
@@ -26,29 +25,45 @@ nue_to_nue = 1
 numu_to_nue = 2
 nutau_to_nue = 3
 
+def is_antineutrino(channel):
+	return channel < 0
+
 VECTOR = 1
 SCALAR = 2
 
 # Experiments 
+KAMLAND21     = "kamland21"
 KAMLAND     = "kamland"
 BOREXINO     = "borexino"
 SUPERK_IV     = "SUPERK_IV"
+SUPERK_IV_DEPRECATED     = "SUPERK_IV_DEPRECATED"
 
 
 ###########
 # Solar properties
-## from C. Pena-Garay and A. Serenelli,  (2008), arXiv:0811.2424 [astro-ph].
-B8FLUX = 5.94*1e6 # /cm^2/s
-B8FLUX_HM = 5.94*1e6 # /cm^2/s
-B8FLUX_LM = 5.94*1e6 # /cm^2/s
 
+# https://arxiv.org/pdf/1611.09867.pdf
+B8FLUX_B16 = 5.46*1e6 # /cm^2/s
+
+# https://wwwmpa.mpa-garching.mpg.de/~aldos/SSM/AGSS09/nu_fluxes.dat
+B8FLUX_AGSS09 = 5.88*1e6 # /cm^2/s
+
+# C. Pena-Garay and A. Serenelli,  (2008), arXiv:0811.2424 [astro-ph].
+B8FLUX_GS98 = 5.94*1e6 # /cm^2/s
+
+solar_core_Ne = 102*NAvo*cmINV_to_GeV**3 * 1e27# ev^3
+solarR = 6.955e8*m_to_eVINV # eVinv
+
+
+###########
+# IBD cross section
 IBD_THRESHOLD=1.8 # MeV
 Enu_BEG_OF_SPECTRUM = IBD_THRESHOLD
 Enu_END_OF_SPECTRUM = 17.0
 
-solar_core_Ne = 102*NAvo*cmINV_to_GeV**3 * 1e27# ev^3
-solarR = 6.955e8*m_to_eVINV # eVinv
-parkeSolarR = solarR/10.54 # eVinv
+
+###########
+# 3 neutrino properties 
 
 # Normal Ordering
 theta12 = 0.583996
@@ -57,9 +72,14 @@ theta23 = 0.737324
 dmSQR21 = 7.5e-5
 dmSQR31 = 2.57e-3
 
+c13 = np.cos(theta13)
+s13 = np.sin(theta13)
+c12 = np.cos(theta12)
+s12 = np.sin(theta12)
+c23 = np.cos(theta23)
+s23 = np.sin(theta23)
 
 ## MASSES in GeV
-higgsvev = 246 # GeV
 Me  = 511e-6 
 Mmu = 0.105
 Mtau = 1.777 
@@ -96,13 +116,36 @@ Vtd = 8.1e-3
 Vts = 39.4e-3
 Vtb = 1
 
-################
-
+#########
+# safe_momentum
 def momentum(E,m):
-	################
-	## FIX ME -- hack to overcome small masses in this application
 	p = E*np.sqrt(1.0 - (m/E)**2)
 	return np.where(p==p,p,E)
 
+#########
+# auxiliary
 def Heaviside(x):
     return 1 * (x > 0)
+
+def get_centers(bins):
+	return (bins[:-1]+bins[1:])/2
+
+def get_avg_in_bins(bin_edges, func):
+    # integrate within bin for every bin
+    avg_f = []
+    for bl, br in zip(bin_edges[:-1], bin_edges[1:]):
+        x=np.linspace(bl, br, 100)
+        dx = x[1]-x[0]
+        integral = np.sum(func(x)*dx)/(br-bl)
+        avg_f.append(integral)
+    return np.array(avg_f)
+
+def find_nearest(array, value):
+    array = np.asarray(array)
+    idx = (np.abs(array - value)).argmin()
+    return array[idx]
+
+def find_nearest_arg(array, value):
+    array = np.asarray(array)
+    idx = (np.abs(array - value)).argmin()
+    return idx

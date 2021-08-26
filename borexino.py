@@ -32,7 +32,7 @@ if EXP_FLAG == const.BOREXINO:
 ############
 # NUMU FLUX
 fluxfile = "fluxes/b8spectrum.txt"
-flux = fluxes.get_exp_flux(fluxfile)
+flux = fluxes.get_neutrino_flux(fluxfile)
 
 ############
 # NUE/BAR XS

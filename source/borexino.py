@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib 
-matplotlib.use('agg') 
 import matplotlib.pyplot as plt
 from matplotlib import rc, rcParams
 from matplotlib.pyplot import *
@@ -11,7 +10,7 @@ import gvar as gv
 
 from source import *
 
-def plot(params,fluxfile,xsfile):
+def plot_IBD_spectrum(params,fluxfile,xsfile, rasterized=True):
 	################################################################
 	# SETUP
 	################################################################
@@ -20,7 +19,7 @@ def plot(params,fluxfile,xsfile):
 
 	############
 	# NUMU FLUX
-	flux = fluxes.get_exp_flux(fluxfile)
+	flux = fluxes.get_neutrino_flux(fluxfile)
 
 	############
 	# NUE/BAR XS
@@ -53,7 +52,7 @@ def plot(params,fluxfile,xsfile):
 												enumax=const.Enu_END_OF_SPECTRUM,\
 												params=params,\
 												bins=bins,\
-												PRINT=True,\
+												PRINT=False,\
 												enu_eff=enu_eff,\
 												eff=eff,
 												smearing_function=lambda x: x)
@@ -73,11 +72,11 @@ def plot(params,fluxfile,xsfile):
 	matplotlib.rcParams['hatch.linewidth'] = 0.5  # previous pdf hatch linewidth
 	matplotlib.rcParams['hatch.color'] = 'firebrick'  # previous pdf hatch linewidth
 	rcParams.update(rcparams)
-	axes_form  = [0.15,0.175,0.82,0.7]
+	axes_form  = [0.15,0.185,0.82,0.7]
 	fig = plt.figure()
 	ax = fig.add_axes(axes_form)
-
-	ax.set_rasterized(True)
+	ax.patch.set_alpha(0.0)
+	ax.set_rasterization_zorder(0)
 
 	######################
 	# Montecarlo 
@@ -87,12 +86,17 @@ def plot(params,fluxfile,xsfile):
 	MCtot = exp.MCall
 
 	# ax.step(bin_c-dx/2.0, MCtot+dNCASCADE, label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)),**kwargs)
-	ax.bar(bin_c, dNCASCADE, bottom=MCtot, width=dx, lw=0, facecolor='grey', edgecolor='None', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)))
+	ax.bar(bin_c, dNCASCADE, bottom=MCtot, width=dx, lw=0, facecolor='grey', edgecolor='None', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(dNCASCADE)),
+				zorder=1, rasterized=rasterized)
 
-	ax.bar(bin_c,MCgeo,bottom=MCreactor+MCatm, lw=0.75,facecolor='None',edgecolor='dodgerblue',width=dx, label=r'geoneutrinos', hatch='xxxxxxxxxx')
-	ax.bar(bin_c,MCreactor,bottom=MCatm, lw=0.75,facecolor='None',edgecolor='#FFD500', width=dx, label=r'reactors', hatch='xxxxxxxxxx')
-	ax.bar(bin_c,MCatm, lw=0.75,facecolor='None',edgecolor='#5955D8', width=dx, label=r'atm', hatch='xxxxxxxxxx')
-	ax.bar(bin_c, dNCASCADE+MCtot, width=dx, lw=0.75, edgecolor='black', facecolor='None')
+	ax.bar(bin_c,MCgeo,bottom=MCreactor+MCatm, lw=0.75,facecolor='None',edgecolor='dodgerblue',width=dx, label=r'geoneutrinos', hatch='xxxxxxxxxx',
+				zorder=1, rasterized=rasterized)
+	ax.bar(bin_c,MCreactor,bottom=MCatm, lw=0.75,facecolor='None',edgecolor='#FFD500', width=dx, label=r'reactors', hatch='xxxxxxxxxx',
+				zorder=1, rasterized=rasterized)
+	ax.bar(bin_c,MCatm, lw=0.75,facecolor='None',edgecolor='#5955D8', width=dx, label=r'atm', hatch='xxxxxxxxxx',
+				zorder=1, rasterized=rasterized)
+	ax.bar(bin_c, dNCASCADE+MCtot, width=dx, lw=0.75, edgecolor='black', facecolor='None',
+				zorder=1, rasterized=rasterized)
 
 	###################
 	# DATA
@@ -118,6 +122,7 @@ def plot(params,fluxfile,xsfile):
 	    b = int(b)
 	    a = float(a)
 	    return r'$%.0f \times 10^{%i}$'%(a,b)
+	
 	UEQSR = to_scientific_notation(params.Ue4**2)
 	ax.legend(loc='upper right',frameon=False,ncol=1,markerfirst=False,fontsize=9)
 	ax.set_title(r'$m_4 = %.0f$ eV,\, '%(params.m4*1e9)+boson_string+r'$/m_4 = %.2f$, \, $|U_{e 4}|^2 = \,$'%(params.mBOSON/params.m4)+UEQSR, fontsize=0.9*fsize)
@@ -127,6 +132,8 @@ def plot(params,fluxfile,xsfile):
 	ax.set_ylim(0,48)
 	ax.set_xlabel(r'$E_\nu/$MeV')
 	ax.set_ylabel(r'Events/MeV')
-	fig_name = 'plots/'+boson_file+'_borexino_MN_%.0f_MB_%.0f.pdf'%(params.m4*1e9,params.mBOSON*1e9)
-	fig.savefig(fig_name,dpi=500)
+	fig_name = 'plots/IBD_spectra/'+boson_file+'_borexino_MN_%.0f_MB_%.0f.pdf'%(params.m4*1e9,params.mBOSON*1e9)
+	fig.savefig(fig_name,dpi=300)
+	fig.savefig(fig_name.replace("pdf","png"),dpi=300)
+	plt.close()
 	return fig, fig_name, ax

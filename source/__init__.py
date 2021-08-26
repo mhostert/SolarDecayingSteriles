@@ -9,6 +9,5 @@ from source import exps
 from source import flavour_transitions as osc
 from source import rates
 from source import stats
-from source import superk
-from source import kamland
-from source import borexino
+from source import spectrum_plots
+from source import plot_tools
