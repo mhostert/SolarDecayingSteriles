@@ -64,7 +64,6 @@ Enu_END_OF_SPECTRUM = 17.0
 
 ###########
 # 3 neutrino properties 
-
 # Normal Ordering
 theta12 = 0.583996
 theta13 = 0.148190

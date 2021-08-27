@@ -10,6 +10,38 @@ from scipy import interpolate
 from source import *
 
 
+def get_likelihood_in_ratio_of_masses(EXP, params, fluxfile, endpoint, xpoints=20, ypoints=30):
+
+    LK = np.zeros((ypoints,xpoints))
+
+
+    ############# 
+    # 2D grid in Umu4 and Ue4 space
+    UE4SQR =np.logspace(-3.5,-1.5,ypoints,endpoint=True)
+    RATIOS =np.linspace(0.1,0.999,xpoints,endpoint=True)
+
+    for j in range(np.size(RATIOS)):    
+        # set ratio
+        params.mBOSON = RATIOS[j]*params.m4
+        # recompute
+        beK, npK, backK, dK = rates.fill_bins(EXP,params,fluxfile,endpoint=endpoint)
+        bK = const.get_centers(beK)
+
+        dofK = np.size(dK)-2
+        old_factorK = params.Ue4**2*(osc.Pse_spline_nubar(bK, params.Ue4**2, params.Umu4**2))
+
+        for i in range(np.size(UE4SQR)):
+            
+            new_factorK = UE4SQR[i]*osc.Pse_spline_nubar(bK, UE4SQR[i], params.Umu4**2)
+            np_newK = new_factorK/old_factorK*npK
+
+            LK[i,j] = chi2_binned_rate(np_newK, backK, dK, [EXP.err_flux,EXP.err_back])
+
+    print("(Lmin, dof) = ",np.min(LK), dofK)
+    LK = LK - np.min(LK)
+
+    return UE4SQR, RATIOS, LK
+
 
 def get_likelihood(EXP, params, fluxfile, endpoint, NPOINTS =33):
     
@@ -32,62 +64,62 @@ def get_likelihood(EXP, params, fluxfile, endpoint, NPOINTS =33):
 
             LK[j,i] = chi2_binned_rate(np_newK, backK, dK, [EXP.err_flux,EXP.err_back])
 
-    print(np.min(LK), dofK)
+    print("(Lmin, dof) = ",np.min(LK), dofK)
     LK = LK - np.min(LK)
     return UE4SQR, UMU4SQR, LK
 
 def chi2_binned_rate(NP_MC,back_MC,D,sys):
-	err_flux = sys[0]
-	err_back = sys[1]
-	
-	# mask = D>0
-	# NP_MC = NP_MC[mask]
-	# back_MC = back_MC[mask]
-	# D = D[mask]
-	
-	dpoints = len(D)
-	def chi2bin(nuis):
-		alpha=nuis[:dpoints]
-		beta = nuis[dpoints:]
+    err_flux = sys[0]
+    err_back = sys[1]
+    
+    # mask = D>0
+    # NP_MC = NP_MC[mask]
+    # back_MC = back_MC[mask]
+    # D = D[mask]
+    
+    dpoints = len(D)
+    def chi2bin(nuis):
+        alpha=nuis[:dpoints]
+        beta = nuis[dpoints:]
 
-		mu = NP_MC*(1+alpha) + back_MC*(1+beta)
-		return 2*np.sum(mu - D + safe_log(D, mu) ) + np.sum(alpha**2/(err_flux**2)) + np.sum(beta**2 /(err_back**2))
-		# return 2*np.sum(   (NP_MC*(1+beta[0]) + back_MC*(1+beta[1]) - D)**2/(NP_MC*(1+beta[0]) + back_MC*(1+beta[1]))) + beta[0]**2/(err_flux**2) + beta[1]**2 /(err_back**2)
+        mu = NP_MC*(1+alpha) + back_MC*(1+beta)
+        return 2*np.sum(mu - D + safe_log(D, mu) ) + np.sum(alpha**2/(err_flux**2)) + np.sum(beta**2 /(err_back**2))
+        # return 2*np.sum(   (NP_MC*(1+beta[0]) + back_MC*(1+beta[1]) - D)**2/(NP_MC*(1+beta[0]) + back_MC*(1+beta[1]))) + beta[0]**2/(err_flux**2) + beta[1]**2 /(err_back**2)
 
-	# max std devs allowed for nuissance params -- hard wall
-	# max_std=100
-	# bounds = np.ones((dpoints*2,2))
-	# bounds[:dpoints,0] = -max_std*err_flux
-	# bounds[:dpoints,1] = max_std*err_flux
-	# bounds[dpoints:,0] = -max_std*err_back
-	# bounds[dpoints:,1] = max_std*err_back
-	# res = scipy.optimize.minimize(chi2bin, np.zeros(np.size(D)*2), bounds=bounds)
-	
-	res = scipy.optimize.minimize(chi2bin, np.zeros(np.size(D)*2))
-	
-	return chi2bin(res.x)
+    # max std devs allowed for nuissance params -- hard wall
+    # max_std=100
+    # bounds = np.ones((dpoints*2,2))
+    # bounds[:dpoints,0] = -max_std*err_flux
+    # bounds[:dpoints,1] = max_std*err_flux
+    # bounds[dpoints:,0] = -max_std*err_back
+    # bounds[dpoints:,1] = max_std*err_back
+    # res = scipy.optimize.minimize(chi2bin, np.zeros(np.size(D)*2), bounds=bounds)
+    
+    res = scipy.optimize.minimize(chi2bin, np.zeros(np.size(D)*2))
+    
+    return chi2bin(res.x)
 
 def chi2_total_rate(NP_MC,back_MC,D,sys):
-	err_flux = sys[0]
-	err_back = sys[1]
-	
-	def chi2bin(nuis):
-		alpha=nuis[0]
-		beta = nuis[1]
-		mu = NP_MC*(1+alpha) + back_MC*(1+beta)
-		return 2*np.sum((mu - D + safe_log(D, mu))) + alpha**2/(err_flux**2) + beta**2 /(err_back**2)
-	
-	res = scipy.optimize.minimize(chi2bin, [0.0,0.0])
-	
-	return chi2bin(res.x)
+    err_flux = sys[0]
+    err_back = sys[1]
+    
+    def chi2bin(nuis):
+        alpha=nuis[0]
+        beta = nuis[1]
+        mu = NP_MC*(1+alpha) + back_MC*(1+beta)
+        return 2*np.sum((mu - D + safe_log(D, mu))) + alpha**2/(err_flux**2) + beta**2 /(err_back**2)
+    
+    res = scipy.optimize.minimize(chi2bin, [0.0,0.0])
+    
+    return chi2bin(res.x)
 
 
 def safe_log(di,xi):
-	mask = (di*xi>0)
-	d = np.empty_like(di*xi)
-	d[mask] = di[mask]*np.log(di[mask]/xi[mask])
-	d[~mask] = di[~mask]*1e100
-	return d
+    mask = (di*xi>0)
+    d = np.empty_like(di*xi)
+    d[mask] = di[mask]*np.log(di[mask]/xi[mask])
+    d[~mask] = di[~mask]*1e100
+    return d
 
 
 
@@ -112,9 +144,9 @@ def get_model_indep_bound_flux_FC(PRED, BKG, DATA, err_flux=0.1, err_bkg=0.1, DO
     rate_table = np.empty_like(fluxes)
     
     if CL == 0.9:
-    	upper_bound = CL_90_upper
+        upper_bound = CL_90_upper
     elif CL == 0.99:
-    	upper_bound = CL_99_upper
+        upper_bound = CL_99_upper
 
     for i in range(len(fluxes)):
         c = fluxes[i]*PRED
@@ -128,45 +160,45 @@ def get_model_indep_bound_flux_FC(PRED, BKG, DATA, err_flux=0.1, err_bkg=0.1, DO
 
 ###  deprecated deprecated deprecated
 def chi2_model_independent(exp,params,fluxfile):
-	bin_e = exp.Enu_bin_e
-	fluxlimit = exp.fluxlimit
+    bin_e = exp.Enu_bin_e
+    fluxlimit = exp.fluxlimit
 
-	###########
-	# SET BINS TO BE THE EXPERIMENTAL BINS
-	bins = bin_e # bin edges
+    ###########
+    # SET BINS TO BE THE EXPERIMENTAL BINS
+    bins = bin_e # bin edges
 
-	###########
-	# NUMU FLUX
-	flux = fluxes.get_neutrino_flux(fluxfile)
+    ###########
+    # NUMU FLUX
+    flux = fluxes.get_neutrino_flux(fluxfile)
 
-	############
-	# NUE/BAR XS
-	xsec = lambda x : np.zeros(np.size(x))
-	xsecbar = lambda x : np.ones(np.size(x))
+    ############
+    # NUE/BAR XS
+    xsec = lambda x : np.zeros(np.size(x))
+    xsecbar = lambda x : np.ones(np.size(x))
 
-	############
-	# efficiencies
-	enu_eff= bins
-	eff= np.ones((np.size(bins)-1))
+    ############
+    # efficiencies
+    enu_eff= bins
+    eff= np.ones((np.size(bins)-1))
 
-	############
-	# number of events
-	NCASCADE, dNCASCADE = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
-												flux=flux,\
-												xsec=xsec,\
-												xsecbar=xsecbar,\
-												dim=3,\
-												enumin=0,\
-												enumax=16.8,\
-												params=params,\
-												bins=bins,\
-												PRINT=False,\
-												enu_eff=enu_eff,\
-												eff=eff,
-												smearing_function=lambda x: x)
+    ############
+    # number of events
+    NCASCADE, dNCASCADE = rates.RATES_dN_HNL_CASCADE_NU_NUBAR(\
+                                                flux=flux,\
+                                                xsec=xsec,\
+                                                xsecbar=xsecbar,\
+                                                dim=3,\
+                                                enumin=0,\
+                                                enumax=16.8,\
+                                                params=params,\
+                                                bins=bins,\
+                                                PRINT=False,\
+                                                enu_eff=enu_eff,\
+                                                eff=eff,
+                                                smearing_function=lambda x: x)
 
-	chi2 = np.sum( 2.71 * (dNCASCADE)**2/fluxlimit**2 )
-	return chi2, chi2/(np.size(bins)-2)
+    chi2 = np.sum( 2.71 * (dNCASCADE)**2/fluxlimit**2 )
+    return chi2, chi2/(np.size(bins)-2)
 
 
 

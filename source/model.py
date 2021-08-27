@@ -47,17 +47,8 @@ class kinematics:
 		self.EBOSONCM=(self.mh*self.mh+self.mBOSON*self.mBOSON)/2.0/self.mh
 		self.PBOSONCM=const.momentum(self.EBOSONCM,self.mBOSON)
 
-	# def EzprimeL(self,CosTheta):
-	# 	return self.gamma*(self.EzprimeCM - self.beta*self.PzprimeCM*CosTheta) 
-
-	# def EzprimeL_MAX(self):
-	# 	return self.EzprimeL(1.0)
-	
-	# def EzprimeL_MIN(self):
-	# 	return self.EzprimeL(-1.0)
-
 	######
-	# WATCH IT! BETA IS NEGATIVE!
+	# beta is always negative.
 	def E1L(self,CosTheta):
 		return self.gamma*(self.E1CM - self.beta*self.P1CM*CosTheta) 
 
@@ -94,19 +85,3 @@ class kinematics:
 
 	def CosThetaZ(self,E2):
 		return (self.gammaz*self.E2CM - E2)/self.gammaz/self.betaz/self.E2CM
-
-
-#######################################
-# OSCILLATION MODEL FOR TEST
-class osc_model_params():
-	def __init__(self):
-		self.Ue4		= 0.0
-		self.Umu4		= 0.0
-		self.Utau4		= 0.0
-		self.Ue5		= 0.0
-		self.Umu5		= 0.0
-		self.Utau5		= 0.0
-		self.UD4		= 1.0
-		self.UD5		= 0.0
-		self.dm4SQR		= 1.0
-		self.dm5SQR		= 1e10
