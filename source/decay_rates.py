@@ -15,17 +15,14 @@ def L_GeV_to_cm(decay_rate):
 ######################################################################
 
 ####
-
 def dCostheta_dE1(kin):
 	return (kin.mh/kin.PnuH/kin.P1CM)
 
 ####
-
 def dCostheta_dEZprime(kin):
 	return (kin.mh/kin.PnuH/kin.PBOSONCM)
 
 ####
-
 def dCosthetaZ_dE2(kin):
 	return (kin.mBOSON/kin.PBOSON/kin.P2CM)
 
@@ -37,7 +34,6 @@ def dCosthetaZ_dE2(kin):
 
 ##########################################
 # nu_h DECAYS to nu_alpha Zprime
-
 def dGamma_nuh_nualpha_Zprime_dCostheta(params,CosTheta, h):
 	mh = params.m4
 	mzprime = params.mBOSON
@@ -58,7 +54,6 @@ def GammaTOT_nuh_nualpha_Zprime(params):
 
 ##########################################
 # Z PRIME DECAYS 
-
 def dGamma_Zprime_nu_nu_dCostheta(params,CosThetaZ):
 	mzprime = params.mBOSON
 	gx = params.gx

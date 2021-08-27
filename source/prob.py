@@ -73,13 +73,3 @@ def R2(params,kin,E1,E2,h):
 		return None
 	
 	return dif/tot
-
-##############################
-# Deprecated -- test for oscillations at SBL
-# SBL OSCILLATION
-def dPdE1_OSCILLATION(params,Enu,L):
-	Umu4 = params.Umu4
-	Ue4 = params.Ue4
-	dm4SQR = params.dm4SQR
-	return 4.0*Umu4*Umu4*Ue4*Ue4*(np.sin(1.27*(dm4SQR)*L/Enu))**2
-

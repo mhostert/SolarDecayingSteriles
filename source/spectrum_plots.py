@@ -28,10 +28,6 @@ def kamland_21(params, fluxfile, xsfile, style='binned', rasterized=True):
 	dxlin = Elin[1]-Elin[0]
 
 	MCall = exp.MCall(Elin)
-	# MCreactor = exp.MCreactor(Elin)
-	# MCreactor_spall = exp.MCreactor_spall(Elin)
-	# MClimit = exp.MClimit(Elin)
-
 
 	################################################################
 	# PLOTTING THE EVENT RATES 
@@ -39,28 +35,14 @@ def kamland_21(params, fluxfile, xsfile, style='binned', rasterized=True):
 		
 	nbins=np.size(bins)-1
 	MCall_binned = np.zeros(nbins)
-	# MCreactor_binned = np.zeros(nbins)
-	# MCreactor_spall_binned = np.zeros(nbins)
-	# MClimit_binned = np.zeros(nbins)
 	
 	for i in range(0,nbins):
 		in_this_bin = (Elin<bins[i+1]) & (Elin>bins[i])
 		MCall_binned[i] = np.sum( MCall[  in_this_bin	]*dxlin ) 
-		# MCreactor_binned[i] = np.sum( MCreactor[ in_this_bin ]*dxlin ) 
-		# MCreactor_spall_binned[i] = np.sum( MCreactor_spall[ in_this_bin ]*dxlin ) 
-		# MClimit_binned[i] = np.sum( MClimit[ in_this_bin ]*dxlin ) 
-
-	# ax.bar(bKc, npK, bottom=backK, width=dbK, lw=0, facecolor='grey', edgecolor='None', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(npK)), rasterized=False)
+		
 	ax.bar(bKc, npK, bottom=backK, width=dbK, lw=0, facecolor='grey', edgecolor='None', label=r'$\nu_4 \to \nu_e \nu_e \overline{\nu_e}$ (%.1f events)'%(np.sum(npK)),
 		zorder=1, rasterized=rasterized)
 
-	# ax.step(bin_c-dx/2.0,MCall_binned,lw=1, where='post',dashes=(5,1), color='crimson', label=r'90\% limit', rasterized=False)
-	# ax.bar(bin_c,MCall_binned-MCreactor_binned, bottom=MCreactor_binned, width=dx,  lw=0.5,edgecolor='#FFD500', label=r'reactors', facecolor='None', hatch=my_hatch,
-	# 	zorder=1, rasterized=rasterized)
-	# ax.bar(bin_c,MCreactor_binned-MCreactor_spall_binned, bottom=MCreactor_spall_binned, width=dx,  lw=0.5,edgecolor='#5BD355', label=r'spallation', facecolor='None', hatch=my_hatch,
-	# 	zorder=1, rasterized=rasterized)
-	# ax.bar(bin_c,MCreactor_spall_binned, bottom=0*MCreactor_spall_binned, width=dx,  lw=0.5,edgecolor='#5955D8', label=r'atm+$n$+acc', facecolor='None', hatch=my_hatch,
-	# 	zorder=1, rasterized=rasterized)
 	ax.bar(bin_c,MCall_binned, width=dx,  lw=0.5,edgecolor='#FFD500', label=r'all bkgs', facecolor='None', hatch=my_hatch,
 		zorder=1, rasterized=rasterized)
 	ax.bar(bKc, npK+backK, width=dbK, lw=0.6, facecolor='None', edgecolor='black',
@@ -99,7 +81,7 @@ def kamland_21(params, fluxfile, xsfile, style='binned', rasterized=True):
 		ax.set_ylim(0,20)
 
 	ax.set_xlabel(r'$E_\nu/$MeV')
-	ax.set_ylabel(r'Events/MeV')
+	ax.set_ylabel(r'Events/2 MeV')
 
 	fig_name='plots/IBD_spectra/'+style+'_'+boson_file+'_kamland21_MN_%.0f_MB_%.0f.pdf'%(params.m4*1e9,params.mBOSON*1e9)
 	save_figs(fig_name)
@@ -381,7 +363,7 @@ def superk_outdated(params,fluxfile,xsfile, rasterized=True):
 	exp = exps.superk_outdated_data()
 	ENDPOINT = exp.fit_endpoint
 	STARTPOINT = exp.fit_startpoint
-	bins, NP_MC, back_MC, data = rates.fill_bins(exp,params,fluxfile,endpoint=SK_ENDPOINT)
+	bins, NP_MC, back_MC, data = rates.fill_bins(exp,params,fluxfile,endpoint=ENDPOINT)
 	ERRORLOW =  np.sqrt(data)
 	ERRORUP = np.sqrt(data)
 
