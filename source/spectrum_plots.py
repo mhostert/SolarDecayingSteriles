@@ -81,7 +81,7 @@ def kamland_21(params, fluxfile, xsfile, style='binned', rasterized=True):
 		ax.set_ylim(0,20)
 
 	ax.set_xlabel(r'$E_\nu/$MeV')
-	ax.set_ylabel(r'Events/MeV')
+	ax.set_ylabel(r'Events/2 MeV')
 
 	fig_name='plots/IBD_spectra/'+style+'_'+boson_file+'_kamland21_MN_%.0f_MB_%.0f.pdf'%(params.m4*1e9,params.mBOSON*1e9)
 	save_figs(fig_name)

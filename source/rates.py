@@ -123,7 +123,7 @@ def fill_bins_flat(exp, flux_value=1, endpoint=1e100,startpoint=0):
 
 
 ################################################################
-def fill_bins(exp,params,fluxfile,endpoint=1e100,startpoint=0):
+def fill_bins(exp,params,fluxfile,endpoint=1e100,startpoint=0, print_vg=False):
 	print('Filling the bins in',exp.exp_name)
 	###########
 	# SET BINS TO BE THE EXPERIMENTAL BINS
@@ -156,7 +156,7 @@ def fill_bins(exp,params,fluxfile,endpoint=1e100,startpoint=0):
 												enumax=const.Enu_END_OF_SPECTRUM,\
 												params=params,\
 												bins=bins,\
-												PRINT=False,\
+												PRINT=print_vg,\
 												enu_eff=enu_eff,\
 												eff=eff,
 												smearing_function=exp.smearing_function)
