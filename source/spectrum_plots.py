@@ -363,7 +363,7 @@ def superk_outdated(params,fluxfile,xsfile, rasterized=True):
 	exp = exps.superk_outdated_data()
 	ENDPOINT = exp.fit_endpoint
 	STARTPOINT = exp.fit_startpoint
-	bins, NP_MC, back_MC, data = rates.fill_bins(exp,params,fluxfile,endpoint=SK_ENDPOINT)
+	bins, NP_MC, back_MC, data = rates.fill_bins(exp,params,fluxfile,endpoint=ENDPOINT)
 	ERRORLOW =  np.sqrt(data)
 	ERRORUP = np.sqrt(data)
 

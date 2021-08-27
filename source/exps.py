@@ -66,7 +66,7 @@ class superk_outdated_data():
 		self.bin_c = self.bin_e[:-1] + self.bin_w/2.0
 		
 		self.fit_endpoint = 16.5+0.8
-		self.fit_startpoint = 7.5+0.8
+		self.fit_startpoint = 8.5+0.8
 
 class borexino_data():
 	def __init__(self):
