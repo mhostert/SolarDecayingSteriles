@@ -7,7 +7,7 @@
 
  This code is provided as a supplement to [2008.11851](https://arxiv.org/abs/2008.11851). It is provided with no guarantee or warranty. Please cite the article if you use this code.
 
- ---
+<pre>
  @article{Hostert:2020oui,
     author = "Hostert, Matheus and Pospelov, Maxim",
     title = "{Constraints on Decaying Sterile Neutrinos from Solar Antineutrinos}",
@@ -18,4 +18,4 @@
     month = "8",
     year = "2020"
    }
- ---
+</pre>
