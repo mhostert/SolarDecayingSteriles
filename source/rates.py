@@ -123,7 +123,7 @@ def fill_bins_flat(exp, flux_value=1, endpoint=1e100,startpoint=0):
 
 
 ################################################################
-def fill_bins(exp,params,fluxfile,endpoint=1e100,startpoint=0):
+def fill_bins(exp,params,fluxfile,endpoint=1e100,startpoint=0, print_vg=False):
 	print('Filling the bins in',exp.exp_name)
 	###########
 	# SET BINS TO BE THE EXPERIMENTAL BINS
@@ -156,7 +156,7 @@ def fill_bins(exp,params,fluxfile,endpoint=1e100,startpoint=0):
 												enumax=const.Enu_END_OF_SPECTRUM,\
 												params=params,\
 												bins=bins,\
-												PRINT=False,\
+												PRINT=print_vg,\
 												enu_eff=enu_eff,\
 												eff=eff,
 												smearing_function=exp.smearing_function)
@@ -267,56 +267,6 @@ def dN2(kin,flux,xsec,xsecbar,params,Enu,E1,E2):
 	N += flux(Enu)*osc.Pse_spline_nubar(E2, params.Ue4**2, params.Umu4**2)*xsecbar(E2)*prob.dPdEnu2dEnu1(params,kin,Enu,E1,E2,h)
 		
 	return N
-
-
-def dN_OSCILLATION(flux,xsec,params,Enu,L):
-	N = flux(Enu)*xsec(Enu)*prob.dPdE1_OSCILLATION(params,Enu,L)
-	return N
-
-
-class SBL_OSCILLATION(vegas.BatchIntegrand):
-	def __init__(self, flux,xsec, dim, enumin,enumax,params,bins,enu_eff,eff,L,exp):
-		self.dim = dim
-		self.enumin = enumin
-		self.enumax = enumax
-		self.params = params
-		self.bins = bins
-		self.L = L
-		self.flux=flux
-		self.xsec=xsec
-		self.enu_eff=enu_eff
-		self.eff=eff
-	def __call__(self, x):	
-		
-		# Return final answer as a dict with multiple quantities
-		ans = {}
-
-		# Physical limits of integration
-		enu = (self.enumax-self.enumin)*x[:,0] + self.enumin
-
-		# integral
-		I = dN_OSCILLATION(self.flux,self.xsec,self.params,enu,self.L)*(self.enumax-self.enumin)
-
-		# distribution
-		dI = np.zeros((np.size(x[:,0]),np.size(self.bins[:-1])), dtype=float)
-
-		# fill distribution
-		for i in range(np.size(x[:,0])):
-			j = np.where( (self.bins[:-1] < enu[i]) & (self.bins[1:] > enu[i] ))[0]
-			dI[i,j] += I[i]
-
-		################################
-		## EFFICIENCIES -- IMPROVE ME
-		for i in range(np.size(x[:,0])):
-			j = np.where( (self.enu_eff[:-1] < enu[i]) & (self.enu_eff[1:] > enu[i] ))[0]
-			dI[i,:] *= self.eff[j]
-			I[i] *= self.eff[j]
-		################################
-
-
-		ans['I'] = I
-		ans['dI'] = dI
-		return ans
 
 class HNL_TO_NU_ZPRIME(vegas.BatchIntegrand):
 	def __init__(self,flux, xsec, dim, enumin,enumax, params,bins,enu_eff,eff,smearing_function):

@@ -111,7 +111,6 @@ def Usi_matter_avg(Enu, channel, USQR=[0,0,0], approx=False):
 	# integrate over radius (last index)
 	return np.sum(UsiSQR_grid, axis = -1)*dr/flux_weighted_integral/(Ue4SQR + Umu4SQR + Utau4SQR)
 
-
 def Pse_avg(Enu, channel, USQR=[0,0,0], approx=False):
 	
 	r=np.linspace(0,0.5,100)
@@ -122,8 +121,6 @@ def Pse_avg(Enu, channel, USQR=[0,0,0], approx=False):
 	
 	# integrate over radius (last index)
 	return np.sum(Pse_grid, axis = -1)*dr/flux_weighted_integral
-
-
 
 
 #############################################
